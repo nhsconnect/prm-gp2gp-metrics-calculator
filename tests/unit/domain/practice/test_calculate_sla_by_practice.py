@@ -7,14 +7,14 @@ import pytest
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 from prmcalculator.domain.practice.transfer import Transfer
 from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
-from prmcalculator.domain.practice.metrics import (
+from prmcalculator.domain.practice.metrics_calculator import (
     PracticeMetrics,
     calculate_sla_by_practice,
     IntegratedPracticeMetrics,
 )
 
 from tests.builders.common import a_string
-from tests.builders.transfer import build_transfer
+from tests.builders.gp2gp import build_transfer
 
 
 def _assert_has_ods_codes(practices: Iterator[PracticeMetrics], expected: Set[str]):

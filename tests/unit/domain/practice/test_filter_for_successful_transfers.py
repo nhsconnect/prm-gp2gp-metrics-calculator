@@ -8,7 +8,7 @@ from prmcalculator.domain.practice.transfer import (
     TransferOutcome,
     TransferFailureReason,
 )
-from tests.builders.transfer import build_transfer
+from tests.builders.gp2gp import build_transfer
 from tests.builders.common import a_datetime
 
 date_requested = a_datetime()

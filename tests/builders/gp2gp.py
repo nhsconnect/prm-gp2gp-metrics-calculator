@@ -1,10 +1,14 @@
+from prmcalculator.domain.practice.metrics_calculator import (
+    PracticeMetrics,
+    IntegratedPracticeMetrics,
+)
 from prmcalculator.domain.practice.transfer import (
     Transfer,
     TransferOutcome,
     TransferStatus,
     TransferFailureReason,
 )
-from tests.builders.common import a_string, a_duration, a_datetime
+from tests.builders.common import a_string, a_duration, a_datetime, an_integer
 
 
 def build_transfer(**kwargs) -> Transfer:
@@ -26,4 +30,17 @@ def build_transfer(**kwargs) -> Transfer:
         ),
         date_requested=kwargs.get("date_requested", a_datetime()),
         date_completed=kwargs.get("date_completed", None),
+    )
+
+
+def build_practice_metrics(**kwargs) -> PracticeMetrics:
+    return PracticeMetrics(
+        ods_code=kwargs.get("ods_code", a_string(6)),
+        name=kwargs.get("name", a_string()),
+        integrated=IntegratedPracticeMetrics(
+            transfer_count=kwargs.get("transfer_count", an_integer()),
+            within_3_days=kwargs.get("within_3_days", an_integer()),
+            within_8_days=kwargs.get("within_8_days", an_integer()),
+            beyond_8_days=kwargs.get("beyond_8_days", an_integer()),
+        ),
     )

@@ -1,4 +1,5 @@
-from typing import NamedTuple, Iterable, Iterator
+from dataclasses import dataclass
+from typing import Iterable, Iterator
 from warnings import warn
 
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
@@ -6,14 +7,16 @@ from prmcalculator.domain.practice.sla import SlaCounter
 from prmcalculator.domain.practice.transfer import Transfer
 
 
-class IntegratedPracticeMetrics(NamedTuple):
+@dataclass
+class IntegratedPracticeMetrics:
     transfer_count: int
     within_3_days: int
     within_8_days: int
     beyond_8_days: int
 
 
-class PracticeMetrics(NamedTuple):
+@dataclass
+class PracticeMetrics:
     ods_code: str
     name: str
     integrated: IntegratedPracticeMetrics
