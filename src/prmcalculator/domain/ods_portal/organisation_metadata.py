@@ -7,3 +7,10 @@ class PracticeDetails:
     ods_code: str
     name: str
     asids: List[str]
+
+
+@dataclass
+class CcgDetails:
+    ods_code: str
+    name: str
+    practices: List[str]

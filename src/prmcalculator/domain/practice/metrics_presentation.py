@@ -1,8 +1,12 @@
 from dataclasses import dataclass
+from datetime import datetime
 from typing import List, Iterable
+
+from dateutil.tz import tzutc
 
 from prmcalculator.domain.practice.metrics_calculator import PracticeMetrics
 from prmcalculator.utils.calculate_percentage import calculate_percentage
+from prmcalculator.domain.ods_portal.organisation_metadata import CcgDetails
 
 
 @dataclass
@@ -30,6 +34,13 @@ class PracticeSummary:
     ods_code: str
     name: str
     metrics: List[MonthlyMetrics]
+
+
+@dataclass
+class PracticeMetricsPresentation:
+    generated_on: datetime
+    practices: List[PracticeSummary]
+    ccgs: List[CcgDetails]
 
 
 def construct_practice_summaries(
@@ -68,3 +79,12 @@ def construct_practice_summaries(
         )
         for practice in sla_metrics
     ]
+
+
+def construct_practice_metrics_presentation(
+    practice_summaries: List[PracticeSummary],
+    ccgs: List[CcgDetails],
+) -> PracticeMetricsPresentation:
+    return PracticeMetricsPresentation(
+        generated_on=datetime.now(tzutc()), practices=practice_summaries, ccgs=ccgs
+    )
