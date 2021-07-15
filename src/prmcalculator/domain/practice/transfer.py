@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 from datetime import timedelta, datetime
 from enum import Enum
-from typing import NamedTuple, Optional, List, Iterator
+from typing import NamedTuple, Optional, List, Iterator, Iterable
+
+import pyarrow as Table
 
 
 class TransferStatus(Enum):
@@ -61,3 +63,34 @@ def filter_for_successful_transfers(transfers: List[Transfer]) -> Iterator[Trans
             and transfer.transfer_outcome.reason == TransferFailureReason.INTEGRATED_LATE
         )
     )
+
+
+def convert_table_to_transfers(table: Table) -> Iterable[Transfer]:
+    transfer_dict = table.to_pydict()
+    return [
+        Transfer(
+            conversation_id=transfer_dict["conversation_id"][0],
+            sla_duration=timedelta(seconds=transfer_dict["sla_duration"][0]),
+            requesting_practice_asid="",
+            sending_practice_asid="",
+            requesting_practice_ods_code="",
+            sending_practice_ods_code="",
+            requesting_supplier="",
+            sending_supplier="",
+            sender_error_code=None,
+            final_error_codes=[],
+            intermediate_error_codes=[],
+            transfer_outcome=TransferOutcome(
+                reason=TransferFailureReason.DEFAULT, status=TransferStatus.PROCESS_FAILURE
+            ),
+            date_requested=datetime(
+                year=2021,
+                month=7,
+                day=2,
+                hour=3,
+                minute=30,
+                second=5,
+            ),
+            date_completed=None,
+        )
+    ]
