@@ -1,6 +1,12 @@
 from datetime import timedelta
+from typing import List
 
-from prmcalculator.domain.gp2gp.transfer import convert_table_to_transfers
+from prmcalculator.domain.gp2gp.transfer import (
+    convert_table_to_transfers,
+    TransferOutcome,
+    TransferStatus,
+    TransferFailureReason,
+)
 import pyarrow as pa
 
 from tests.builders.common import a_string, a_datetime
@@ -125,3 +131,81 @@ def test_sending_supplier_column_is_converted_to_a_transfer_field():
     actual_sending_supplier = transfers[0].sending_supplier
 
     assert actual_sending_supplier == sending_supplier
+
+
+def test_sender_error_code_column_is_converted_to_a_transfer_field():
+    sender_error_code = 30
+
+    table = build_transfer_table(sender_error_code=[sender_error_code])
+
+    transfers = convert_table_to_transfers(table)
+    actual_sender_error_code = transfers[0].sender_error_code
+
+    assert actual_sender_error_code == sender_error_code
+
+
+def test_sender_error_code_column_is_none():
+    sender_error_code = None
+
+    table = build_transfer_table(sender_error_code=[sender_error_code])
+
+    transfers = convert_table_to_transfers(table)
+    actual_sender_error_code = transfers[0].sender_error_code
+
+    assert actual_sender_error_code == sender_error_code
+
+
+def test_final_error_codes_column_is_converted_to_a_transfer_field():
+    final_error_codes = [None, 12, 30]
+
+    table = build_transfer_table(final_error_codes=[final_error_codes])
+
+    transfers = convert_table_to_transfers(table)
+    actual_final_error_codes = transfers[0].final_error_codes
+
+    assert actual_final_error_codes == final_error_codes
+
+
+def test_final_error_codes_column_is_converted_to_a_transfer_field_when_empty():
+    final_error_codes: List[int] = []
+
+    table = build_transfer_table(final_error_codes=[final_error_codes])
+
+    transfers = convert_table_to_transfers(table)
+    actual_final_error_codes = transfers[0].final_error_codes
+
+    assert actual_final_error_codes == final_error_codes
+
+
+def test_intermediate_error_codes_column_is_converted_to_a_transfer_field():
+    intermediate_error_codes = [16, 17]
+
+    table = build_transfer_table(intermediate_error_codes=[intermediate_error_codes])
+
+    transfers = convert_table_to_transfers(table)
+    actual_intermediate_error_codes = transfers[0].intermediate_error_codes
+
+    assert actual_intermediate_error_codes == intermediate_error_codes
+
+
+def test_intermediate_error_codes_column_is_converted_to_a_transfer_field_when_empty():
+    intermediate_error_codes: List[int] = []
+
+    table = build_transfer_table(intermediate_error_codes=[intermediate_error_codes])
+
+    transfers = convert_table_to_transfers(table)
+    actual_intermediate_error_codes = transfers[0].intermediate_error_codes
+
+    assert actual_intermediate_error_codes == intermediate_error_codes
+
+
+def test_status_and_failure_reason_columns_are_converted_to_a_transfer_outcome_field():
+    table = build_transfer_table(status=["TECHNICAL_FAILURE"], failure_reason=["Final Error"])
+
+    transfers = convert_table_to_transfers(table)
+    actual_transfer_outcome = transfers[0].transfer_outcome
+    expected_transfer_outcome = TransferOutcome(
+        status=TransferStatus.TECHNICAL_FAILURE, reason=TransferFailureReason.FINAL_ERROR
+    )
+
+    assert actual_transfer_outcome == expected_transfer_outcome

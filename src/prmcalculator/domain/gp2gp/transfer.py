@@ -84,11 +84,12 @@ def convert_table_to_transfers(table: Table) -> List[Transfer]:
             sending_practice_ods_code=transfer_dict["sending_practice_ods_code"][0],
             requesting_supplier=transfer_dict["requesting_supplier"][0],
             sending_supplier=transfer_dict["sending_supplier"][0],
-            sender_error_code=None,
-            final_error_codes=[],
-            intermediate_error_codes=[],
+            sender_error_code=transfer_dict["sender_error_code"][0],
+            final_error_codes=transfer_dict["final_error_codes"][0],
+            intermediate_error_codes=transfer_dict["intermediate_error_codes"][0],
             transfer_outcome=TransferOutcome(
-                reason=TransferFailureReason.DEFAULT, status=TransferStatus.PROCESS_FAILURE
+                status=TransferStatus(transfer_dict["status"][0]),
+                reason=TransferFailureReason(transfer_dict["failure_reason"][0]),
             ),
             date_requested=datetime(
                 year=2021,
