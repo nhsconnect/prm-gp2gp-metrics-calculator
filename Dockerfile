@@ -4,4 +4,4 @@ COPY . /prmcalculator
 
 RUN cd /prmcalculator && python setup.py install
 
-ENTRYPOINT ["python", "-m", "prmcalculator.pipeline.metrics_calculator.main"]
+ENTRYPOINT ["python", "-m", "prmcalculator.pipeline.main"]

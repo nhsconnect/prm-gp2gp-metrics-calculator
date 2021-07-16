@@ -8,7 +8,7 @@ setup(
     install_requires=["python-dateutil>=2.8", "boto3>=1.17.42", "PyArrow>=4.0"],
     entry_points={
         "console_scripts": [
-            "metrics-calculator-pipeline=prmcalculator.pipeline.metrics_calculator.main:main",
+            "metrics-calculator-pipeline=prmcalculator.pipeline.main:main",
         ]
     },
 )
