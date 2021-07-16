@@ -74,24 +74,30 @@ def _convert_to_timedelta(seconds: Optional[int]) -> Optional[timedelta]:
 
 def convert_table_to_transfers(table: Table) -> Iterable[Transfer]:
     transfer_dict = table.to_pydict()
-    return [
-        Transfer(
-            conversation_id=transfer_dict["conversation_id"][0],
-            sla_duration=_convert_to_timedelta(transfer_dict["sla_duration"][0]),
-            requesting_practice_asid=transfer_dict["requesting_practice_asid"][0],
-            sending_practice_asid=transfer_dict["sending_practice_asid"][0],
-            requesting_practice_ods_code=transfer_dict["requesting_practice_ods_code"][0],
-            sending_practice_ods_code=transfer_dict["sending_practice_ods_code"][0],
-            requesting_supplier=transfer_dict["requesting_supplier"][0],
-            sending_supplier=transfer_dict["sending_supplier"][0],
-            sender_error_code=transfer_dict["sender_error_code"][0],
-            final_error_codes=transfer_dict["final_error_codes"][0],
-            intermediate_error_codes=transfer_dict["intermediate_error_codes"][0],
-            transfer_outcome=TransferOutcome(
-                status=TransferStatus(transfer_dict["status"][0]),
-                reason=TransferFailureReason(transfer_dict["failure_reason"][0]),
-            ),
-            date_requested=transfer_dict["date_requested"][0],
-            date_completed=transfer_dict["date_completed"][0],
+
+    transfer_list = []
+
+    for i in range(0, len(transfer_dict["conversation_id"])):
+        transfer_list.append(
+            Transfer(
+                conversation_id=transfer_dict["conversation_id"][i],
+                sla_duration=_convert_to_timedelta(transfer_dict["sla_duration"][i]),
+                requesting_practice_asid=transfer_dict["requesting_practice_asid"][i],
+                sending_practice_asid=transfer_dict["sending_practice_asid"][i],
+                requesting_practice_ods_code=transfer_dict["requesting_practice_ods_code"][i],
+                sending_practice_ods_code=transfer_dict["sending_practice_ods_code"][i],
+                requesting_supplier=transfer_dict["requesting_supplier"][i],
+                sending_supplier=transfer_dict["sending_supplier"][i],
+                sender_error_code=transfer_dict["sender_error_code"][i],
+                final_error_codes=transfer_dict["final_error_codes"][i],
+                intermediate_error_codes=transfer_dict["intermediate_error_codes"][i],
+                transfer_outcome=TransferOutcome(
+                    status=TransferStatus(transfer_dict["status"][i]),
+                    reason=TransferFailureReason(transfer_dict["failure_reason"][i]),
+                ),
+                date_requested=transfer_dict["date_requested"][i],
+                date_completed=transfer_dict["date_completed"][i],
+            )
         )
-    ]
+
+    return transfer_list

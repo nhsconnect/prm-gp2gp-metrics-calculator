@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 from typing import List
 
 from prmcalculator.domain.gp2gp.transfer import (
@@ -6,6 +6,7 @@ from prmcalculator.domain.gp2gp.transfer import (
     TransferOutcome,
     TransferStatus,
     TransferFailureReason,
+    Transfer,
 )
 import pyarrow as pa
 
@@ -242,3 +243,72 @@ def test_date_completed_column_is_converted_to_a_transfer_field_if_none():
     actual_date_completed = next(iter(transfers)).date_completed
 
     assert actual_date_completed == date_completed
+
+
+def test_converts_multiple_rows_into_table():
+    integrated_date_requested = a_datetime()
+    integrated_sla_duration = timedelta(days=2, hours=19, minutes=0, seconds=41)
+    integrated_date_completed = integrated_date_requested + integrated_sla_duration
+
+    table = build_transfer_table(
+        conversation_id=["123", "2345"],
+        sla_duration=[241241, 12413],
+        requesting_practice_asid=["213125436412", "124135423412"],
+        sending_practice_asid=["123215421254", "234803124134"],
+        requesting_practice_ods_code=["A12345", "B12345"],
+        sending_practice_ods_code=["C4221", "D25413"],
+        requesting_supplier=["Vision", "Systm One"],
+        sending_supplier=["EMIS Web", "Vision"],
+        sender_error_code=[None, 30],
+        final_error_codes=[[], [99, 20]],
+        intermediate_error_codes=[[], [23]],
+        status=["INTEGRATED_ON_TIME", "TECHNICAL_FAILURE"],
+        failure_reason=["", "Contains Fatal Sender Error"],
+        date_requested=[integrated_date_requested, datetime(year=2021, month=12, day=1)],
+        date_completed=[integrated_date_completed, None],
+    )
+
+    expected_transfers = [
+        Transfer(
+            conversation_id="123",
+            sla_duration=integrated_sla_duration,
+            requesting_practice_asid="213125436412",
+            sending_practice_asid="123215421254",
+            requesting_practice_ods_code="A12345",
+            sending_practice_ods_code="C4221",
+            requesting_supplier="Vision",
+            sending_supplier="EMIS Web",
+            sender_error_code=None,
+            final_error_codes=[],
+            intermediate_error_codes=[],
+            transfer_outcome=TransferOutcome(
+                status=TransferStatus.INTEGRATED_ON_TIME,
+                reason=TransferFailureReason.DEFAULT,
+            ),
+            date_requested=integrated_date_requested,
+            date_completed=integrated_date_completed,
+        ),
+        Transfer(
+            conversation_id="2345",
+            sla_duration=timedelta(hours=3, minutes=26, seconds=53),
+            requesting_practice_asid="124135423412",
+            sending_practice_asid="234803124134",
+            requesting_practice_ods_code="B12345",
+            sending_practice_ods_code="D25413",
+            requesting_supplier="Systm One",
+            sending_supplier="Vision",
+            sender_error_code=30,
+            final_error_codes=[99, 20],
+            intermediate_error_codes=[23],
+            transfer_outcome=TransferOutcome(
+                status=TransferStatus.TECHNICAL_FAILURE,
+                reason=TransferFailureReason.FATAL_SENDER_ERROR,
+            ),
+            date_requested=datetime(year=2021, month=12, day=1),
+            date_completed=None,
+        ),
+    ]
+
+    actual_transfers = convert_table_to_transfers(table)
+
+    assert actual_transfers == expected_transfers
