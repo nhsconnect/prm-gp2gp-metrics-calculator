@@ -1,7 +1,7 @@
 from datetime import timedelta
 from typing import List
 
-from prmcalculator.domain.practice.transfer import (
+from prmcalculator.domain.gp2gp.transfer import (
     Transfer,
     TransferStatus,
     filter_for_successful_transfers,

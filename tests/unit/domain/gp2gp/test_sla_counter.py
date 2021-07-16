@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from prmcalculator.domain.practice.sla import SlaCounter
+from prmcalculator.domain.gp2gp.sla import SlaCounter
 from tests.builders.common import a_duration
 
 

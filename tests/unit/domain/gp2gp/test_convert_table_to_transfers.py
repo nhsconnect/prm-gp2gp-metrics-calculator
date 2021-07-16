@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from prmcalculator.domain.practice.transfer import convert_table_to_transfers
+from prmcalculator.domain.gp2gp.transfer import convert_table_to_transfers
 import pyarrow as pa
 
 from tests.builders.common import a_string, a_datetime

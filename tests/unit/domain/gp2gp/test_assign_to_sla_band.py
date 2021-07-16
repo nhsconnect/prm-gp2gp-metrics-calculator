@@ -1,7 +1,7 @@
 import datetime
 import pytest
 
-from prmcalculator.domain.practice.sla import (
+from prmcalculator.domain.gp2gp.sla import (
     assign_to_sla_band,
     SlaBand,
     THREE_DAYS_IN_SECONDS,

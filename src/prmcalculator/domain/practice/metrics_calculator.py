@@ -3,8 +3,8 @@ from typing import Iterable, Iterator
 from warnings import warn
 
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
-from prmcalculator.domain.practice.sla import SlaCounter
-from prmcalculator.domain.practice.transfer import Transfer
+from prmcalculator.domain.gp2gp.sla import SlaCounter
+from prmcalculator.domain.gp2gp.transfer import Transfer
 
 
 @dataclass

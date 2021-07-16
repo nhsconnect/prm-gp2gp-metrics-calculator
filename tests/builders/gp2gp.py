@@ -2,7 +2,7 @@ from prmcalculator.domain.practice.metrics_calculator import (
     PracticeMetrics,
     IntegratedPracticeMetrics,
 )
-from prmcalculator.domain.practice.transfer import (
+from prmcalculator.domain.gp2gp.transfer import (
     Transfer,
     TransferOutcome,
     TransferStatus,

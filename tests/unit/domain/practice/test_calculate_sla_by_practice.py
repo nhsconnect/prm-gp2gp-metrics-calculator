@@ -5,7 +5,7 @@ from typing import Set, Iterator, List
 import pytest
 
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
-from prmcalculator.domain.practice.transfer import Transfer
+from prmcalculator.domain.gp2gp.transfer import Transfer
 from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
 from prmcalculator.domain.practice.metrics_calculator import (
     PracticeMetrics,
