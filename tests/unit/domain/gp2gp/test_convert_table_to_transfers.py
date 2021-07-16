@@ -70,3 +70,58 @@ def test_requesting_practice_asid_column_is_converted_to_a_transfer_field():
     actual_requesting_practice_asid = transfers[0].requesting_practice_asid
 
     assert actual_requesting_practice_asid == requesting_practice_asid
+
+
+def test_sending_practice_asid_column_is_converted_to_a_transfer_field():
+    sending_practice_asid = "172934718932"
+
+    table = build_transfer_table(sending_practice_asid=[sending_practice_asid])
+
+    transfers = convert_table_to_transfers(table)
+    actual_sending_practice_asid = transfers[0].sending_practice_asid
+
+    assert actual_sending_practice_asid == sending_practice_asid
+
+
+def test_requesting_practice_ods_code_column_is_converted_to_a_transfer_field():
+    requesting_practice_ods_code = "A12345"
+
+    table = build_transfer_table(requesting_practice_ods_code=[requesting_practice_ods_code])
+
+    transfers = convert_table_to_transfers(table)
+    actual_requesting_practice_ods_code = transfers[0].requesting_practice_ods_code
+
+    assert actual_requesting_practice_ods_code == requesting_practice_ods_code
+
+
+def test_sending_practice_ods_code_column_is_converted_to_a_transfer_field():
+    sending_practice_ods_code = "A12345"
+
+    table = build_transfer_table(sending_practice_ods_code=[sending_practice_ods_code])
+
+    transfers = convert_table_to_transfers(table)
+    actual_sending_practice_ods_code = transfers[0].sending_practice_ods_code
+
+    assert actual_sending_practice_ods_code == sending_practice_ods_code
+
+
+def test_requesting_supplier_column_is_converted_to_a_transfer_field():
+    requesting_supplier = "EMIS Web"
+
+    table = build_transfer_table(requesting_supplier=[requesting_supplier])
+
+    transfers = convert_table_to_transfers(table)
+    actual_requesting_supplier = transfers[0].requesting_supplier
+
+    assert actual_requesting_supplier == requesting_supplier
+
+
+def test_sending_supplier_column_is_converted_to_a_transfer_field():
+    sending_supplier = "Vision"
+
+    table = build_transfer_table(sending_supplier=[sending_supplier])
+
+    transfers = convert_table_to_transfers(table)
+    actual_sending_supplier = transfers[0].sending_supplier
+
+    assert actual_sending_supplier == sending_supplier
