@@ -59,3 +59,14 @@ def test_sla_duration_column_is_none():
     expected_sla_duration = None
 
     assert actual_sla_duration == expected_sla_duration
+
+
+def test_requesting_practice_asid_column_is_converted_to_a_transfer_field():
+    requesting_practice_asid = "121212121212"
+
+    table = build_transfer_table(requesting_practice_asid=[requesting_practice_asid])
+
+    transfers = convert_table_to_transfers(table)
+    actual_requesting_practice_asid = transfers[0].requesting_practice_asid
+
+    assert actual_requesting_practice_asid == requesting_practice_asid
