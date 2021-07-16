@@ -30,7 +30,7 @@ def build_transfer_table(**kwargs) -> pa.Table:
     )
 
 
-def test_conversation_id_is_converted_to_a_transfer_field():
+def test_conversation_id_column_is_converted_to_a_transfer_field():
     conversation_id = "123"
 
     table = build_transfer_table(conversation_id=[conversation_id])
@@ -41,12 +41,21 @@ def test_conversation_id_is_converted_to_a_transfer_field():
     assert actual_conversation_id == conversation_id
 
 
-def test_sla_duration_is_converted_to_transfer_field():
-
+def test_sla_duration_column_is_converted_to_timedelta():
     table = build_transfer_table(sla_duration=[176586])
     transfers = convert_table_to_transfers(table)
 
     actual_sla_duration = transfers[0].sla_duration
     expected_sla_duration = timedelta(days=2, hours=1, minutes=3, seconds=6)
+
+    assert actual_sla_duration == expected_sla_duration
+
+
+def test_sla_duration_column_is_none():
+    table = build_transfer_table(sla_duration=[None])
+    transfers = convert_table_to_transfers(table)
+
+    actual_sla_duration = transfers[0].sla_duration
+    expected_sla_duration = None
 
     assert actual_sla_duration == expected_sla_duration

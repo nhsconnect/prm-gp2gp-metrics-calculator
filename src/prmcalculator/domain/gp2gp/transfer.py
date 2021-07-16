@@ -65,12 +65,19 @@ def filter_for_successful_transfers(transfers: List[Transfer]) -> Iterator[Trans
     )
 
 
+def _convert_to_timedelta(seconds: Optional[int]) -> Optional[timedelta]:
+    if seconds is not None:
+        return timedelta(seconds=seconds)
+    else:
+        return None
+
+
 def convert_table_to_transfers(table: Table) -> Iterable[Transfer]:
     transfer_dict = table.to_pydict()
     return [
         Transfer(
             conversation_id=transfer_dict["conversation_id"][0],
-            sla_duration=timedelta(seconds=transfer_dict["sla_duration"][0]),
+            sla_duration=_convert_to_timedelta(transfer_dict["sla_duration"][0]),
             requesting_practice_asid="",
             sending_practice_asid="",
             requesting_practice_ods_code="",
