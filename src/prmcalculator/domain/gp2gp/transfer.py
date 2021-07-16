@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import timedelta, datetime
 from enum import Enum
-from typing import NamedTuple, Optional, List, Iterator
+from typing import NamedTuple, Optional, List, Iterator, Iterable
 
 import pyarrow as Table
 
@@ -72,7 +72,7 @@ def _convert_to_timedelta(seconds: Optional[int]) -> Optional[timedelta]:
         return None
 
 
-def convert_table_to_transfers(table: Table) -> List[Transfer]:
+def convert_table_to_transfers(table: Table) -> Iterable[Transfer]:
     transfer_dict = table.to_pydict()
     return [
         Transfer(
@@ -91,14 +91,7 @@ def convert_table_to_transfers(table: Table) -> List[Transfer]:
                 status=TransferStatus(transfer_dict["status"][0]),
                 reason=TransferFailureReason(transfer_dict["failure_reason"][0]),
             ),
-            date_requested=datetime(
-                year=2021,
-                month=7,
-                day=2,
-                hour=3,
-                minute=30,
-                second=5,
-            ),
-            date_completed=None,
+            date_requested=transfer_dict["date_requested"][0],
+            date_completed=transfer_dict["date_completed"][0],
         )
     ]
