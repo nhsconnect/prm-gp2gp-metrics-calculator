@@ -36,7 +36,8 @@ def test_read_organisation_metadata():
         reporting_window=reporting_window,
         s3_data_manager=s3_manager,
         organisation_metadata_bucket=ods_bucket,
-        dashboard_data_bucket=a_string(),
+        transfer_data_bucket=a_string(),
+        data_platform_metrics_bucket=a_string(),
     )
 
     s3_manager.read_json.return_value = _ORGANISATION_METADATA_DICT

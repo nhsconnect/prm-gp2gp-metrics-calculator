@@ -19,17 +19,19 @@ class PlatformMetricsIO:
         reporting_window: MonthlyReportingWindow,
         s3_data_manager: S3DataManager,
         organisation_metadata_bucket: str,
-        dashboard_data_bucket: str,
+        transfer_data_bucket: str,
+        data_platform_metrics_bucket: str,
     ):
         self._window = reporting_window
         self._s3_manager = s3_data_manager
         self._org_metadata_bucket_name = organisation_metadata_bucket
-        self._dashboard_data_bucket = dashboard_data_bucket
+        self._transfer_data_bucket = transfer_data_bucket
+        self._data_platform_metrics_bucket = data_platform_metrics_bucket
 
-    def _dashboard_data_bucket_s3_path(self, file_name: str) -> str:
+    def _data_platform_metrics_bucket_s3_path(self, file_name: str) -> str:
         return "/".join(
             [
-                self._dashboard_data_bucket,
+                self._data_platform_metrics_bucket,
                 self._DASHBOARD_DATA_VERSION,
                 self._metric_month_path_fragment(),
                 file_name,
@@ -61,7 +63,7 @@ class PlatformMetricsIO:
         return OrganisationMetadata.from_dict(ods_metadata_dict)
 
     def write_practice_metrics(self, practice_metrics: PracticeMetricsPresentation):
-        practice_metrics_path = self._dashboard_data_bucket_s3_path(
+        practice_metrics_path = self._data_platform_metrics_bucket_s3_path(
             self._PRACTICE_METRICS_FILE_NAME
         )
         self._s3_manager.write_json(
