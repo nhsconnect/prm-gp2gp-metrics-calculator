@@ -72,32 +72,34 @@ def _convert_to_timedelta(seconds: Optional[int]) -> Optional[timedelta]:
         return None
 
 
+def _convert_pydict_to_list_of_dictionaries(pydict: dict):
+    return (dict(zip(pydict.keys(), items)) for items in zip(*pydict.values()))
+
+
 def convert_table_to_transfers(table: Table) -> Iterable[Transfer]:
     transfer_dict = table.to_pydict()
 
-    transfer_list = []
+    transfers = _convert_pydict_to_list_of_dictionaries(transfer_dict)
 
-    for i in range(0, len(transfer_dict["conversation_id"])):
-        transfer_list.append(
-            Transfer(
-                conversation_id=transfer_dict["conversation_id"][i],
-                sla_duration=_convert_to_timedelta(transfer_dict["sla_duration"][i]),
-                requesting_practice_asid=transfer_dict["requesting_practice_asid"][i],
-                sending_practice_asid=transfer_dict["sending_practice_asid"][i],
-                requesting_practice_ods_code=transfer_dict["requesting_practice_ods_code"][i],
-                sending_practice_ods_code=transfer_dict["sending_practice_ods_code"][i],
-                requesting_supplier=transfer_dict["requesting_supplier"][i],
-                sending_supplier=transfer_dict["sending_supplier"][i],
-                sender_error_code=transfer_dict["sender_error_code"][i],
-                final_error_codes=transfer_dict["final_error_codes"][i],
-                intermediate_error_codes=transfer_dict["intermediate_error_codes"][i],
-                transfer_outcome=TransferOutcome(
-                    status=TransferStatus(transfer_dict["status"][i]),
-                    reason=TransferFailureReason(transfer_dict["failure_reason"][i]),
-                ),
-                date_requested=transfer_dict["date_requested"][i],
-                date_completed=transfer_dict["date_completed"][i],
-            )
+    return [
+        Transfer(
+            conversation_id=transfer["conversation_id"],
+            sla_duration=_convert_to_timedelta(transfer["sla_duration"]),
+            requesting_practice_asid=transfer["requesting_practice_asid"],
+            sending_practice_asid=transfer["sending_practice_asid"],
+            requesting_practice_ods_code=transfer["requesting_practice_ods_code"],
+            sending_practice_ods_code=transfer["sending_practice_ods_code"],
+            requesting_supplier=transfer["requesting_supplier"],
+            sending_supplier=transfer["sending_supplier"],
+            sender_error_code=transfer["sender_error_code"],
+            final_error_codes=transfer["final_error_codes"],
+            intermediate_error_codes=transfer["intermediate_error_codes"],
+            transfer_outcome=TransferOutcome(
+                status=TransferStatus(transfer["status"]),
+                reason=TransferFailureReason(transfer["failure_reason"]),
+            ),
+            date_requested=transfer["date_requested"],
+            date_completed=transfer["date_completed"],
         )
-
-    return transfer_list
+        for transfer in transfers
+    ]
