@@ -20,10 +20,6 @@ def _build_transfer_table(**kwargs) -> pa.Table:
             "sla_duration": kwargs.get("sla_duration", [1234]),
             "requesting_practice_asid": kwargs.get("requesting_practice_asid", [a_string(12)]),
             "sending_practice_asid": kwargs.get("sending_practice_asid", [a_string(12)]),
-            "requesting_practice_ods_code": kwargs.get(
-                "requesting_practice_ods_code", [a_string(6)]
-            ),
-            "sending_practice_ods_code": kwargs.get("sending_practice_ods_code", [a_string(6)]),
             "requesting_supplier": kwargs.get("requesting_supplier", [a_string(12)]),
             "sending_supplier": kwargs.get("sending_supplier", [a_string(12)]),
             "sender_error_code": kwargs.get("sender_error_code", [None]),
@@ -88,28 +84,6 @@ def test_sending_practice_asid_column_is_converted_to_a_transfer_field():
     actual_sending_practice_asid = next(iter(transfers)).sending_practice_asid
 
     assert actual_sending_practice_asid == sending_practice_asid
-
-
-def test_requesting_practice_ods_code_column_is_converted_to_a_transfer_field():
-    requesting_practice_ods_code = "A12345"
-
-    table = _build_transfer_table(requesting_practice_ods_code=[requesting_practice_ods_code])
-
-    transfers = convert_table_to_transfers(table)
-    actual_requesting_practice_ods_code = next(iter(transfers)).requesting_practice_ods_code
-
-    assert actual_requesting_practice_ods_code == requesting_practice_ods_code
-
-
-def test_sending_practice_ods_code_column_is_converted_to_a_transfer_field():
-    sending_practice_ods_code = "A12345"
-
-    table = _build_transfer_table(sending_practice_ods_code=[sending_practice_ods_code])
-
-    transfers = convert_table_to_transfers(table)
-    actual_sending_practice_ods_code = next(iter(transfers)).sending_practice_ods_code
-
-    assert actual_sending_practice_ods_code == sending_practice_ods_code
 
 
 def test_requesting_supplier_column_is_converted_to_a_transfer_field():
@@ -204,9 +178,9 @@ def test_status_and_failure_reason_columns_are_converted_to_a_transfer_outcome_f
     table = _build_transfer_table(status=["TECHNICAL_FAILURE"], failure_reason=["Final Error"])
 
     transfers = convert_table_to_transfers(table)
-    actual_transfer_outcome = next(iter(transfers)).transfer_outcome
+    actual_transfer_outcome = next(iter(transfers)).outcome
     expected_transfer_outcome = TransferOutcome(
-        status=TransferStatus.TECHNICAL_FAILURE, reason=TransferFailureReason.FINAL_ERROR
+        status=TransferStatus.TECHNICAL_FAILURE, failure_reason=TransferFailureReason.FINAL_ERROR
     )
 
     assert actual_transfer_outcome == expected_transfer_outcome
@@ -255,15 +229,13 @@ def test_converts_multiple_rows_into_list_of_transfers():
         sla_duration=[241241, 12413],
         requesting_practice_asid=["213125436412", "124135423412"],
         sending_practice_asid=["123215421254", "234803124134"],
-        requesting_practice_ods_code=["A12345", "B12345"],
-        sending_practice_ods_code=["C4221", "D25413"],
         requesting_supplier=["Vision", "Systm One"],
         sending_supplier=["EMIS Web", "Vision"],
         sender_error_code=[None, 30],
         final_error_codes=[[], [99, 20]],
         intermediate_error_codes=[[], [23]],
         status=["INTEGRATED_ON_TIME", "TECHNICAL_FAILURE"],
-        failure_reason=["", "Contains Fatal Sender Error"],
+        failure_reason=[None, "Contains Fatal Sender Error"],
         date_requested=[integrated_date_requested, datetime(year=2021, month=12, day=1)],
         date_completed=[integrated_date_completed, None],
     )
@@ -274,17 +246,12 @@ def test_converts_multiple_rows_into_list_of_transfers():
             sla_duration=integrated_sla_duration,
             requesting_practice_asid="213125436412",
             sending_practice_asid="123215421254",
-            requesting_practice_ods_code="A12345",
-            sending_practice_ods_code="C4221",
             requesting_supplier="Vision",
             sending_supplier="EMIS Web",
             sender_error_code=None,
             final_error_codes=[],
             intermediate_error_codes=[],
-            transfer_outcome=TransferOutcome(
-                status=TransferStatus.INTEGRATED_ON_TIME,
-                reason=TransferFailureReason.DEFAULT,
-            ),
+            outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
             date_requested=integrated_date_requested,
             date_completed=integrated_date_completed,
         ),
@@ -293,16 +260,14 @@ def test_converts_multiple_rows_into_list_of_transfers():
             sla_duration=timedelta(hours=3, minutes=26, seconds=53),
             requesting_practice_asid="124135423412",
             sending_practice_asid="234803124134",
-            requesting_practice_ods_code="B12345",
-            sending_practice_ods_code="D25413",
             requesting_supplier="Systm One",
             sending_supplier="Vision",
             sender_error_code=30,
             final_error_codes=[99, 20],
             intermediate_error_codes=[23],
-            transfer_outcome=TransferOutcome(
+            outcome=TransferOutcome(
                 status=TransferStatus.TECHNICAL_FAILURE,
-                reason=TransferFailureReason.FATAL_SENDER_ERROR,
+                failure_reason=TransferFailureReason.FATAL_SENDER_ERROR,
             ),
             date_requested=datetime(year=2021, month=12, day=1),
             date_completed=None,

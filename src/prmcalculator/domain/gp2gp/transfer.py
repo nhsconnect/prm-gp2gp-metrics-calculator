@@ -9,10 +9,8 @@ import pyarrow as Table
 class TransferStatus(Enum):
     INTEGRATED_ON_TIME = "INTEGRATED_ON_TIME"
     TECHNICAL_FAILURE = "TECHNICAL_FAILURE"
-    PENDING = "PENDING"
-    PENDING_WITH_ERROR = "PENDING_WITH_ERROR"
     PROCESS_FAILURE = "PROCESS_FAILURE"
-    TRANSFERRED_NOT_INTEGRATED_WITH_ERROR = "TRANSFERRED_NOT_INTEGRATED_WITH_ERROR"
+    UNCLASSIFIED_FAILURE = "UNCLASSIFIED_FAILURE"
 
 
 class TransferFailureReason(Enum):
@@ -24,13 +22,13 @@ class TransferFailureReason(Enum):
     FATAL_SENDER_ERROR = "Contains Fatal Sender Error"
     COPC_NOT_SENT = "COPC(s) not sent"
     COPC_NOT_ACKNOWLEDGED = "COPC(s) not Acknowledged"
-    DEFAULT = ""
+    TRANSFERRED_NOT_INTEGRATED_WITH_ERROR = "TRANSFERRED_NOT_INTEGRATED_WITH_ERROR"
 
 
 @dataclass
 class TransferOutcome:
     status: TransferStatus
-    reason: TransferFailureReason
+    failure_reason: Optional[TransferFailureReason]
 
 
 class Transfer(NamedTuple):
@@ -38,14 +36,12 @@ class Transfer(NamedTuple):
     sla_duration: Optional[timedelta]
     requesting_practice_asid: str
     sending_practice_asid: str
-    requesting_practice_ods_code: str
-    sending_practice_ods_code: str
     requesting_supplier: str
     sending_supplier: str
     sender_error_code: Optional[int]
     final_error_codes: List[Optional[int]]
     intermediate_error_codes: List[int]
-    transfer_outcome: TransferOutcome
+    outcome: TransferOutcome
     date_requested: datetime
     date_completed: Optional[datetime]
 
@@ -55,12 +51,12 @@ def filter_for_successful_transfers(transfers: List[Transfer]) -> Iterator[Trans
         transfer
         for transfer in transfers
         if (
-            transfer.transfer_outcome.status == TransferStatus.INTEGRATED_ON_TIME
+            transfer.outcome.status == TransferStatus.INTEGRATED_ON_TIME
             and transfer.sla_duration is not None
         )
         or (
-            transfer.transfer_outcome.status == TransferStatus.PROCESS_FAILURE
-            and transfer.transfer_outcome.reason == TransferFailureReason.INTEGRATED_LATE
+            transfer.outcome.status == TransferStatus.PROCESS_FAILURE
+            and transfer.outcome.failure_reason == TransferFailureReason.INTEGRATED_LATE
         )
     )
 
@@ -87,16 +83,16 @@ def convert_table_to_transfers(table: Table) -> Iterable[Transfer]:
             sla_duration=_convert_to_timedelta(transfer["sla_duration"]),
             requesting_practice_asid=transfer["requesting_practice_asid"],
             sending_practice_asid=transfer["sending_practice_asid"],
-            requesting_practice_ods_code=transfer["requesting_practice_ods_code"],
-            sending_practice_ods_code=transfer["sending_practice_ods_code"],
             requesting_supplier=transfer["requesting_supplier"],
             sending_supplier=transfer["sending_supplier"],
             sender_error_code=transfer["sender_error_code"],
             final_error_codes=transfer["final_error_codes"],
             intermediate_error_codes=transfer["intermediate_error_codes"],
-            transfer_outcome=TransferOutcome(
+            outcome=TransferOutcome(
                 status=TransferStatus(transfer["status"]),
-                reason=TransferFailureReason(transfer["failure_reason"]),
+                failure_reason=TransferFailureReason(transfer["failure_reason"])
+                if transfer["failure_reason"]
+                else None,
             ),
             date_requested=transfer["date_requested"],
             date_completed=transfer["date_completed"],
