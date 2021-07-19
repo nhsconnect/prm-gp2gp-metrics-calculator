@@ -12,6 +12,8 @@ from pyarrow.parquet import write_table
 import pyarrow as pa
 from werkzeug.serving import make_server
 
+from prmcalculator.pipeline.main import main
+
 logger = logging.getLogger(__name__)
 
 
@@ -82,6 +84,7 @@ def test_end_to_end_with_fake_s3(datadir):
     environ["ORGANISATION_METADATA_BUCKET"] = s3_organisation_metadata_bucket_name
     environ["DATE_ANCHOR"] = "2020-01-30T18:44:49Z"
     environ["S3_ENDPOINT_URL"] = fake_s3_url
+
     s3 = boto3.resource(
         "s3",
         endpoint_url=fake_s3_url,
@@ -111,8 +114,19 @@ def test_end_to_end_with_fake_s3(datadir):
         filesystem=S3FileSystem(endpoint_override=fake_s3_url),
     )
 
+    expected_practice_metrics_output_key = "practiceMetrics.json"
+    expected_practice_metrics = _read_json(datadir / "expected_outputs" / "practiceMetrics.json")
+
+    s3_output_path = "v3/2019/12/"
+
     try:
-        pass
+        main()
+        actual_practice_metrics = _read_s3_json(
+            output_metrics_bucket, f"{s3_output_path}{expected_practice_metrics_output_key}"
+        )
+
+        assert actual_practice_metrics["practices"] == expected_practice_metrics["practices"]
+        assert actual_practice_metrics["ccgs"] == expected_practice_metrics["ccgs"]
     finally:
         output_metrics_bucket.objects.all().delete()
         output_metrics_bucket.delete()
