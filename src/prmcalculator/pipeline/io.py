@@ -1,5 +1,7 @@
 from dataclasses import asdict
+from typing import Iterable
 
+from prmcalculator.domain.gp2gp.transfer import Transfer, convert_table_to_transfers
 from prmcalculator.domain.practice.metrics_presentation import PracticeMetricsPresentation
 from prmcalculator.domain.ods_portal.organisation_metadata import OrganisationMetadata
 from prmcalculator.utils.io.dictionary import camelize_dict
@@ -12,6 +14,8 @@ class PlatformMetricsIO:
     _ORG_METADATA_FILE_NAME = "organisationMetadata.json"
     _DASHBOARD_DATA_VERSION = "v3"
     _PRACTICE_METRICS_FILE_NAME = "practiceMetrics.json"
+    _TRANSFER_DATA_FILE_NAME = "transfers.parquet"
+    _TRANSFER_DATA_VERSION = "v3"
 
     def __init__(
         self,
@@ -70,3 +74,16 @@ class PlatformMetricsIO:
             f"s3://{practice_metrics_path}",
             self._create_platform_json_object(practice_metrics),
         )
+
+    def read_transfer_data(self) -> Iterable[Transfer]:
+        transfer_data_s3_path = "/".join(
+            [
+                self._transfer_data_bucket,
+                self._TRANSFER_DATA_VERSION,
+                self._metric_month_path_fragment(),
+                self._TRANSFER_DATA_FILE_NAME,
+            ]
+        )
+
+        transfer_table = self._s3_manager.read_parquet(f"s3://{transfer_data_s3_path}")
+        return convert_table_to_transfers(transfer_table)

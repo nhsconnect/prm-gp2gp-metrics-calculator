@@ -3,7 +3,7 @@ from datetime import timedelta, datetime
 from enum import Enum
 from typing import NamedTuple, Optional, List, Iterator, Iterable
 
-import pyarrow as Table
+import pyarrow as pa
 
 
 class TransferStatus(Enum):
@@ -72,7 +72,7 @@ def _convert_pydict_to_list_of_dictionaries(pydict: dict):
     return (dict(zip(pydict.keys(), items)) for items in zip(*pydict.values()))
 
 
-def convert_table_to_transfers(table: Table) -> Iterable[Transfer]:
+def convert_table_to_transfers(table: pa.Table) -> Iterable[Transfer]:
     transfer_dict = table.to_pydict()
 
     transfers = _convert_pydict_to_list_of_dictionaries(transfer_dict)

@@ -24,6 +24,6 @@ def test_read_parquet_returns_dictionary():
     s3_manager = S3DataManager(conn)
     actual_data = s3_manager.read_parquet(f"s3://{bucket_name}/fruits.parquet")
 
-    expected_data = data
+    expected_data = fruit_table
 
     assert actual_data == expected_data
