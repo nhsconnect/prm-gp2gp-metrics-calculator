@@ -1,6 +1,8 @@
 import json
 from datetime import datetime
+from io import BytesIO
 from urllib.parse import urlparse
+import pyarrow.parquet as pq
 
 
 def _serialize_datetime(obj):
@@ -29,3 +31,9 @@ class S3DataManager:
         s3_object = self._object_from_uri(object_uri)
         body = json.dumps(data, default=_serialize_datetime).encode("utf8")
         s3_object.put(Body=body, ContentType="application/json")
+
+    def read_parquet(self, object_uri: str) -> dict:
+        s3_object = self._object_from_uri(object_uri)
+        response = s3_object.get()
+        body = BytesIO(response["Body"].read())
+        return pq.read_table(body).to_pydict()
