@@ -1,6 +1,7 @@
 from collections import defaultdict
 from datetime import timedelta
 from enum import Enum, auto
+from typing import Optional
 
 THREE_DAYS_IN_SECONDS = 259200
 EIGHT_DAYS_IN_SECONDS = 691200
@@ -26,9 +27,10 @@ class SlaCounter:
     def __init__(self):
         self._counts = defaultdict(int)
 
-    def increment(self, duration: timedelta):
-        sla_band = assign_to_sla_band(duration)
-        self._counts[sla_band] += 1
+    def increment(self, duration: Optional[timedelta]):
+        if duration is not None:
+            sla_band = assign_to_sla_band(duration)
+            self._counts[sla_band] += 1
 
     def total(self) -> int:
         return sum(self._counts.values())

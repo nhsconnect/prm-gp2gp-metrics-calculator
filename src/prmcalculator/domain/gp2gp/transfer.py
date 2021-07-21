@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import timedelta, datetime
 from enum import Enum
-from typing import NamedTuple, Optional, List, Iterator, Iterable
+from typing import NamedTuple, Optional, List, Iterator
 
 import pyarrow as pa
 
@@ -77,7 +77,7 @@ def _convert_pydict_to_list_of_dictionaries(pydict: dict):
     return (dict(zip(pydict.keys(), items)) for items in zip(*pydict.values()))
 
 
-def convert_table_to_transfers(table: pa.Table) -> Iterable[Transfer]:
+def convert_table_to_transfers(table: pa.Table) -> List[Transfer]:
     transfer_dict = table.to_pydict()
 
     transfers = _convert_pydict_to_list_of_dictionaries(transfer_dict)

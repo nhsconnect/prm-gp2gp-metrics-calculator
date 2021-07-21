@@ -1,8 +1,16 @@
 from datetime import datetime, timedelta
 
-from dateutil.tz import UTC
+from dateutil.tz import UTC, tzutc
 from freezegun import freeze_time
 
+from prmcalculator.domain.national.metrics_presentation import (
+    MonthlyNationalMetrics,
+    IntegratedMetrics,
+    FailedMetrics,
+    PendingMetrics,
+    PaperFallbackMetrics,
+    NationalMetricsPresentation,
+)
 from prmcalculator.domain.practice.metrics_presentation import (
     IntegratedPracticeMetricsPresentation,
     RequesterMetrics,
@@ -15,7 +23,10 @@ from prmcalculator.domain.ods_portal.organisation_metadata import (
     CcgDetails,
     OrganisationMetadata,
 )
-from prmcalculator.pipeline.core import calculate_practice_metrics_data
+from prmcalculator.pipeline.core import (
+    calculate_practice_metrics_data,
+    calculate_national_metrics_data,
+)
 
 from prmcalculator.domain.gp2gp.transfer import (
     Transfer,
@@ -24,6 +35,21 @@ from prmcalculator.domain.gp2gp.transfer import (
     Practice,
 )
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
+
+from tests.builders.gp2gp import (
+    a_transfer_integrated_beyond_8_days,
+    a_transfer_integrated_within_3_days,
+    a_transfer_integrated_between_3_and_8_days,
+    a_transfer_with_a_final_error,
+    a_transfer_that_was_never_integrated,
+    a_transfer_where_the_request_was_never_acknowledged,
+    a_transfer_where_no_core_ehr_was_sent,
+    a_transfer_where_no_large_message_continue_was_sent,
+    a_transfer_where_large_messages_were_required_but_not_sent,
+    a_transfer_where_large_messages_remained_unacknowledged,
+    a_transfer_where_the_sender_reported_an_unrecoverable_error,
+    a_transfer_where_a_large_message_triggered_an_error,
+)
 
 
 @freeze_time(datetime(year=2020, month=1, day=15, hour=23, second=42), tz_offset=0)
@@ -98,5 +124,56 @@ def test_calculates_correct_practice_metrics_given_a_successful_transfer():
     )
 
     actual = calculate_practice_metrics_data(transfers, organisation_metadata, reporting_window)
+
+    assert actual == expected
+
+
+@freeze_time(datetime(year=2020, month=1, day=17, hour=21, second=32), tz_offset=0)
+def test_calculates_correct_national_metrics_given_series_of_messages():
+
+    transfers = [
+        a_transfer_that_was_never_integrated(),
+        a_transfer_where_the_request_was_never_acknowledged(),
+        a_transfer_where_no_core_ehr_was_sent(),
+        a_transfer_where_no_large_message_continue_was_sent(),
+        a_transfer_where_large_messages_were_required_but_not_sent(),
+        a_transfer_where_large_messages_remained_unacknowledged(),
+        a_transfer_where_the_sender_reported_an_unrecoverable_error(),
+        a_transfer_where_a_large_message_triggered_an_error(),
+        a_transfer_integrated_within_3_days(),
+        a_transfer_integrated_between_3_and_8_days(),
+        a_transfer_integrated_between_3_and_8_days(),
+        a_transfer_integrated_beyond_8_days(),
+        a_transfer_integrated_beyond_8_days(),
+        a_transfer_integrated_beyond_8_days(),
+        a_transfer_with_a_final_error(),
+    ]
+
+    reporting_window = MonthlyReportingWindow(
+        metric_month_start=datetime(2019, 12, 1, tzinfo=UTC),
+        overflow_month_start=datetime(2020, 1, 1, tzinfo=UTC),
+    )
+    current_datetime = datetime.now(tzutc())
+
+    expected_national_metrics = MonthlyNationalMetrics(
+        transfer_count=15,
+        integrated=IntegratedMetrics(
+            transfer_percentage=40.0,
+            transfer_count=6,
+            within_3_days=1,
+            within_8_days=2,
+            beyond_8_days=3,
+        ),
+        failed=FailedMetrics(transfer_count=1, transfer_percentage=6.67),
+        pending=PendingMetrics(transfer_count=8, transfer_percentage=53.33),
+        paper_fallback=PaperFallbackMetrics(transfer_count=12, transfer_percentage=80.0),
+        year=2019,
+        month=12,
+    )
+
+    expected = NationalMetricsPresentation(
+        generated_on=current_datetime, metrics=[expected_national_metrics]
+    )
+    actual = calculate_national_metrics_data(transfers, reporting_window)
 
     assert actual == expected

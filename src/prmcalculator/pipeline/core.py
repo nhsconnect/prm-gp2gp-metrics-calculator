@@ -1,5 +1,10 @@
 from typing import List
 
+from prmcalculator.domain.national.metrics_calculator import calculate_national_metrics
+from prmcalculator.domain.national.metrics_presentation import (
+    NationalMetricsPresentation,
+    construct_national_metrics,
+)
 from prmcalculator.domain.practice.metrics_presentation import (
     construct_practice_summaries,
     PracticeMetricsPresentation,
@@ -28,3 +33,14 @@ def calculate_practice_metrics_data(
         practice_summaries, organisation_metadata.ccgs
     )
     return practice_metrics_presentation
+
+
+def calculate_national_metrics_data(
+    transfers: List[Transfer], reporting_window: MonthlyReportingWindow
+) -> NationalMetricsPresentation:
+    national_metrics = calculate_national_metrics(transfers=transfers)
+    return construct_national_metrics(
+        national_metrics=national_metrics,
+        year=reporting_window.metric_year,
+        month=reporting_window.metric_month,
+    )

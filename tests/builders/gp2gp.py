@@ -1,18 +1,19 @@
 from datetime import timedelta
 
-from prmcalculator.domain.gp2gp.sla import EIGHT_DAYS_IN_SECONDS
 from prmcalculator.domain.practice.metrics_calculator import (
     PracticeMetrics,
     IntegratedPracticeMetrics,
 )
+
+from prmcalculator.domain.gp2gp.sla import EIGHT_DAYS_IN_SECONDS, THREE_DAYS_IN_SECONDS
 from prmcalculator.domain.gp2gp.transfer import (
     Transfer,
-    TransferOutcome,
     TransferStatus,
-    Practice,
+    TransferOutcome,
     TransferFailureReason,
+    Practice,
 )
-from tests.builders.common import a_string, a_duration, a_datetime, an_integer
+from tests.builders.common import a_string, a_duration, an_integer, a_datetime
 
 
 def build_transfer(**kwargs) -> Transfer:
@@ -68,6 +69,20 @@ def a_suppressed_transfer(**kwargs):
     )
 
 
+def a_transfer_integrated_within_3_days():
+    return build_transfer(
+        outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
+        sla_duration=timedelta(seconds=THREE_DAYS_IN_SECONDS),
+    )
+
+
+def a_transfer_integrated_between_3_and_8_days():
+    return build_transfer(
+        outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
+        sla_duration=timedelta(seconds=THREE_DAYS_IN_SECONDS + 1),
+    )
+
+
 def a_transfer_integrated_beyond_8_days():
     return build_transfer(
         outcome=TransferOutcome(
@@ -87,10 +102,73 @@ def a_transfer_with_a_final_error():
     )
 
 
+def a_transfer_that_was_never_integrated():
+    return build_transfer(
+        outcome=TransferOutcome(
+            status=TransferStatus.PROCESS_FAILURE,
+            failure_reason=TransferFailureReason.TRANSFERRED_NOT_INTEGRATED,
+        )
+    )
+
+
+def a_transfer_where_the_request_was_never_acknowledged():
+    return build_transfer(
+        outcome=TransferOutcome(
+            status=TransferStatus.TECHNICAL_FAILURE,
+            failure_reason=TransferFailureReason.REQUEST_NOT_ACKNOWLEDGED,
+        )
+    )
+
+
 def a_transfer_where_no_core_ehr_was_sent():
     return build_transfer(
         outcome=TransferOutcome(
             status=TransferStatus.TECHNICAL_FAILURE,
             failure_reason=TransferFailureReason.CORE_EHR_NOT_SENT,
+        )
+    )
+
+
+def a_transfer_where_no_large_message_continue_was_sent():
+    return build_transfer(
+        outcome=TransferOutcome(
+            status=TransferStatus.TECHNICAL_FAILURE,
+            failure_reason=TransferFailureReason.COPC_NOT_SENT,
+        )
+    )
+
+
+def a_transfer_where_large_messages_were_required_but_not_sent():
+    return build_transfer(
+        outcome=TransferOutcome(
+            status=TransferStatus.TECHNICAL_FAILURE,
+            failure_reason=TransferFailureReason.COPC_NOT_SENT,
+        )
+    )
+
+
+def a_transfer_where_large_messages_remained_unacknowledged():
+    return build_transfer(
+        outcome=TransferOutcome(
+            status=TransferStatus.TECHNICAL_FAILURE,
+            failure_reason=TransferFailureReason.COPC_NOT_ACKNOWLEDGED,
+        )
+    )
+
+
+def a_transfer_where_the_sender_reported_an_unrecoverable_error():
+    return build_transfer(
+        outcome=TransferOutcome(
+            status=TransferStatus.TECHNICAL_FAILURE,
+            failure_reason=TransferFailureReason.FATAL_SENDER_ERROR,
+        )
+    )
+
+
+def a_transfer_where_a_large_message_triggered_an_error():
+    return build_transfer(
+        outcome=TransferOutcome(
+            status=TransferStatus.UNCLASSIFIED_FAILURE,
+            failure_reason=TransferFailureReason.TRANSFERRED_NOT_INTEGRATED_WITH_ERROR,
         )
     )

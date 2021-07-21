@@ -1,5 +1,5 @@
 from dataclasses import asdict
-from typing import Iterable
+from typing import List
 
 from prmcalculator.domain.gp2gp.transfer import Transfer, convert_table_to_transfers
 from prmcalculator.domain.practice.metrics_presentation import PracticeMetricsPresentation
@@ -75,7 +75,7 @@ class PlatformMetricsIO:
             self._create_platform_json_object(practice_metrics),
         )
 
-    def read_transfer_data(self) -> Iterable[Transfer]:
+    def read_transfer_data(self) -> List[Transfer]:
         transfer_data_s3_path = "/".join(
             [
                 self._transfer_data_bucket,
