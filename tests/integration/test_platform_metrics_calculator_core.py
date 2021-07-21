@@ -5,7 +5,7 @@ from freezegun import freeze_time
 
 from prmcalculator.domain.national.metrics_presentation import (
     MonthlyNationalMetrics,
-    IntegratedMetrics,
+    IntegratedMetricsPresentation,
     FailedMetrics,
     PendingMetrics,
     PaperFallbackMetrics,
@@ -157,7 +157,7 @@ def test_calculates_correct_national_metrics_given_series_of_messages():
 
     expected_national_metrics = MonthlyNationalMetrics(
         transfer_count=15,
-        integrated=IntegratedMetrics(
+        integrated=IntegratedMetricsPresentation(
             transfer_percentage=40.0,
             transfer_count=6,
             within_3_days=1,

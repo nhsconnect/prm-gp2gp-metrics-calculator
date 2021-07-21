@@ -27,7 +27,7 @@ class PendingMetrics:
 
 
 @dataclass
-class IntegratedMetrics:
+class IntegratedMetricsPresentation:
     transfer_count: int
     transfer_percentage: float
     within_3_days: int
@@ -38,7 +38,7 @@ class IntegratedMetrics:
 @dataclass
 class MonthlyNationalMetrics:
     transfer_count: int
-    integrated: IntegratedMetrics
+    integrated: IntegratedMetricsPresentation
     failed: FailedMetrics
     pending: PendingMetrics
     paper_fallback: PaperFallbackMetrics
@@ -52,8 +52,10 @@ class NationalMetricsPresentation:
     metrics: List[MonthlyNationalMetrics]
 
 
-def _construct_integrated_metrics(national_metrics: NationalMetrics) -> IntegratedMetrics:
-    return IntegratedMetrics(
+def _construct_integrated_metrics(
+    national_metrics: NationalMetrics,
+) -> IntegratedMetricsPresentation:
+    return IntegratedMetricsPresentation(
         transfer_percentage=calculate_percentage(
             portion=national_metrics.integrated.transfer_count,
             total=national_metrics.initiated_transfer_count,
