@@ -2,7 +2,7 @@ from datetime import timedelta
 from unittest.mock import Mock
 import pyarrow as pa
 
-from prmcalculator.domain.gp2gp.transfer import Transfer, TransferOutcome, TransferStatus
+from prmcalculator.domain.gp2gp.transfer import Transfer, TransferOutcome, TransferStatus, Practice
 from prmcalculator.pipeline.io import PlatformMetricsIO
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 from tests.builders.common import a_datetime, a_string
@@ -21,10 +21,8 @@ _TRANSFER_LIST = [
     Transfer(
         conversation_id="123",
         sla_duration=_integrated_sla_duration,
-        requesting_practice_asid="213125436412",
-        sending_practice_asid="123215421254",
-        requesting_supplier="Vision",
-        sending_supplier="EMIS Web",
+        requesting_practice=Practice(asid="213125436412", supplier="Vision"),
+        sending_practice=Practice(asid="123215421254", supplier="EMIS Web"),
         sender_error_code=None,
         final_error_codes=[],
         intermediate_error_codes=[],

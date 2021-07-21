@@ -7,6 +7,7 @@ from prmcalculator.domain.gp2gp.transfer import (
     TransferStatus,
     TransferFailureReason,
     Transfer,
+    Practice,
 )
 import pyarrow as pa
 
@@ -70,7 +71,7 @@ def test_requesting_practice_asid_column_is_converted_to_a_transfer_field():
     table = _build_transfer_table(requesting_practice_asid=[requesting_practice_asid])
 
     transfers = convert_table_to_transfers(table)
-    actual_requesting_practice_asid = next(iter(transfers)).requesting_practice_asid
+    actual_requesting_practice_asid = next(iter(transfers)).requesting_practice.asid
 
     assert actual_requesting_practice_asid == requesting_practice_asid
 
@@ -81,7 +82,7 @@ def test_sending_practice_asid_column_is_converted_to_a_transfer_field():
     table = _build_transfer_table(sending_practice_asid=[sending_practice_asid])
 
     transfers = convert_table_to_transfers(table)
-    actual_sending_practice_asid = next(iter(transfers)).sending_practice_asid
+    actual_sending_practice_asid = next(iter(transfers)).sending_practice.asid
 
     assert actual_sending_practice_asid == sending_practice_asid
 
@@ -92,7 +93,7 @@ def test_requesting_supplier_column_is_converted_to_a_transfer_field():
     table = _build_transfer_table(requesting_supplier=[requesting_supplier])
 
     transfers = convert_table_to_transfers(table)
-    actual_requesting_supplier = next(iter(transfers)).requesting_supplier
+    actual_requesting_supplier = next(iter(transfers)).requesting_practice.supplier
 
     assert actual_requesting_supplier == requesting_supplier
 
@@ -103,7 +104,7 @@ def test_sending_supplier_column_is_converted_to_a_transfer_field():
     table = _build_transfer_table(sending_supplier=[sending_supplier])
 
     transfers = convert_table_to_transfers(table)
-    actual_sending_supplier = next(iter(transfers)).sending_supplier
+    actual_sending_supplier = next(iter(transfers)).sending_practice.supplier
 
     assert actual_sending_supplier == sending_supplier
 
@@ -244,10 +245,8 @@ def test_converts_multiple_rows_into_list_of_transfers():
         Transfer(
             conversation_id="123",
             sla_duration=integrated_sla_duration,
-            requesting_practice_asid="213125436412",
-            sending_practice_asid="123215421254",
-            requesting_supplier="Vision",
-            sending_supplier="EMIS Web",
+            requesting_practice=Practice(asid="213125436412", supplier="Vision"),
+            sending_practice=Practice(asid="123215421254", supplier="EMIS Web"),
             sender_error_code=None,
             final_error_codes=[],
             intermediate_error_codes=[],
@@ -258,10 +257,8 @@ def test_converts_multiple_rows_into_list_of_transfers():
         Transfer(
             conversation_id="2345",
             sla_duration=timedelta(hours=3, minutes=26, seconds=53),
-            requesting_practice_asid="124135423412",
-            sending_practice_asid="234803124134",
-            requesting_supplier="Systm One",
-            sending_supplier="Vision",
+            requesting_practice=Practice(asid="124135423412", supplier="Systm One"),
+            sending_practice=Practice(asid="234803124134", supplier="Vision"),
             sender_error_code=30,
             final_error_codes=[99, 20],
             intermediate_error_codes=[23],
