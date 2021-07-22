@@ -1,4 +1,5 @@
 from datetime import datetime
+from unittest import mock
 from unittest.mock import Mock
 
 from prmcalculator.domain.practice.metrics_presentation import (
@@ -9,7 +10,7 @@ from prmcalculator.domain.practice.metrics_presentation import (
     IntegratedPracticeMetricsPresentation,
 )
 from prmcalculator.domain.ods_portal.organisation_metadata import CcgDetails
-from prmcalculator.pipeline.io import PlatformMetricsIO
+from prmcalculator.pipeline.io import PlatformMetricsIO, logger
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 from tests.builders.common import a_datetime, a_string
 
@@ -69,7 +70,7 @@ _PRACTICE_METRICS_DICT = {
 }
 
 
-def test_write_practice_metrics():
+def test_given_practice_metrics_object_will_generate_json():
     s3_manager = Mock()
     date_anchor = a_datetime(year=_OVERFLOW_YEAR, month=_OVERFLOW_MONTH)
     reporting_window = MonthlyReportingWindow.prior_to(date_anchor)
@@ -91,3 +92,27 @@ def test_write_practice_metrics():
     expected_s3_path = f"s3://{expected_s3_path_fragment}/practiceMetrics.json"
 
     s3_manager.write_json.assert_called_once_with(expected_s3_path, expected_national_metrics_dict)
+
+
+def test_will_log_successful_upload_message():
+    s3_manager = Mock()
+    date_anchor = a_datetime(year=_OVERFLOW_YEAR, month=_OVERFLOW_MONTH)
+    reporting_window = MonthlyReportingWindow.prior_to(date_anchor)
+
+    data_platform_metrics_bucket = a_string()
+
+    with mock.patch.object(logger, "info") as mock_log_info:
+        metrics_io = PlatformMetricsIO(
+            reporting_window=reporting_window,
+            s3_data_manager=s3_manager,
+            organisation_metadata_bucket=a_string(),
+            transfer_data_bucket=a_string(),
+            data_platform_metrics_bucket=data_platform_metrics_bucket,
+        )
+
+        metrics_io.write_practice_metrics(_PRACTICE_METRICS_OBJECT)
+
+        expected_s3_path = f"{data_platform_metrics_bucket}/v4/2020/12/practiceMetrics.json"
+        mock_log_info.assert_called_once_with(
+            f"Successfully calculated practice metrics and uploaded to s3://{expected_s3_path}"
+        )

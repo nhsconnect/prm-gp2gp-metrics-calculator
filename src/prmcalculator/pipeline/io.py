@@ -1,5 +1,6 @@
 from dataclasses import asdict
 from typing import List
+import logging
 
 from prmcalculator.domain.gp2gp.transfer import Transfer, convert_table_to_transfers
 from prmcalculator.domain.national.metrics_presentation import NationalMetricsPresentation
@@ -8,6 +9,8 @@ from prmcalculator.domain.ods_portal.organisation_metadata import OrganisationMe
 from prmcalculator.utils.io.dictionary import camelize_dict
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 from prmcalculator.utils.io.s3 import S3DataManager
+
+logger = logging.getLogger(__name__)
 
 
 class PlatformMetricsIO:
@@ -78,6 +81,9 @@ class PlatformMetricsIO:
             f"s3://{national_metrics_path}",
             self._create_platform_json_object(national_metrics_presentation_data),
         )
+        logger.info(
+            f"Successfully calculated national metrics and uploaded to s3://{national_metrics_path}"
+        )
 
     def write_practice_metrics(self, practice_metrics: PracticeMetricsPresentation):
         practice_metrics_path = self._data_platform_metrics_bucket_s3_path(
@@ -86,6 +92,9 @@ class PlatformMetricsIO:
         self._s3_manager.write_json(
             f"s3://{practice_metrics_path}",
             self._create_platform_json_object(practice_metrics),
+        )
+        logger.info(
+            f"Successfully calculated practice metrics and uploaded to s3://{practice_metrics_path}"
         )
 
     def read_transfer_data(self) -> List[Transfer]:
