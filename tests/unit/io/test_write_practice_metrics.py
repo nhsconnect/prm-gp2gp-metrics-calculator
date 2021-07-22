@@ -74,21 +74,20 @@ def test_write_practice_metrics():
     date_anchor = a_datetime(year=_OVERFLOW_YEAR, month=_OVERFLOW_MONTH)
     reporting_window = MonthlyReportingWindow.prior_to(date_anchor)
 
-    dashboard_data_bucket = a_string()
+    data_platform_metrics_bucket = a_string()
 
     metrics_io = PlatformMetricsIO(
         reporting_window=reporting_window,
         s3_data_manager=s3_manager,
         organisation_metadata_bucket=a_string(),
         transfer_data_bucket=a_string(),
-        data_platform_metrics_bucket=dashboard_data_bucket,
+        data_platform_metrics_bucket=data_platform_metrics_bucket,
     )
 
     metrics_io.write_practice_metrics(_PRACTICE_METRICS_OBJECT)
 
     expected_national_metrics_dict = _PRACTICE_METRICS_DICT
-    expected_path = (
-        f"s3://{dashboard_data_bucket}/v3/{_METRIC_YEAR}/{_METRIC_MONTH}/practiceMetrics.json"
-    )
+    expected_s3_path_fragment = f"{data_platform_metrics_bucket}/v3/{_METRIC_YEAR}/{_METRIC_MONTH}"
+    expected_s3_path = f"s3://{expected_s3_path_fragment}/practiceMetrics.json"
 
-    s3_manager.write_json.assert_called_once_with(expected_path, expected_national_metrics_dict)
+    s3_manager.write_json.assert_called_once_with(expected_s3_path, expected_national_metrics_dict)

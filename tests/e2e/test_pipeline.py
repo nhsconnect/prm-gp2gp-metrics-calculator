@@ -115,7 +115,10 @@ def test_end_to_end_with_fake_s3(datadir):
     )
 
     expected_practice_metrics_output_key = "practiceMetrics.json"
+    expected_national_metrics_output_key = "nationalMetrics.json"
+
     expected_practice_metrics = _read_json(datadir / "expected_outputs" / "practiceMetrics.json")
+    expected_national_metrics = _read_json(datadir / "expected_outputs" / "nationalMetrics.json")
 
     s3_output_path = "v3/2019/12/"
 
@@ -125,8 +128,13 @@ def test_end_to_end_with_fake_s3(datadir):
             output_metrics_bucket, f"{s3_output_path}{expected_practice_metrics_output_key}"
         )
 
+        actual_national_metrics = _read_s3_json(
+            output_metrics_bucket, f"{s3_output_path}{expected_national_metrics_output_key}"
+        )
+
         assert actual_practice_metrics["practices"] == expected_practice_metrics["practices"]
         assert actual_practice_metrics["ccgs"] == expected_practice_metrics["ccgs"]
+        assert actual_national_metrics["metrics"] == expected_national_metrics["metrics"]
     finally:
         output_metrics_bucket.objects.all().delete()
         output_metrics_bucket.delete()

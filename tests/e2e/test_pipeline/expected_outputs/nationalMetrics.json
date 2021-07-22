@@ -1,0 +1,29 @@
+{
+  "generatedOn": "2020-02-24 16:51:21.353977",
+  "metrics": [
+    {
+      "year": 2019,
+      "month": 12,
+      "transferCount": 7,
+      "integrated": {
+        "transferPercentage": 71.43,
+        "transferCount": 5,
+        "within3Days": 2,
+        "within8Days": 2,
+        "beyond8Days": 1
+      },
+      "failed": {
+        "transferCount": 1,
+        "transferPercentage": 14.29
+      },
+      "pending": {
+        "transferCount": 1,
+        "transferPercentage": 14.29
+      },
+      "paperFallback": {
+        "transferCount": 3,
+        "transferPercentage": 42.86
+      }
+    }
+  ]
+}

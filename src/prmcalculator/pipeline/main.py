@@ -2,7 +2,10 @@ from os import environ
 import boto3
 
 from prmcalculator.pipeline.config import PipelineConfig
-from prmcalculator.pipeline.core import calculate_practice_metrics_data
+from prmcalculator.pipeline.core import (
+    calculate_practice_metrics_data,
+    calculate_national_metrics_data,
+)
 from prmcalculator.pipeline.io import PlatformMetricsIO
 from prmcalculator.utils.io.s3 import S3DataManager
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
@@ -31,5 +34,9 @@ def main():
     practice_metrics_data = calculate_practice_metrics_data(
         transfers, organisation_metadata, reporting_window
     )
+    national_metrics_data = calculate_national_metrics_data(
+        transfers=transfers, reporting_window=reporting_window
+    )
 
     metrics_io.write_practice_metrics(practice_metrics_data)
+    metrics_io.write_national_metrics(national_metrics_data)
