@@ -68,7 +68,7 @@ def test_read_transfer_data():
     )
 
     expected_path = (
-        f"s3://{transfer_data_bucket}/v3/{_METRIC_YEAR}/{_METRIC_MONTH}/transfers.parquet"
+        f"s3://{transfer_data_bucket}/v4/{_METRIC_YEAR}/{_METRIC_MONTH}/transfers.parquet"
     )
 
     expected_data = _TRANSFER_LIST

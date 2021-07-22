@@ -110,7 +110,7 @@ def test_end_to_end_with_fake_s3(datadir):
 
     write_table(
         table=transfers_table,
-        where=f"{s3_input_transfer_data_bucket_name}/v3/2019/12/transfers.parquet",
+        where=f"{s3_input_transfer_data_bucket_name}/v4/2019/12/transfers.parquet",
         filesystem=S3FileSystem(endpoint_override=fake_s3_url),
     )
 
@@ -120,7 +120,7 @@ def test_end_to_end_with_fake_s3(datadir):
     expected_practice_metrics = _read_json(datadir / "expected_outputs" / "practiceMetrics.json")
     expected_national_metrics = _read_json(datadir / "expected_outputs" / "nationalMetrics.json")
 
-    s3_output_path = "v3/2019/12/"
+    s3_output_path = "v4/2019/12/"
 
     try:
         main()

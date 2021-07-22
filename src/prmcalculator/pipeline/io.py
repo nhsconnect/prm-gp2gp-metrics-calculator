@@ -13,11 +13,11 @@ from prmcalculator.utils.io.s3 import S3DataManager
 class PlatformMetricsIO:
     _ORG_METADATA_VERSION = "v2"
     _ORG_METADATA_FILE_NAME = "organisationMetadata.json"
-    _DATA_PLATFORM_METRICS_VERSION = "v3"
+    _DATA_PLATFORM_METRICS_VERSION = "v4"
     _PRACTICE_METRICS_FILE_NAME = "practiceMetrics.json"
     _NATIONAL_METRICS_FILE_NAME = "nationalMetrics.json"
     _TRANSFER_DATA_FILE_NAME = "transfers.parquet"
-    _TRANSFER_DATA_VERSION = "v3"
+    _TRANSFER_DATA_VERSION = "v4"
 
     def __init__(
         self,
