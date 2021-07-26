@@ -43,7 +43,6 @@ class Transfer(NamedTuple):
     sla_duration: Optional[timedelta]
     requesting_practice: Practice
     sending_practice: Practice
-    sender_error_code: Optional[int]
     outcome: TransferOutcome
     date_requested: datetime
 
@@ -89,7 +88,6 @@ def convert_table_to_transfers(table: pa.Table) -> List[Transfer]:
             sending_practice=Practice(
                 asid=transfer["sending_practice_asid"], supplier=transfer["sending_supplier"]
             ),
-            sender_error_code=transfer["sender_error_code"],
             outcome=TransferOutcome(
                 status=TransferStatus(transfer["status"]),
                 failure_reason=TransferFailureReason(transfer["failure_reason"])

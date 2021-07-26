@@ -26,7 +26,6 @@ def build_transfer(**kwargs) -> Transfer:
         sending_practice=kwargs.get(
             "sending_practice", Practice(asid=a_string(12), supplier=a_string(12))
         ),
-        sender_error_code=kwargs.get("sender_error_code", None),
         outcome=kwargs.get(
             "outcome",
             TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),

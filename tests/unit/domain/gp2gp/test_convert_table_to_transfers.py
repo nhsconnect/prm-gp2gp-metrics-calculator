@@ -22,7 +22,6 @@ def _build_transfer_table(**kwargs) -> pa.Table:
             "sending_practice_asid": kwargs.get("sending_practice_asid", [a_string(12)]),
             "requesting_supplier": kwargs.get("requesting_supplier", [a_string(12)]),
             "sending_supplier": kwargs.get("sending_supplier", [a_string(12)]),
-            "sender_error_code": kwargs.get("sender_error_code", [None]),
             "status": kwargs.get("status", ["INTEGRATED_ON_TIME"]),
             "failure_reason": kwargs.get("failure_reason", [""]),
             "date_requested": kwargs.get("date_requested", [a_datetime()]),
@@ -105,28 +104,6 @@ def test_sending_supplier_column_is_converted_to_a_transfer_field():
     assert actual_sending_supplier == sending_supplier
 
 
-def test_sender_error_code_column_is_converted_to_a_transfer_field():
-    sender_error_code = 30
-
-    table = _build_transfer_table(sender_error_code=[sender_error_code])
-
-    transfers = convert_table_to_transfers(table)
-    actual_sender_error_code = next(iter(transfers)).sender_error_code
-
-    assert actual_sender_error_code == sender_error_code
-
-
-def test_sender_error_code_column_is_converted_to_a_transfer_field_if_none():
-    sender_error_code = None
-
-    table = _build_transfer_table(sender_error_code=[sender_error_code])
-
-    transfers = convert_table_to_transfers(table)
-    actual_sender_error_code = next(iter(transfers)).sender_error_code
-
-    assert actual_sender_error_code == sender_error_code
-
-
 def test_status_and_failure_reason_columns_are_converted_to_a_transfer_outcome_field():
     table = _build_transfer_table(status=["TECHNICAL_FAILURE"], failure_reason=["Final Error"])
 
@@ -161,7 +138,6 @@ def test_converts_multiple_rows_into_list_of_transfers():
         sending_practice_asid=["123215421254", "234803124134"],
         requesting_supplier=["Vision", "Systm One"],
         sending_supplier=["EMIS Web", "Vision"],
-        sender_error_code=[None, 30],
         status=["INTEGRATED_ON_TIME", "TECHNICAL_FAILURE"],
         failure_reason=[None, "Contains Fatal Sender Error"],
         date_requested=[integrated_date_requested, datetime(year=2021, month=12, day=1)],
@@ -173,7 +149,6 @@ def test_converts_multiple_rows_into_list_of_transfers():
             sla_duration=integrated_sla_duration,
             requesting_practice=Practice(asid="213125436412", supplier="Vision"),
             sending_practice=Practice(asid="123215421254", supplier="EMIS Web"),
-            sender_error_code=None,
             outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
             date_requested=integrated_date_requested,
         ),
@@ -182,7 +157,6 @@ def test_converts_multiple_rows_into_list_of_transfers():
             sla_duration=timedelta(hours=3, minutes=26, seconds=53),
             requesting_practice=Practice(asid="124135423412", supplier="Systm One"),
             sending_practice=Practice(asid="234803124134", supplier="Vision"),
-            sender_error_code=30,
             outcome=TransferOutcome(
                 status=TransferStatus.TECHNICAL_FAILURE,
                 failure_reason=TransferFailureReason.FATAL_SENDER_ERROR,
