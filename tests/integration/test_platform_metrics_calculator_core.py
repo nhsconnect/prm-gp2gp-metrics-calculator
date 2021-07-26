@@ -62,7 +62,6 @@ def test_calculates_correct_practice_metrics_given_a_successful_transfer():
     requesting_practice_name = "Test GP"
     requesting_ods_code = "A12345"
     requesting_practice = Practice(asid="343434343434", supplier="SystemOne")
-    sending_practice = Practice(asid="111134343434", supplier="Unknown")
     conversation_id = "abcdefg_1234"
     ccg_ods_code = "23B"
     ccg_name = "Test CCG"
@@ -72,7 +71,6 @@ def test_calculates_correct_practice_metrics_given_a_successful_transfer():
             conversation_id=conversation_id,
             sla_duration=timedelta(days=1, seconds=52707),
             requesting_practice=requesting_practice,
-            sending_practice=sending_practice,
             outcome=TransferOutcome(failure_reason=None, status=TransferStatus.INTEGRATED_ON_TIME),
             date_requested=datetime(2019, 12, 30, 18, 2, 29, tzinfo=UTC),
         )

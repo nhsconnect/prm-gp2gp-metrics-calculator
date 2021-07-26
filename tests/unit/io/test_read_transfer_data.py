@@ -22,7 +22,6 @@ _TRANSFER_LIST = [
         conversation_id="123",
         sla_duration=_integrated_sla_duration,
         requesting_practice=Practice(asid="213125436412", supplier="Vision"),
-        sending_practice=Practice(asid="123215421254", supplier="EMIS Web"),
         outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
         date_requested=_integrated_date_requested,
     )
@@ -33,9 +32,7 @@ _TRANSFER_DATA_DICT = {
     "conversation_id": ["123"],
     "sla_duration": [241241],
     "requesting_practice_asid": ["213125436412"],
-    "sending_practice_asid": ["123215421254"],
     "requesting_supplier": ["Vision"],
-    "sending_supplier": ["EMIS Web"],
     "status": ["INTEGRATED_ON_TIME"],
     "failure_reason": [None],
     "date_requested": [_integrated_date_requested],

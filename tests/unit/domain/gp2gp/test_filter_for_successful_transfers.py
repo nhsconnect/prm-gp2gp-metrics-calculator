@@ -9,7 +9,6 @@ from prmcalculator.domain.gp2gp.transfer import (
 from tests.builders.gp2gp import (
     build_transfer,
     an_integrated_transfer,
-    a_suppressed_transfer,
     a_transfer_with_a_final_error,
     a_transfer_where_no_core_ehr_was_sent,
     a_transfer_integrated_beyond_8_days,
@@ -22,16 +21,6 @@ date_completed = a_datetime()
 
 def test_includes_successful_transfer():
     transfers = [an_integrated_transfer()]
-
-    actual = filter_for_successful_transfers(transfers)
-
-    expected = transfers
-
-    assert list(actual) == expected
-
-
-def test_includes_suppressed_transfers():
-    transfers = [a_suppressed_transfer()]
 
     actual = filter_for_successful_transfers(transfers)
 

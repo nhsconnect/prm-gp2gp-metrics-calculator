@@ -23,9 +23,6 @@ def build_transfer(**kwargs) -> Transfer:
         requesting_practice=kwargs.get(
             "requesting_practice", Practice(asid=a_string(12), supplier=a_string(12))
         ),
-        sending_practice=kwargs.get(
-            "sending_practice", Practice(asid=a_string(12), supplier=a_string(12))
-        ),
         outcome=kwargs.get(
             "outcome",
             TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
@@ -50,17 +47,6 @@ def build_practice_metrics(**kwargs) -> PracticeMetrics:
 def an_integrated_transfer(**kwargs):
     return build_transfer(
         outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
-        sla_duration=kwargs.get("sla_duration", a_duration(max_length=604800)),
-    )
-
-
-def a_suppressed_transfer(**kwargs):
-    return build_transfer(
-        outcome=TransferOutcome(
-            status=TransferStatus.INTEGRATED_ON_TIME,
-            failure_reason=None,
-        ),
-        final_error_codes=[15],
         sla_duration=kwargs.get("sla_duration", a_duration(max_length=604800)),
     )
 

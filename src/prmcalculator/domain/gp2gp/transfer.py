@@ -42,7 +42,6 @@ class Transfer(NamedTuple):
     conversation_id: str
     sla_duration: Optional[timedelta]
     requesting_practice: Practice
-    sending_practice: Practice
     outcome: TransferOutcome
     date_requested: datetime
 
@@ -84,9 +83,6 @@ def convert_table_to_transfers(table: pa.Table) -> List[Transfer]:
             sla_duration=_convert_to_timedelta(transfer["sla_duration"]),
             requesting_practice=Practice(
                 asid=transfer["requesting_practice_asid"], supplier=transfer["requesting_supplier"]
-            ),
-            sending_practice=Practice(
-                asid=transfer["sending_practice_asid"], supplier=transfer["sending_supplier"]
             ),
             outcome=TransferOutcome(
                 status=TransferStatus(transfer["status"]),
