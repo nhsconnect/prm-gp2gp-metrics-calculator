@@ -45,7 +45,6 @@ class Transfer(NamedTuple):
     sending_practice: Practice
     sender_error_code: Optional[int]
     final_error_codes: List[Optional[int]]
-    intermediate_error_codes: List[int]
     outcome: TransferOutcome
     date_requested: datetime
 
@@ -93,7 +92,6 @@ def convert_table_to_transfers(table: pa.Table) -> List[Transfer]:
             ),
             sender_error_code=transfer["sender_error_code"],
             final_error_codes=transfer["final_error_codes"],
-            intermediate_error_codes=transfer["intermediate_error_codes"],
             outcome=TransferOutcome(
                 status=TransferStatus(transfer["status"]),
                 failure_reason=TransferFailureReason(transfer["failure_reason"])

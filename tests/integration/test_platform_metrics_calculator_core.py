@@ -77,7 +77,6 @@ def test_calculates_correct_practice_metrics_given_a_successful_transfer():
             date_requested=datetime(2019, 12, 30, 18, 2, 29, tzinfo=UTC),
             sender_error_code=None,
             final_error_codes=[],
-            intermediate_error_codes=[],
         )
     ]
 

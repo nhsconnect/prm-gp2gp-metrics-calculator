@@ -28,7 +28,6 @@ def build_transfer(**kwargs) -> Transfer:
         ),
         sender_error_code=kwargs.get("sender_error_code", None),
         final_error_codes=kwargs.get("final_error_codes", []),
-        intermediate_error_codes=kwargs.get("intermediate_error_codes", []),
         outcome=kwargs.get(
             "outcome",
             TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),

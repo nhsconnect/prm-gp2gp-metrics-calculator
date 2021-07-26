@@ -25,7 +25,6 @@ def _build_transfer_table(**kwargs) -> pa.Table:
             "sending_supplier": kwargs.get("sending_supplier", [a_string(12)]),
             "sender_error_code": kwargs.get("sender_error_code", [None]),
             "final_error_codes": kwargs.get("final_error_codes", [[]]),
-            "intermediate_error_codes": kwargs.get("intermediate_error_codes", [[]]),
             "status": kwargs.get("status", ["INTEGRATED_ON_TIME"]),
             "failure_reason": kwargs.get("failure_reason", [""]),
             "date_requested": kwargs.get("date_requested", [a_datetime()]),
@@ -152,28 +151,6 @@ def test_final_error_codes_column_is_converted_to_a_transfer_field_when_empty():
     assert actual_final_error_codes == final_error_codes
 
 
-def test_intermediate_error_codes_column_is_converted_to_a_transfer_field():
-    intermediate_error_codes = [16, 17]
-
-    table = _build_transfer_table(intermediate_error_codes=[intermediate_error_codes])
-
-    transfers = convert_table_to_transfers(table)
-    actual_intermediate_error_codes = next(iter(transfers)).intermediate_error_codes
-
-    assert actual_intermediate_error_codes == intermediate_error_codes
-
-
-def test_intermediate_error_codes_column_is_converted_to_a_transfer_field_when_empty():
-    intermediate_error_codes: List[int] = []
-
-    table = _build_transfer_table(intermediate_error_codes=[intermediate_error_codes])
-
-    transfers = convert_table_to_transfers(table)
-    actual_intermediate_error_codes = next(iter(transfers)).intermediate_error_codes
-
-    assert actual_intermediate_error_codes == intermediate_error_codes
-
-
 def test_status_and_failure_reason_columns_are_converted_to_a_transfer_outcome_field():
     table = _build_transfer_table(status=["TECHNICAL_FAILURE"], failure_reason=["Final Error"])
 
@@ -210,7 +187,6 @@ def test_converts_multiple_rows_into_list_of_transfers():
         sending_supplier=["EMIS Web", "Vision"],
         sender_error_code=[None, 30],
         final_error_codes=[[], [99, 20]],
-        intermediate_error_codes=[[], [23]],
         status=["INTEGRATED_ON_TIME", "TECHNICAL_FAILURE"],
         failure_reason=[None, "Contains Fatal Sender Error"],
         date_requested=[integrated_date_requested, datetime(year=2021, month=12, day=1)],
@@ -224,7 +200,6 @@ def test_converts_multiple_rows_into_list_of_transfers():
             sending_practice=Practice(asid="123215421254", supplier="EMIS Web"),
             sender_error_code=None,
             final_error_codes=[],
-            intermediate_error_codes=[],
             outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
             date_requested=integrated_date_requested,
         ),
@@ -235,7 +210,6 @@ def test_converts_multiple_rows_into_list_of_transfers():
             sending_practice=Practice(asid="234803124134", supplier="Vision"),
             sender_error_code=30,
             final_error_codes=[99, 20],
-            intermediate_error_codes=[23],
             outcome=TransferOutcome(
                 status=TransferStatus.TECHNICAL_FAILURE,
                 failure_reason=TransferFailureReason.FATAL_SENDER_ERROR,

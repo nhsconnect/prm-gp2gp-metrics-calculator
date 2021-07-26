@@ -25,7 +25,6 @@ _TRANSFER_LIST = [
         sending_practice=Practice(asid="123215421254", supplier="EMIS Web"),
         sender_error_code=None,
         final_error_codes=[],
-        intermediate_error_codes=[],
         outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
         date_requested=_integrated_date_requested,
     )
@@ -41,7 +40,6 @@ _TRANSFER_DATA_DICT = {
     "sending_supplier": ["EMIS Web"],
     "sender_error_code": [None],
     "final_error_codes": [[]],
-    "intermediate_error_codes": [[]],
     "status": ["INTEGRATED_ON_TIME"],
     "failure_reason": [None],
     "date_requested": [_integrated_date_requested],
