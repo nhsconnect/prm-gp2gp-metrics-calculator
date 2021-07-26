@@ -29,7 +29,6 @@ def _build_transfer_table(**kwargs) -> pa.Table:
             "status": kwargs.get("status", ["INTEGRATED_ON_TIME"]),
             "failure_reason": kwargs.get("failure_reason", [""]),
             "date_requested": kwargs.get("date_requested", [a_datetime()]),
-            "date_completed": kwargs.get("date_completed", [None]),
         }
     )
 
@@ -198,32 +197,9 @@ def test_date_requested_column_is_converted_to_a_transfer_field():
     assert actual_date_requested == date_requested
 
 
-def test_date_completed_column_is_converted_to_a_transfer_field():
-    date_completed = a_datetime()
-
-    table = _build_transfer_table(date_completed=[date_completed])
-
-    transfers = convert_table_to_transfers(table)
-    actual_date_completed = next(iter(transfers)).date_completed
-
-    assert actual_date_completed == date_completed
-
-
-def test_date_completed_column_is_converted_to_a_transfer_field_if_none():
-    date_completed = None
-
-    table = _build_transfer_table(date_completed=[date_completed])
-
-    transfers = convert_table_to_transfers(table)
-    actual_date_completed = next(iter(transfers)).date_completed
-
-    assert actual_date_completed == date_completed
-
-
 def test_converts_multiple_rows_into_list_of_transfers():
     integrated_date_requested = a_datetime()
     integrated_sla_duration = timedelta(days=2, hours=19, minutes=0, seconds=41)
-    integrated_date_completed = integrated_date_requested + integrated_sla_duration
 
     table = _build_transfer_table(
         conversation_id=["123", "2345"],
@@ -238,7 +214,6 @@ def test_converts_multiple_rows_into_list_of_transfers():
         status=["INTEGRATED_ON_TIME", "TECHNICAL_FAILURE"],
         failure_reason=[None, "Contains Fatal Sender Error"],
         date_requested=[integrated_date_requested, datetime(year=2021, month=12, day=1)],
-        date_completed=[integrated_date_completed, None],
     )
 
     expected_transfers = [
@@ -252,7 +227,6 @@ def test_converts_multiple_rows_into_list_of_transfers():
             intermediate_error_codes=[],
             outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
             date_requested=integrated_date_requested,
-            date_completed=integrated_date_completed,
         ),
         Transfer(
             conversation_id="2345",
@@ -267,7 +241,6 @@ def test_converts_multiple_rows_into_list_of_transfers():
                 failure_reason=TransferFailureReason.FATAL_SENDER_ERROR,
             ),
             date_requested=datetime(year=2021, month=12, day=1),
-            date_completed=None,
         ),
     ]
 

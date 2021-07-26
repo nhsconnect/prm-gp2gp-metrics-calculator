@@ -48,7 +48,6 @@ class Transfer(NamedTuple):
     intermediate_error_codes: List[int]
     outcome: TransferOutcome
     date_requested: datetime
-    date_completed: Optional[datetime]
 
 
 def filter_for_successful_transfers(transfers: List[Transfer]) -> Iterator[Transfer]:
@@ -102,7 +101,6 @@ def convert_table_to_transfers(table: pa.Table) -> List[Transfer]:
                 else None,
             ),
             date_requested=transfer["date_requested"],
-            date_completed=transfer["date_completed"],
         )
         for transfer in transfers
     ]

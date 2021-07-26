@@ -75,7 +75,6 @@ def test_calculates_correct_practice_metrics_given_a_successful_transfer():
             sending_practice=sending_practice,
             outcome=TransferOutcome(failure_reason=None, status=TransferStatus.INTEGRATED_ON_TIME),
             date_requested=datetime(2019, 12, 30, 18, 2, 29, tzinfo=UTC),
-            date_completed=datetime(2020, 1, 1, 8, 41, 48, tzinfo=UTC),
             sender_error_code=None,
             final_error_codes=[],
             intermediate_error_codes=[],

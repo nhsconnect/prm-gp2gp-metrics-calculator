@@ -34,7 +34,6 @@ def build_transfer(**kwargs) -> Transfer:
             TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
         ),
         date_requested=kwargs.get("date_requested", a_datetime()),
-        date_completed=kwargs.get("date_completed", None),
     )
 
 
