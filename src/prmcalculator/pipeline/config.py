@@ -1,5 +1,5 @@
 from datetime import datetime
-from dataclasses import dataclass, MISSING, fields
+from dataclasses import dataclass
 import logging
 
 from typing import Optional
@@ -13,23 +13,33 @@ class MissingEnvironmentVariable(Exception):
     pass
 
 
-def _convert_env_value(env_value, config_type):
-    if config_type == datetime:
-        return isoparse(env_value)
-    return env_value
+class EnvConfig:
+    def __init__(self, env_vars):
+        self._env_vars = env_vars
 
+    def _read_env(self, name, optional, converter=None):
+        try:
+            env_var = self._env_vars[name]
+            if converter:
+                return converter(env_var)
+            else:
+                return env_var
+        except KeyError:
+            if optional:
+                return None
+            else:
+                raise MissingEnvironmentVariable(
+                    f"Expected environment variable {name} was not set, exiting..."
+                )
 
-def _read_env(field, env_vars):
-    env_var = field.name.upper()
-    if env_var in env_vars:
-        env_value = env_vars[env_var]
-        return _convert_env_value(env_value, field.type)
-    elif field.default != MISSING:
-        return field.default
-    else:
-        raise MissingEnvironmentVariable(
-            f"Expected environment variable {env_var} was not set, exiting..."
-        )
+    def read_str(self, name) -> str:
+        return self._read_env(name, optional=False)
+
+    def read_optional_str(self, name) -> Optional[str]:
+        return self._read_env(name, optional=True)
+
+    def read_datetime(self, name) -> datetime:
+        return self._read_env(name, optional=False, converter=isoparse)
 
 
 @dataclass
@@ -42,4 +52,11 @@ class PipelineConfig:
 
     @classmethod
     def from_environment_variables(cls, env_vars):
-        return cls(**{field.name: _read_env(field, env_vars) for field in fields(cls)})
+        env = EnvConfig(env_vars)
+        return cls(
+            input_transfer_data_bucket=env.read_str("INPUT_TRANSFER_DATA_BUCKET"),
+            organisation_metadata_bucket=env.read_str("ORGANISATION_METADATA_BUCKET"),
+            output_metrics_bucket=env.read_str("OUTPUT_METRICS_BUCKET"),
+            date_anchor=env.read_datetime("DATE_ANCHOR"),
+            s3_endpoint_url=env.read_optional_str("S3_ENDPOINT_URL"),
+        )
