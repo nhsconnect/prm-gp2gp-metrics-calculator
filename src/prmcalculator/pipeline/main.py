@@ -54,3 +54,7 @@ def main():
     logger.info(f"Attempting to write to S3 bucket {config.output_metrics_bucket}")
     metrics_io.write_practice_metrics(practice_metrics_data)
     metrics_io.write_national_metrics(national_metrics_data)
+
+
+if __name__ == "__main__":
+    main()
