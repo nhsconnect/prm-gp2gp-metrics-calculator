@@ -74,11 +74,14 @@ def test_end_to_end_with_fake_s3(datadir):
     s3_output_metrics_bucket_name = "output-metrics-bucket"
     s3_input_transfer_data_bucket_name = "input-transfer-data-bucket"
     s3_organisation_metadata_bucket_name = "organisation-metadata-bucket"
+
     fake_s3 = _build_fake_s3(fake_s3_host, fake_s3_port)
     fake_s3.start()
+
     environ["AWS_ACCESS_KEY_ID"] = fake_s3_access_key
     environ["AWS_SECRET_ACCESS_KEY"] = fake_s3_secret_key
     environ["AWS_DEFAULT_REGION"] = fake_s3_region
+
     environ["INPUT_TRANSFER_DATA_BUCKET"] = s3_input_transfer_data_bucket_name
     environ["OUTPUT_METRICS_BUCKET"] = s3_output_metrics_bucket_name
     environ["ORGANISATION_METADATA_BUCKET"] = s3_organisation_metadata_bucket_name
@@ -93,14 +96,16 @@ def test_end_to_end_with_fake_s3(datadir):
         config=Config(signature_version="s3v4"),
         region_name=fake_s3_region,
     )
+
     output_metrics_bucket = _build_fake_s3_bucket(s3_output_metrics_bucket_name, s3)
     organisation_metadata_bucket = _build_fake_s3_bucket(s3_organisation_metadata_bucket_name, s3)
+
     organisation_metadata_file = str(datadir / "inputs" / "organisationMetadata.json")
     organisation_metadata_bucket.upload_file(
         organisation_metadata_file, "v2/2020/1/organisationMetadata.json"
     )
 
-    _build_fake_s3_bucket(s3_input_transfer_data_bucket_name, s3)
+    input_transfer_bucket = _build_fake_s3_bucket(s3_input_transfer_data_bucket_name, s3)
 
     transfers_dictionary = _read_parquet_columns_json(
         datadir / "inputs" / "transfersParquetColumns.json"
@@ -138,4 +143,6 @@ def test_end_to_end_with_fake_s3(datadir):
     finally:
         output_metrics_bucket.objects.all().delete()
         output_metrics_bucket.delete()
+        input_transfer_bucket.objects.all().delete()
+        input_transfer_bucket.delete()
         fake_s3.stop()
