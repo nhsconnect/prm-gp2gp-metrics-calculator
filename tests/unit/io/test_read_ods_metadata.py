@@ -28,7 +28,7 @@ _ORGANISATION_METADATA_DICT = {
 def test_read_organisation_metadata():
     s3_manager = Mock()
     date_anchor = a_datetime(year=_OVERFLOW_YEAR, month=_OVERFLOW_MONTH)
-    reporting_window = MonthlyReportingWindow.prior_to(date_anchor)
+    reporting_window = MonthlyReportingWindow.prior_to(date_anchor=date_anchor, number_of_months=1)
 
     ods_bucket = "test_ods_bucket"
 

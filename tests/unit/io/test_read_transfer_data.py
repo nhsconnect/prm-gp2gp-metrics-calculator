@@ -44,7 +44,7 @@ def test_read_transfer_data():
     s3_manager.read_parquet.return_value = pa.Table.from_pydict(_TRANSFER_DATA_DICT)
 
     date_anchor = a_datetime(year=_OVERFLOW_YEAR, month=_OVERFLOW_MONTH)
-    reporting_window = MonthlyReportingWindow.prior_to(date_anchor)
+    reporting_window = MonthlyReportingWindow.prior_to(date_anchor=date_anchor, number_of_months=1)
 
     transfer_data_bucket = "test_transfer_data_bucket"
 

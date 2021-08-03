@@ -23,7 +23,7 @@ def main():
     s3 = boto3.resource("s3", endpoint_url=config.s3_endpoint_url)
     s3_manager = S3DataManager(s3)
 
-    reporting_window = MonthlyReportingWindow.prior_to(config.date_anchor)
+    reporting_window = MonthlyReportingWindow.prior_to(config.date_anchor, config.number_of_months)
     logger.info(
         f"""Reporting Window: {reporting_window.metric_year}/{reporting_window.metric_month},
         overflow: {reporting_window.overflow_year}/{reporting_window.overflow_month}"""

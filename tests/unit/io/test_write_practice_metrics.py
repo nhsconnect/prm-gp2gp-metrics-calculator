@@ -73,7 +73,7 @@ _PRACTICE_METRICS_DICT = {
 def test_given_practice_metrics_object_will_generate_json():
     s3_manager = Mock()
     date_anchor = a_datetime(year=_OVERFLOW_YEAR, month=_OVERFLOW_MONTH)
-    reporting_window = MonthlyReportingWindow.prior_to(date_anchor)
+    reporting_window = MonthlyReportingWindow.prior_to(date_anchor=date_anchor, number_of_months=1)
 
     data_platform_metrics_bucket = a_string()
 
@@ -97,7 +97,7 @@ def test_given_practice_metrics_object_will_generate_json():
 def test_will_log_successful_upload_message():
     s3_manager = Mock()
     date_anchor = a_datetime(year=_OVERFLOW_YEAR, month=_OVERFLOW_MONTH)
-    reporting_window = MonthlyReportingWindow.prior_to(date_anchor)
+    reporting_window = MonthlyReportingWindow.prior_to(date_anchor=date_anchor, number_of_months=1)
 
     data_platform_metrics_bucket = a_string()
 

@@ -54,9 +54,12 @@ from tests.builders.gp2gp import (
 
 @freeze_time(datetime(year=2020, month=1, day=15, hour=23, second=42), tz_offset=0)
 def test_calculates_correct_practice_metrics_given_a_successful_transfer():
+    metric_month_start = datetime(2019, 12, 1, tzinfo=UTC)
+
     reporting_window = MonthlyReportingWindow(
-        metric_month_start=datetime(2019, 12, 1, tzinfo=UTC),
+        metric_month_start=metric_month_start,
         overflow_month_start=datetime(2020, 1, 1, tzinfo=UTC),
+        metric_months=[metric_month_start],
     )
 
     requesting_practice_name = "Test GP"
@@ -124,6 +127,7 @@ def test_calculates_correct_practice_metrics_given_a_successful_transfer():
 
 @freeze_time(datetime(year=2020, month=1, day=17, hour=21, second=32), tz_offset=0)
 def test_calculates_correct_national_metrics_given_series_of_messages():
+    metric_month_start = datetime(2019, 12, 1, tzinfo=UTC)
 
     transfers = [
         a_transfer_that_was_never_integrated(),
@@ -144,8 +148,9 @@ def test_calculates_correct_national_metrics_given_series_of_messages():
     ]
 
     reporting_window = MonthlyReportingWindow(
-        metric_month_start=datetime(2019, 12, 1, tzinfo=UTC),
+        metric_month_start=metric_month_start,
         overflow_month_start=datetime(2020, 1, 1, tzinfo=UTC),
+        metric_months=[metric_month_start],
     )
     current_datetime = datetime.now(tzutc())
 
