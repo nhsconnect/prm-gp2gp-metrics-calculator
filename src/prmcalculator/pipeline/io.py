@@ -1,6 +1,7 @@
 from dataclasses import asdict
 from typing import List
 import logging
+import pyarrow as pa
 
 from prmcalculator.domain.gp2gp.transfer import Transfer, convert_table_to_transfers
 from prmcalculator.domain.national.metrics_presentation import NationalMetricsPresentation
@@ -44,6 +45,16 @@ class PlatformMetricsIO:
                 self._DATA_PLATFORM_METRICS_VERSION,
                 self._metric_month_path_fragment(),
                 file_name,
+            ]
+        )
+
+    def _transfer_data_bucket_s3_path(self, year: int, month: int) -> str:
+        return "/".join(
+            [
+                self._transfer_data_bucket,
+                self._TRANSFER_DATA_VERSION,
+                f"{year}/{month}",
+                self._TRANSFER_DATA_FILE_NAME,
             ]
         )
 
@@ -98,14 +109,17 @@ class PlatformMetricsIO:
         )
 
     def read_transfer_data(self) -> List[Transfer]:
-        transfer_data_s3_path = "/".join(
+        transfer_data_s3_paths = [
+            self._transfer_data_bucket_s3_path(year, month)
+            for (year, month) in self._window.metric_months
+        ]
+
+        transfer_table = pa.concat_tables(
             [
-                self._transfer_data_bucket,
-                self._TRANSFER_DATA_VERSION,
-                self._metric_month_path_fragment(),
-                self._TRANSFER_DATA_FILE_NAME,
-            ]
+                self._s3_manager.read_parquet(f"s3://{s3_path}")
+                for s3_path in transfer_data_s3_paths
+            ],
+            promote=True,
         )
 
-        transfer_table = self._s3_manager.read_parquet(f"s3://{transfer_data_s3_path}")
         return convert_table_to_transfers(transfer_table)
