@@ -5,6 +5,8 @@ from typing import NamedTuple, Optional, List, Iterator
 
 import pyarrow as pa
 
+from prmcalculator.utils.reporting_window import MonthlyReportingWindow
+
 
 class TransferStatus(Enum):
     INTEGRATED_ON_TIME = "INTEGRATED_ON_TIME"
@@ -58,6 +60,14 @@ def filter_for_successful_transfers(transfers: List[Transfer]) -> Iterator[Trans
             transfer.outcome.status == TransferStatus.PROCESS_FAILURE
             and transfer.outcome.failure_reason == TransferFailureReason.INTEGRATED_LATE
         )
+    )
+
+
+def filter_transfers_by_date_requested(
+    transfers: List[Transfer], reporting_window: MonthlyReportingWindow
+) -> Iterator[Transfer]:
+    return (
+        transfer for transfer in transfers if reporting_window.contains(transfer.date_requested)
     )
 
 
