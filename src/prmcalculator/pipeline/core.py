@@ -12,7 +12,11 @@ from prmcalculator.domain.practice.metrics_presentation import (
 )
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 from prmcalculator.domain.ods_portal.organisation_metadata import OrganisationMetadata
-from prmcalculator.domain.gp2gp.transfer import Transfer, filter_for_successful_transfers
+from prmcalculator.domain.gp2gp.transfer import (
+    Transfer,
+    filter_for_successful_transfers,
+    filter_transfers_by_date_requested,
+)
 from prmcalculator.domain.practice.metrics_calculator import calculate_sla_by_practice
 
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
@@ -38,7 +42,8 @@ def calculate_practice_metrics_data(
 def calculate_national_metrics_data(
     transfers: List[Transfer], reporting_window: MonthlyReportingWindow
 ) -> NationalMetricsPresentation:
-    national_metrics = calculate_national_metrics(transfers=transfers)
+    metric_month_transfers = filter_transfers_by_date_requested(transfers, reporting_window)
+    national_metrics = calculate_national_metrics(transfers=metric_month_transfers)
     return construct_national_metrics(
         national_metrics=national_metrics,
         year=reporting_window.metric_year,

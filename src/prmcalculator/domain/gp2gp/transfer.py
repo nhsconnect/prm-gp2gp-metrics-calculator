@@ -4,6 +4,7 @@ from enum import Enum
 from typing import NamedTuple, Optional, List, Iterator
 
 import pyarrow as pa
+from dateutil.tz import UTC
 
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 
@@ -65,10 +66,10 @@ def filter_for_successful_transfers(transfers: List[Transfer]) -> Iterator[Trans
 
 def filter_transfers_by_date_requested(
     transfers: List[Transfer], reporting_window: MonthlyReportingWindow
-) -> Iterator[Transfer]:
-    return (
+) -> List[Transfer]:
+    return [
         transfer for transfer in transfers if reporting_window.contains(transfer.date_requested)
-    )
+    ]
 
 
 def _convert_to_timedelta(seconds: Optional[int]) -> Optional[timedelta]:
@@ -100,7 +101,7 @@ def convert_table_to_transfers(table: pa.Table) -> List[Transfer]:
                 if transfer["failure_reason"]
                 else None,
             ),
-            date_requested=transfer["date_requested"],
+            date_requested=transfer["date_requested"].astimezone(UTC),
         )
         for transfer in transfers
     ]

@@ -1,5 +1,7 @@
 from datetime import timedelta, datetime
 
+from dateutil.tz import UTC
+
 from prmcalculator.domain.gp2gp.transfer import (
     convert_table_to_transfers,
     TransferOutcome,
@@ -103,9 +105,23 @@ def test_date_requested_column_is_converted_to_a_transfer_field():
     assert actual_date_requested == date_requested
 
 
+def test_naive_date_requested_column_is_converted_to_a_utc_datetime_transfer_field():
+    date_requested = datetime(year=2020, month=2, day=1, hour=1, minute=2, second=3)
+
+    table = _build_transfer_table(date_requested=[date_requested])
+
+    transfers = convert_table_to_transfers(table)
+    actual_date_requested = next(iter(transfers)).date_requested
+
+    assert actual_date_requested == datetime(
+        year=2020, month=2, day=1, hour=1, minute=2, second=3, tzinfo=UTC
+    )
+
+
 def test_converts_multiple_rows_into_list_of_transfers():
     integrated_date_requested = a_datetime()
     integrated_sla_duration = timedelta(days=2, hours=19, minutes=0, seconds=41)
+    technical_failure_date_request = a_datetime()
 
     table = _build_transfer_table(
         conversation_id=["123", "2345"],
@@ -114,7 +130,7 @@ def test_converts_multiple_rows_into_list_of_transfers():
         requesting_supplier=["Vision", "Systm One"],
         status=["INTEGRATED_ON_TIME", "TECHNICAL_FAILURE"],
         failure_reason=[None, "Contains Fatal Sender Error"],
-        date_requested=[integrated_date_requested, datetime(year=2021, month=12, day=1)],
+        date_requested=[integrated_date_requested, technical_failure_date_request],
     )
 
     expected_transfers = [
@@ -133,7 +149,7 @@ def test_converts_multiple_rows_into_list_of_transfers():
                 status=TransferStatus.TECHNICAL_FAILURE,
                 failure_reason=TransferFailureReason.FATAL_SENDER_ERROR,
             ),
-            date_requested=datetime(year=2021, month=12, day=1),
+            date_requested=technical_failure_date_request,
         ),
     ]
 

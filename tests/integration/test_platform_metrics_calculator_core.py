@@ -35,6 +35,7 @@ from prmcalculator.domain.gp2gp.transfer import (
     Practice,
 )
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
+from tests.builders.common import a_duration, a_datetime
 
 from tests.builders.gp2gp import (
     a_transfer_integrated_beyond_8_days,
@@ -49,6 +50,7 @@ from tests.builders.gp2gp import (
     a_transfer_where_copc_fragments_remained_unacknowledged,
     a_transfer_where_the_sender_reported_an_unrecoverable_error,
     a_transfer_where_a_copc_triggered_an_error,
+    build_transfer,
 )
 
 
@@ -126,8 +128,8 @@ def test_calculates_correct_practice_metrics_given_a_successful_transfer():
 
 
 @freeze_time(datetime(year=2020, month=1, day=17, hour=21, second=32), tz_offset=0)
-def test_calculates_correct_national_metrics_given_series_of_messages():
-    metric_month_start = datetime(2019, 12, 1, tzinfo=UTC)
+def test_calculates_correct_national_metrics_given_series_of_transfers():
+    metric_month_start = a_datetime(year=2019, month=12, day=1)
 
     transfers = [
         a_transfer_that_was_never_integrated(),
@@ -149,7 +151,7 @@ def test_calculates_correct_national_metrics_given_series_of_messages():
 
     reporting_window = MonthlyReportingWindow(
         metric_month_start=metric_month_start,
-        overflow_month_start=datetime(2020, 1, 1, tzinfo=UTC),
+        overflow_month_start=a_datetime(year=2020, month=1, day=1),
         metric_months=[metric_month_start],
     )
     current_datetime = datetime.now(tzutc())
@@ -166,6 +168,57 @@ def test_calculates_correct_national_metrics_given_series_of_messages():
         failed=FailedMetrics(transfer_count=1, transfer_percentage=6.67),
         pending=PendingMetrics(transfer_count=8, transfer_percentage=53.33),
         paper_fallback=PaperFallbackMetrics(transfer_count=12, transfer_percentage=80.0),
+        year=2019,
+        month=12,
+    )
+
+    expected = NationalMetricsPresentation(
+        generated_on=current_datetime, metrics=[expected_national_metrics]
+    )
+    actual = calculate_national_metrics_data(transfers, reporting_window)
+
+    assert actual == expected
+
+
+@freeze_time(datetime(year=2020, month=1, day=17, hour=21, second=32), tz_offset=0)
+def test_calculates_correct_national_metrics_for_transfers_within_reporting_window():
+    metric_month_start = a_datetime(year=2019, month=12, day=1)
+
+    transfer_within_reporting_window = build_transfer(
+        date_requested=a_datetime(year=2019, month=12, day=14), sla_duration=a_duration(600)
+    )
+    transfer_before_reporting_window = build_transfer(
+        date_requested=a_datetime(year=2019, month=11, day=10)
+    )
+    transfer_after_reporting_window = build_transfer(
+        date_requested=a_datetime(year=2020, month=1, day=4)
+    )
+
+    transfers = [
+        transfer_within_reporting_window,
+        transfer_before_reporting_window,
+        transfer_after_reporting_window,
+    ]
+
+    reporting_window = MonthlyReportingWindow(
+        metric_month_start=metric_month_start,
+        overflow_month_start=a_datetime(year=2020, month=1, day=1),
+        metric_months=[metric_month_start],
+    )
+    current_datetime = datetime.now(tzutc())
+
+    expected_national_metrics = MonthlyNationalMetrics(
+        transfer_count=1,
+        integrated=IntegratedMetricsPresentation(
+            transfer_percentage=100.0,
+            transfer_count=1,
+            within_3_days=1,
+            within_8_days=0,
+            beyond_8_days=0,
+        ),
+        failed=FailedMetrics(transfer_count=0, transfer_percentage=0.0),
+        pending=PendingMetrics(transfer_count=0, transfer_percentage=0.0),
+        paper_fallback=PaperFallbackMetrics(transfer_count=0, transfer_percentage=0.0),
         year=2019,
         month=12,
     )
