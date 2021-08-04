@@ -56,20 +56,20 @@ def construct_practice_summaries(
                     month=month,
                     requester=RequesterMetrics(
                         integrated=IntegratedPracticeMetricsPresentation(
-                            transfer_count=practice.integrated.transfer_count,
+                            transfer_count=practice.metrics[0].integrated.transfer_count,
                             within_3_days_percentage=calculate_percentage(
-                                portion=practice.integrated.within_3_days,
-                                total=practice.integrated.transfer_count,
+                                portion=practice.metrics[0].integrated.within_3_days,
+                                total=practice.metrics[0].integrated.transfer_count,
                                 num_digits=1,
                             ),
                             within_8_days_percentage=calculate_percentage(
-                                portion=practice.integrated.within_8_days,
-                                total=practice.integrated.transfer_count,
+                                portion=practice.metrics[0].integrated.within_8_days,
+                                total=practice.metrics[0].integrated.transfer_count,
                                 num_digits=1,
                             ),
                             beyond_8_days_percentage=calculate_percentage(
-                                portion=practice.integrated.beyond_8_days,
-                                total=practice.integrated.transfer_count,
+                                portion=practice.metrics[0].integrated.beyond_8_days,
+                                total=practice.metrics[0].integrated.transfer_count,
                                 num_digits=1,
                             ),
                         ),

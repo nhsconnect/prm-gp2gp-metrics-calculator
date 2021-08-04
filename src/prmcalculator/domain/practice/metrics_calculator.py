@@ -1,10 +1,11 @@
 from dataclasses import dataclass
-from typing import Iterable, Iterator
+from typing import Iterable, Iterator, List
 from warnings import warn
 
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 from prmcalculator.domain.gp2gp.sla import SlaCounter
 from prmcalculator.domain.gp2gp.transfer import Transfer
+from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 
 
 @dataclass
@@ -16,27 +17,42 @@ class IntegratedPracticeMetrics:
 
 
 @dataclass
-class PracticeMetrics:
-    ods_code: str
-    name: str
+class MonthlyMetrics:
+    year: int
+    month: int
     integrated: IntegratedPracticeMetrics
 
 
-def _derive_practice_sla_metrics(practice, sla_metrics):
+@dataclass
+class PracticeMetrics:
+    ods_code: str
+    name: str
+    metrics: List[MonthlyMetrics]
+
+
+def _derive_practice_sla_metrics(practice, sla_metrics, year, month):
     return PracticeMetrics(
         practice.ods_code,
         practice.name,
-        integrated=IntegratedPracticeMetrics(
-            transfer_count=sla_metrics.total(),
-            within_3_days=sla_metrics.within_3_days(),
-            within_8_days=sla_metrics.within_8_days(),
-            beyond_8_days=sla_metrics.beyond_8_days(),
-        ),
+        metrics=[
+            MonthlyMetrics(
+                year=year,
+                month=month,
+                integrated=IntegratedPracticeMetrics(
+                    transfer_count=sla_metrics.total(),
+                    within_3_days=sla_metrics.within_3_days(),
+                    within_8_days=sla_metrics.within_8_days(),
+                    beyond_8_days=sla_metrics.beyond_8_days(),
+                ),
+            )
+        ],
     )
 
 
-def calculate_sla_by_practice(
-    practice_lookup: PracticeLookup, transfers: Iterable[Transfer]
+def calculate_monthly_sla_by_practice(
+    practice_lookup: PracticeLookup,
+    transfers: Iterable[Transfer],
+    reporting_window: MonthlyReportingWindow,
 ) -> Iterator[PracticeMetrics]:
     practice_counts = {ods_code: SlaCounter() for ods_code in practice_lookup.all_ods_codes()}
 
@@ -54,6 +70,11 @@ def calculate_sla_by_practice(
         warn(f"Unexpected ASID count: {len(unexpected_asids)}", RuntimeWarning)
 
     return (
-        _derive_practice_sla_metrics(practice, practice_counts[practice.ods_code])
+        _derive_practice_sla_metrics(
+            practice,
+            practice_counts[practice.ods_code],
+            reporting_window.metric_year,
+            reporting_window.metric_month,
+        )
         for practice in practice_lookup.all_practices()
     )

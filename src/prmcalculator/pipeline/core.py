@@ -17,7 +17,7 @@ from prmcalculator.domain.gp2gp.transfer import (
     filter_for_successful_transfers,
     filter_transfers_by_date_requested,
 )
-from prmcalculator.domain.practice.metrics_calculator import calculate_sla_by_practice
+from prmcalculator.domain.practice.metrics_calculator import calculate_monthly_sla_by_practice
 
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 
@@ -29,7 +29,9 @@ def calculate_practice_metrics_data(
 ) -> PracticeMetricsPresentation:
     completed_transfers = filter_for_successful_transfers(transfers)
     practice_lookup = PracticeLookup(organisation_metadata.practices)
-    sla_metrics = calculate_sla_by_practice(practice_lookup, completed_transfers)
+    sla_metrics = calculate_monthly_sla_by_practice(
+        practice_lookup, completed_transfers, reporting_window
+    )
     practice_summaries = construct_practice_summaries(
         sla_metrics, year=reporting_window.metric_year, month=reporting_window.metric_month
     )
