@@ -113,6 +113,10 @@ class PlatformMetricsIO:
             self._transfer_data_bucket_s3_path(year, month)
             for (year, month) in self._window.metric_months
         ]
+        logger.info(
+            f"Reading transfer.parquet files from the following s3 keys: "
+            f"{' ,'.join(transfer_data_s3_paths)}"
+        )
 
         transfer_table = pa.concat_tables(
             [
