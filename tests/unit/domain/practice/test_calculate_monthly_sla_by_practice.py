@@ -304,3 +304,37 @@ def test_returns_sum_of_all_integrated_transfers():
     actual = list(calculate_monthly_sla_by_practice(lookup, transfers, reporting_window))
 
     assert actual[0].metrics[0].integrated.transfer_count == 3
+
+
+def test_calculates_sla_given_two_transfers_from_different_months():
+    two_month_reporting_window = MonthlyReportingWindow.prior_to(
+        date_anchor=a_datetime(year=2021, month=2), number_of_months=2
+    )
+
+    lookup = PracticeLookup(
+        [PracticeDetails(asids=["121212121212"], ods_code="A12345", name=a_string())]
+    )
+    transfers = [
+        build_transfer(
+            requesting_practice=Practice(asid="121212121212", supplier=a_string(12)),
+            sla_duration=timedelta(days=10),
+            date_requested=a_datetime(year=2020, month=12),
+        ),
+        build_transfer(
+            requesting_practice=Practice(asid="121212121212", supplier=a_string(12)),
+            sla_duration=timedelta(hours=1, minutes=10),
+            date_requested=a_datetime(year=2021, month=1),
+        ),
+    ]
+    practices = calculate_monthly_sla_by_practice(lookup, transfers, two_month_reporting_window)
+    expected_first_summary_slas = IntegratedPracticeMetrics(
+        transfer_count=1, within_3_days=1, within_8_days=0, beyond_8_days=0
+    )
+    expected_second_summary_slas = IntegratedPracticeMetrics(
+        transfer_count=1, within_3_days=0, within_8_days=0, beyond_8_days=1
+    )
+
+    first_summary = next(practices)
+
+    assert first_summary.metrics[0].integrated == expected_first_summary_slas
+    assert first_summary.metrics[1].integrated == expected_second_summary_slas

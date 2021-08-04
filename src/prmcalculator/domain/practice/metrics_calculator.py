@@ -30,7 +30,7 @@ class PracticeMetrics:
     metrics: List[MonthlyMetrics]
 
 
-def _derive_practice_sla_metrics(practice, sla_metrics, year, month):
+def _derive_practice_sla_metrics(practice, sla_metrics):
     return PracticeMetrics(
         practice.ods_code,
         practice.name,
@@ -39,14 +39,24 @@ def _derive_practice_sla_metrics(practice, sla_metrics, year, month):
                 year=year,
                 month=month,
                 integrated=IntegratedPracticeMetrics(
-                    transfer_count=sla_metrics.total(),
-                    within_3_days=sla_metrics.within_3_days(),
-                    within_8_days=sla_metrics.within_8_days(),
-                    beyond_8_days=sla_metrics.beyond_8_days(),
+                    transfer_count=metrics.total(),
+                    within_3_days=metrics.within_3_days(),
+                    within_8_days=metrics.within_8_days(),
+                    beyond_8_days=metrics.beyond_8_days(),
                 ),
             )
+            for (year, month), metrics in sla_metrics.items()
         ],
     )
+
+
+def _create_practice_monthly_counts(
+    practice_lookup: PracticeLookup, reporting_window: MonthlyReportingWindow
+):
+    def _monthly_sla_counters():
+        return {metric_month: SlaCounter() for metric_month in reporting_window.metric_months}
+
+    return {ods_code: _monthly_sla_counters() for ods_code in practice_lookup.all_ods_codes()}
 
 
 def calculate_monthly_sla_by_practice(
@@ -54,15 +64,19 @@ def calculate_monthly_sla_by_practice(
     transfers: Iterable[Transfer],
     reporting_window: MonthlyReportingWindow,
 ) -> Iterator[PracticeMetrics]:
-    practice_counts = {ods_code: SlaCounter() for ods_code in practice_lookup.all_ods_codes()}
+    practice_counts = _create_practice_monthly_counts(practice_lookup, reporting_window)
 
     unexpected_asids = set()
     for transfer in transfers:
         asid = transfer.requesting_practice.asid
 
         if practice_lookup.has_asid_code(asid):
+            request_started_metric_month = (
+                transfer.date_requested.year,
+                transfer.date_requested.month,
+            )
             ods_code = practice_lookup.ods_code_from_asid(asid)
-            practice_counts[ods_code].increment(transfer.sla_duration)
+            practice_counts[ods_code][request_started_metric_month].increment(transfer.sla_duration)
         else:
             unexpected_asids.add(asid)
 
@@ -70,11 +84,6 @@ def calculate_monthly_sla_by_practice(
         warn(f"Unexpected ASID count: {len(unexpected_asids)}", RuntimeWarning)
 
     return (
-        _derive_practice_sla_metrics(
-            practice,
-            practice_counts[practice.ods_code],
-            reporting_window.metric_year,
-            reporting_window.metric_month,
-        )
+        _derive_practice_sla_metrics(practice, practice_counts[practice.ods_code])
         for practice in practice_lookup.all_practices()
     )
