@@ -5,7 +5,7 @@ from unittest.mock import Mock
 from prmcalculator.domain.practice.metrics_presentation import (
     PracticeMetricsPresentation,
     PracticeSummary,
-    MonthlyMetrics,
+    MonthlyMetricsPresentation,
     RequesterMetrics,
     IntegratedPracticeMetricsPresentation,
 )
@@ -26,7 +26,7 @@ _PRACTICE_METRICS_OBJECT = PracticeMetricsPresentation(
             ods_code="A12345",
             name="A test GP practice",
             metrics=[
-                MonthlyMetrics(
+                MonthlyMetricsPresentation(
                     year=2021,
                     month=1,
                     requester=RequesterMetrics(

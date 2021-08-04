@@ -23,7 +23,7 @@ class RequesterMetrics:
 
 
 @dataclass
-class MonthlyMetrics:
+class MonthlyMetricsPresentation:
     year: int
     month: int
     requester: RequesterMetrics
@@ -33,7 +33,7 @@ class MonthlyMetrics:
 class PracticeSummary:
     ods_code: str
     name: str
-    metrics: List[MonthlyMetrics]
+    metrics: List[MonthlyMetricsPresentation]
 
 
 @dataclass
@@ -51,7 +51,7 @@ def construct_practice_summaries(
             ods_code=practice.ods_code,
             name=practice.name,
             metrics=[
-                MonthlyMetrics(
+                MonthlyMetricsPresentation(
                     year=year,
                     month=month,
                     requester=RequesterMetrics(

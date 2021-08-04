@@ -14,7 +14,7 @@ from prmcalculator.domain.national.metrics_presentation import (
 from prmcalculator.domain.practice.metrics_presentation import (
     IntegratedPracticeMetricsPresentation,
     RequesterMetrics,
-    MonthlyMetrics,
+    MonthlyMetricsPresentation,
     PracticeSummary,
     PracticeMetricsPresentation,
 )
@@ -104,7 +104,7 @@ def test_calculates_correct_practice_metrics_given_a_successful_transfer():
                 ods_code=requesting_ods_code,
                 name=requesting_practice_name,
                 metrics=[
-                    MonthlyMetrics(
+                    MonthlyMetricsPresentation(
                         year=2019,
                         month=12,
                         requester=RequesterMetrics(

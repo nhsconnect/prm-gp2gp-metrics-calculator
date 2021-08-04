@@ -8,7 +8,7 @@ from prmcalculator.domain.practice.metrics_presentation import (
     construct_practice_summaries,
     IntegratedPracticeMetricsPresentation,
     RequesterMetrics,
-    MonthlyMetrics,
+    MonthlyMetricsPresentation,
     PracticeSummary,
 )
 from tests.builders.gp2gp import build_practice_metrics
@@ -120,7 +120,7 @@ def test_has_correct_requester_sla_metrics_given_two_practices():
             ods_code="A12345",
             name="A practice",
             metrics=[
-                MonthlyMetrics(
+                MonthlyMetricsPresentation(
                     year=2020,
                     month=1,
                     requester=RequesterMetrics(
@@ -138,7 +138,7 @@ def test_has_correct_requester_sla_metrics_given_two_practices():
             ods_code="Z98765",
             name="Another practice",
             metrics=[
-                MonthlyMetrics(
+                MonthlyMetricsPresentation(
                     year=2020,
                     month=1,
                     requester=RequesterMetrics(
