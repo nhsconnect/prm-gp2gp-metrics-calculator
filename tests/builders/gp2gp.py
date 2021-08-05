@@ -33,21 +33,22 @@ def build_transfer(**kwargs) -> Transfer:
 
 
 def build_practice_metrics(**kwargs) -> PracticeMetrics:
+    metrics = [
+        MonthlyMetrics(
+            year=kwargs.get("year", 2019),
+            month=kwargs.get("month", 12),
+            integrated=IntegratedPracticeMetrics(
+                transfer_count=kwargs.get("transfer_count", an_integer()),
+                within_3_days=kwargs.get("within_3_days", an_integer()),
+                within_8_days=kwargs.get("within_8_days", an_integer()),
+                beyond_8_days=kwargs.get("beyond_8_days", an_integer()),
+            ),
+        )
+    ]
     return PracticeMetrics(
         ods_code=kwargs.get("ods_code", a_string(6)),
         name=kwargs.get("name", a_string()),
-        metrics=[
-            MonthlyMetrics(
-                year=kwargs.get("year", 2019),
-                month=kwargs.get("month", 12),
-                integrated=IntegratedPracticeMetrics(
-                    transfer_count=kwargs.get("transfer_count", an_integer()),
-                    within_3_days=kwargs.get("within_3_days", an_integer()),
-                    within_8_days=kwargs.get("within_8_days", an_integer()),
-                    beyond_8_days=kwargs.get("beyond_8_days", an_integer()),
-                ),
-            )
-        ],
+        metrics=kwargs.get("metrics", metrics),
     )
 
 

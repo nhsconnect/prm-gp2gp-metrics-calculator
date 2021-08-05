@@ -32,9 +32,7 @@ def calculate_practice_metrics_data(
     sla_metrics = calculate_monthly_sla_by_practice(
         practice_lookup, completed_transfers, reporting_window
     )
-    practice_summaries = construct_practice_summaries(
-        sla_metrics, year=reporting_window.metric_year, month=reporting_window.metric_month
-    )
+    practice_summaries = construct_practice_summaries(sla_metrics)
     practice_metrics_presentation = construct_practice_metrics_presentation(
         practice_summaries, organisation_metadata.ccgs
     )

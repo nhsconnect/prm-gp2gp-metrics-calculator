@@ -43,38 +43,37 @@ class PracticeMetricsPresentation:
     ccgs: List[CcgDetails]
 
 
-def construct_practice_summaries(
-    sla_metrics: Iterable[PracticeMetrics], year: int, month: int
-) -> List[PracticeSummary]:
+def construct_practice_summaries(sla_metrics: Iterable[PracticeMetrics]) -> List[PracticeSummary]:
     return [
         PracticeSummary(
             ods_code=practice.ods_code,
             name=practice.name,
             metrics=[
                 MonthlyMetricsPresentation(
-                    year=year,
-                    month=month,
+                    year=metric.year,
+                    month=metric.month,
                     requester=RequesterMetrics(
                         integrated=IntegratedPracticeMetricsPresentation(
-                            transfer_count=practice.metrics[0].integrated.transfer_count,
+                            transfer_count=metric.integrated.transfer_count,
                             within_3_days_percentage=calculate_percentage(
-                                portion=practice.metrics[0].integrated.within_3_days,
-                                total=practice.metrics[0].integrated.transfer_count,
+                                portion=metric.integrated.within_3_days,
+                                total=metric.integrated.transfer_count,
                                 num_digits=1,
                             ),
                             within_8_days_percentage=calculate_percentage(
-                                portion=practice.metrics[0].integrated.within_8_days,
-                                total=practice.metrics[0].integrated.transfer_count,
+                                portion=metric.integrated.within_8_days,
+                                total=metric.integrated.transfer_count,
                                 num_digits=1,
                             ),
                             beyond_8_days_percentage=calculate_percentage(
-                                portion=practice.metrics[0].integrated.beyond_8_days,
-                                total=practice.metrics[0].integrated.transfer_count,
+                                portion=metric.integrated.beyond_8_days,
+                                total=metric.integrated.transfer_count,
                                 num_digits=1,
                             ),
                         ),
                     ),
                 )
+                for metric in practice.metrics
             ],
         )
         for practice in sla_metrics
