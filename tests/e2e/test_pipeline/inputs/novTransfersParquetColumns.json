@@ -1,0 +1,18 @@
+{
+    "conversation_id": [
+        "integrated-beyond-8-days-in-prev-month--A12345"
+    ],
+    "date_requested": [
+        "2019-11-01T18:02:29.985000"
+    ],
+    "requesting_practice_asid": [
+        "123456789123"
+    ],
+    "requesting_supplier": [""],
+    "sla_duration": [398306],
+    "status": [
+        "INTEGRATED_ON_TIME"
+    ],
+    "failure_reason": [null]
+}
+

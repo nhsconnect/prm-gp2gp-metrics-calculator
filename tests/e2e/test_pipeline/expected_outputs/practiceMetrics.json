@@ -16,6 +16,18 @@
               "beyond8DaysPercentage": 33.3
             }
           }
+        },
+        {
+          "year": 2019,
+          "month": 11,
+          "requester": {
+            "integrated": {
+              "transferCount": 1,
+              "within3DaysPercentage": 0.0,
+              "within8DaysPercentage": 100.0,
+              "beyond8DaysPercentage": 0.0
+            }
+          }
         }
       ]
     },
@@ -26,6 +38,18 @@
         {
           "year": 2019,
           "month": 12,
+          "requester": {
+            "integrated": {
+              "transferCount": 0,
+              "within3DaysPercentage": null,
+              "within8DaysPercentage": null,
+              "beyond8DaysPercentage": null
+            }
+          }
+        },
+        {
+          "year": 2019,
+          "month": 11,
           "requester": {
             "integrated": {
               "transferCount": 0,
@@ -50,6 +74,18 @@
               "within3DaysPercentage": 50.0,
               "within8DaysPercentage": 50.0,
               "beyond8DaysPercentage": 0.0
+            }
+          }
+        },
+        {
+          "year": 2019,
+          "month": 11,
+          "requester": {
+            "integrated": {
+              "transferCount": 0,
+              "within3DaysPercentage": null,
+              "within8DaysPercentage": null,
+              "beyond8DaysPercentage": null
             }
           }
         }

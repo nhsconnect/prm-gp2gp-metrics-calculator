@@ -64,10 +64,12 @@ def _build_fake_s3_bucket(bucket_name: str, s3):
     return s3_fake_bucket
 
 
+fake_s3_host = "127.0.0.1"
+fake_s3_port = 8887
+fake_s3_url = f"http://{fake_s3_host}:{fake_s3_port}"
+
+
 def test_end_to_end_with_fake_s3(datadir):
-    fake_s3_host = "127.0.0.1"
-    fake_s3_port = 8887
-    fake_s3_url = f"http://{fake_s3_host}:{fake_s3_port}"
     fake_s3_access_key = "testing"
     fake_s3_secret_key = "testing"
     fake_s3_region = "eu-west-2"
@@ -85,6 +87,7 @@ def test_end_to_end_with_fake_s3(datadir):
     environ["INPUT_TRANSFER_DATA_BUCKET"] = s3_input_transfer_data_bucket_name
     environ["OUTPUT_METRICS_BUCKET"] = s3_output_metrics_bucket_name
     environ["ORGANISATION_METADATA_BUCKET"] = s3_organisation_metadata_bucket_name
+    environ["NUMBER_OF_MONTHS"] = "2"
     environ["DATE_ANCHOR"] = "2020-01-30T18:44:49Z"
     environ["S3_ENDPOINT_URL"] = fake_s3_url
 
@@ -107,16 +110,13 @@ def test_end_to_end_with_fake_s3(datadir):
 
     input_transfer_bucket = _build_fake_s3_bucket(s3_input_transfer_data_bucket_name, s3)
 
-    transfers_dictionary = _read_parquet_columns_json(
-        datadir / "inputs" / "transfersParquetColumns.json"
+    _write_transfer_parquet(
+        datadir / "inputs" / "novTransfersParquetColumns.json",
+        f"{s3_input_transfer_data_bucket_name}/v4/2019/11/transfers.parquet",
     )
-
-    transfers_table = pa.table(transfers_dictionary)
-
-    write_table(
-        table=transfers_table,
-        where=f"{s3_input_transfer_data_bucket_name}/v4/2019/12/transfers.parquet",
-        filesystem=S3FileSystem(endpoint_override=fake_s3_url),
+    _write_transfer_parquet(
+        datadir / "inputs" / "decTransfersParquetColumns.json",
+        f"{s3_input_transfer_data_bucket_name}/v4/2019/12/transfers.parquet",
     )
 
     expected_practice_metrics_output_key = "practiceMetrics.json"
@@ -146,3 +146,13 @@ def test_end_to_end_with_fake_s3(datadir):
         input_transfer_bucket.objects.all().delete()
         input_transfer_bucket.delete()
         fake_s3.stop()
+
+
+def _write_transfer_parquet(input_transfer_parquet_columns_json, s3_path: str):
+    transfers_dictionary = _read_parquet_columns_json(input_transfer_parquet_columns_json)
+    transfers_table = pa.table(transfers_dictionary)
+    write_table(
+        table=transfers_table,
+        where=s3_path,
+        filesystem=S3FileSystem(endpoint_override=fake_s3_url),
+    )
