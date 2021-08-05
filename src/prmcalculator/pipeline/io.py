@@ -115,7 +115,7 @@ class PlatformMetricsIO:
         ]
         logger.info(
             f"Reading transfer.parquet files from the following s3 keys: "
-            f"{' ,'.join(transfer_data_s3_paths)}"
+            f"{', '.join(transfer_data_s3_paths)}"
         )
 
         transfer_table = pa.concat_tables(
