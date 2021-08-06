@@ -26,7 +26,7 @@ def main():
     reporting_window = MonthlyReportingWindow.prior_to(config.date_anchor, config.number_of_months)
     logger.info(
         f"""Reporting Window: {reporting_window.metric_year}/{reporting_window.metric_month},
-        overflow: {reporting_window.overflow_year}/{reporting_window.overflow_month}"""
+        date anchor: {reporting_window.date_anchor_year}/{reporting_window.date_anchor_month}"""
     )
 
     metrics_io = PlatformMetricsIO(

@@ -12,7 +12,7 @@ def test_includes_transfer_in_a_metric_month():
 
     reporting_window = MonthlyReportingWindow(
         metric_month_start=metric_month_start,
-        overflow_month_start=a_datetime(year=2021, month=3, day=1),
+        date_anchor_month_start=a_datetime(year=2021, month=3, day=1),
         metric_months=[metric_month_start],
     )
 
@@ -30,7 +30,7 @@ def test_does_not_include_transfer_before_metric_month():
 
     reporting_window = MonthlyReportingWindow(
         metric_month_start=metric_month_start,
-        overflow_month_start=a_datetime(year=2021, month=3, day=1),
+        date_anchor_month_start=a_datetime(year=2021, month=3, day=1),
         metric_months=[metric_month_start],
     )
 
@@ -48,7 +48,7 @@ def test_does_not_include_transfer_after_metric_month():
 
     reporting_window = MonthlyReportingWindow(
         metric_month_start=metric_month_start,
-        overflow_month_start=a_datetime(year=2021, month=3, day=1),
+        date_anchor_month_start=a_datetime(year=2021, month=3, day=1),
         metric_months=[metric_month_start],
     )
 
@@ -66,7 +66,7 @@ def test_includes_transfer_on_a_metric_month_start():
 
     reporting_window = MonthlyReportingWindow(
         metric_month_start=metric_month_start,
-        overflow_month_start=datetime(year=2021, month=3, day=1),
+        date_anchor_month_start=datetime(year=2021, month=3, day=1),
         metric_months=[metric_month_start],
     )
 
@@ -84,7 +84,7 @@ def test_includes_transfer_on_a_metric_month_end():
 
     reporting_window = MonthlyReportingWindow(
         metric_month_start=metric_month_start,
-        overflow_month_start=a_datetime(year=2021, month=4, day=1),
+        date_anchor_month_start=a_datetime(year=2021, month=4, day=1),
         metric_months=[metric_month_start],
     )
 
@@ -102,7 +102,7 @@ def test_filters_multiple_transfers():
 
     reporting_window = MonthlyReportingWindow(
         metric_month_start=metric_month_start,
-        overflow_month_start=a_datetime(year=2021, month=2, day=1, hour=0),
+        date_anchor_month_start=a_datetime(year=2021, month=2, day=1, hour=0),
         metric_months=[metric_month_start],
     )
 

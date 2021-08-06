@@ -13,8 +13,8 @@ from prmcalculator.pipeline.io import PlatformMetricsIO
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 from tests.builders.common import a_datetime, a_string
 
-_OVERFLOW_MONTH = 1
-_OVERFLOW_YEAR = 2021
+_DATE_ANCHOR_MONTH = 1
+_DATE_ANCHOR_YEAR = 2021
 
 _METRIC_MONTH = 12
 _METRIC_YEAR = 2020
@@ -73,7 +73,7 @@ def test_read_transfer_data():
     s3_manager = Mock()
     s3_manager.read_parquet.return_value = pa.Table.from_pydict(_INTEGRATED_TRANSFER_DATA_DICT)
 
-    date_anchor = a_datetime(year=_OVERFLOW_YEAR, month=_OVERFLOW_MONTH)
+    date_anchor = a_datetime(year=_DATE_ANCHOR_YEAR, month=_DATE_ANCHOR_MONTH)
     reporting_window = MonthlyReportingWindow.prior_to(date_anchor=date_anchor, number_of_months=1)
 
     transfer_data_bucket = "test_transfer_data_bucket"
@@ -106,7 +106,7 @@ def test_read_transfer_data_from_multiple_files():
         pa.Table.from_pydict(_INTEGRATED_LATE_TRANSFER_DATA_DICT),
     ]
 
-    date_anchor = a_datetime(year=_OVERFLOW_YEAR, month=_OVERFLOW_MONTH)
+    date_anchor = a_datetime(year=_DATE_ANCHOR_YEAR, month=_DATE_ANCHOR_MONTH)
     reporting_window = MonthlyReportingWindow.prior_to(date_anchor=date_anchor, number_of_months=2)
 
     transfer_data_bucket = "test_transfer_data_bucket"

@@ -66,15 +66,15 @@ class PlatformMetricsIO:
     def _metric_month_path_fragment(self) -> str:
         return f"{self._window.metric_year}/{self._window.metric_month}"
 
-    def _overflow_month_path_fragment(self) -> str:
-        return f"{self._window.overflow_year}/{self._window.overflow_month}"
+    def _date_anchor_month_path_fragment(self) -> str:
+        return f"{self._window.date_anchor_year}/{self._window.date_anchor_month}"
 
     def read_ods_metadata(self) -> OrganisationMetadata:
         ods_metadata_s3_path = "/".join(
             [
                 self._org_metadata_bucket_name,
                 self._ORG_METADATA_VERSION,
-                self._overflow_month_path_fragment(),
+                self._date_anchor_month_path_fragment(),
                 self._ORG_METADATA_FILE_NAME,
             ]
         )

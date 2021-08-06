@@ -54,26 +54,26 @@ def test_prior_to_correctly_determines_metric_year_over_new_year():
     assert actual == expected
 
 
-def test_prior_to_correctly_determines_overflow_month():
+def test_prior_to_correctly_determines_date_anchor_month():
     moment = a_datetime(year=2021, month=3, day=4)
 
     reporting_window = MonthlyReportingWindow.prior_to(moment, default_number_of_months)
 
     expected = 3
 
-    actual = reporting_window.overflow_month
+    actual = reporting_window.date_anchor_month
 
     assert actual == expected
 
 
-def test_prior_to_correctly_determines_overflow_year():
+def test_prior_to_correctly_determines_date_anchor_year():
     moment = a_datetime(year=2021, month=3, day=4)
 
     reporting_window = MonthlyReportingWindow.prior_to(moment, default_number_of_months)
 
     expected = 2021
 
-    actual = reporting_window.overflow_year
+    actual = reporting_window.date_anchor_year
 
     assert actual == expected
 

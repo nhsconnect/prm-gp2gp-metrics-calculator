@@ -14,13 +14,13 @@ from prmcalculator.pipeline.io import PlatformMetricsIO, logger
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 from tests.builders.common import a_datetime, a_string
 
-_OVERFLOW_MONTH = 1
-_OVERFLOW_YEAR = 2021
+_DATE_ANCHOR_MONTH = 1
+_DATE_ANCHOR_YEAR = 2021
 _METRIC_MONTH = 12
 _METRIC_YEAR = 2020
 
 _PRACTICE_METRICS_OBJECT = PracticeMetricsPresentation(
-    generated_on=datetime(_OVERFLOW_YEAR, _OVERFLOW_MONTH, 1),
+    generated_on=datetime(_DATE_ANCHOR_YEAR, _DATE_ANCHOR_MONTH, 1),
     practices=[
         PracticeSummary(
             ods_code="A12345",
@@ -45,7 +45,7 @@ _PRACTICE_METRICS_OBJECT = PracticeMetricsPresentation(
 )
 
 _PRACTICE_METRICS_DICT = {
-    "generatedOn": datetime(_OVERFLOW_YEAR, _OVERFLOW_MONTH, 1),
+    "generatedOn": datetime(_DATE_ANCHOR_YEAR, _DATE_ANCHOR_MONTH, 1),
     "practices": [
         {
             "odsCode": "A12345",
@@ -72,7 +72,7 @@ _PRACTICE_METRICS_DICT = {
 
 def test_given_practice_metrics_object_will_generate_json():
     s3_manager = Mock()
-    date_anchor = a_datetime(year=_OVERFLOW_YEAR, month=_OVERFLOW_MONTH)
+    date_anchor = a_datetime(year=_DATE_ANCHOR_YEAR, month=_DATE_ANCHOR_MONTH)
     reporting_window = MonthlyReportingWindow.prior_to(date_anchor=date_anchor, number_of_months=1)
 
     data_platform_metrics_bucket = a_string()
@@ -96,7 +96,7 @@ def test_given_practice_metrics_object_will_generate_json():
 
 def test_will_log_successful_upload_message():
     s3_manager = Mock()
-    date_anchor = a_datetime(year=_OVERFLOW_YEAR, month=_OVERFLOW_MONTH)
+    date_anchor = a_datetime(year=_DATE_ANCHOR_YEAR, month=_DATE_ANCHOR_MONTH)
     reporting_window = MonthlyReportingWindow.prior_to(date_anchor=date_anchor, number_of_months=1)
 
     data_platform_metrics_bucket = a_string()
