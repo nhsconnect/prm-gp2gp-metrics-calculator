@@ -59,9 +59,8 @@ def test_calculates_correct_practice_metrics_given_a_successful_transfer():
     metric_month_start = datetime(2019, 12, 1, tzinfo=UTC)
 
     reporting_window = MonthlyReportingWindow(
-        metric_month_start=metric_month_start,
         date_anchor_month_start=datetime(2020, 1, 1, tzinfo=UTC),
-        metric_months=[metric_month_start],
+        metric_monthly_datetimes=[metric_month_start],
     )
 
     requesting_practice_name = "Test GP"
@@ -150,9 +149,8 @@ def test_calculates_correct_national_metrics_given_series_of_transfers():
     ]
 
     reporting_window = MonthlyReportingWindow(
-        metric_month_start=metric_month_start,
         date_anchor_month_start=a_datetime(year=2020, month=1, day=1),
-        metric_months=[metric_month_start],
+        metric_monthly_datetimes=[metric_month_start],
     )
     current_datetime = datetime.now(tzutc())
 
@@ -201,9 +199,8 @@ def test_calculates_correct_national_metrics_for_transfers_within_reporting_wind
     ]
 
     reporting_window = MonthlyReportingWindow(
-        metric_month_start=metric_month_start,
         date_anchor_month_start=a_datetime(year=2020, month=1, day=1),
-        metric_months=[metric_month_start],
+        metric_monthly_datetimes=[metric_month_start],
     )
     current_datetime = datetime.now(tzutc())
 

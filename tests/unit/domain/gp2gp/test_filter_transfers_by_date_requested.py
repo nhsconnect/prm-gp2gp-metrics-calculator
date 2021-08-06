@@ -11,9 +11,8 @@ def test_includes_transfer_in_a_metric_month():
     metric_month_start = a_datetime(year=2021, month=2, day=1)
 
     reporting_window = MonthlyReportingWindow(
-        metric_month_start=metric_month_start,
         date_anchor_month_start=a_datetime(year=2021, month=3, day=1),
-        metric_months=[metric_month_start],
+        metric_monthly_datetimes=[metric_month_start],
     )
 
     transfers = [build_transfer(date_requested=a_datetime(year=2021, month=2, day=15))]
@@ -29,9 +28,8 @@ def test_does_not_include_transfer_before_metric_month():
     metric_month_start = a_datetime(year=2021, month=2, day=1)
 
     reporting_window = MonthlyReportingWindow(
-        metric_month_start=metric_month_start,
         date_anchor_month_start=a_datetime(year=2021, month=3, day=1),
-        metric_months=[metric_month_start],
+        metric_monthly_datetimes=[metric_month_start],
     )
 
     transfers = [build_transfer(date_requested=a_datetime(year=2021, month=1, day=4))]
@@ -47,9 +45,8 @@ def test_does_not_include_transfer_after_metric_month():
     metric_month_start = a_datetime(year=2021, month=2, day=1)
 
     reporting_window = MonthlyReportingWindow(
-        metric_month_start=metric_month_start,
         date_anchor_month_start=a_datetime(year=2021, month=3, day=1),
-        metric_months=[metric_month_start],
+        metric_monthly_datetimes=[metric_month_start],
     )
 
     transfers = [build_transfer(date_requested=a_datetime(year=2021, month=3, day=4))]
@@ -65,9 +62,8 @@ def test_includes_transfer_on_a_metric_month_start():
     metric_month_start = datetime(year=2021, month=2, day=1)
 
     reporting_window = MonthlyReportingWindow(
-        metric_month_start=metric_month_start,
         date_anchor_month_start=datetime(year=2021, month=3, day=1),
-        metric_months=[metric_month_start],
+        metric_monthly_datetimes=[metric_month_start],
     )
 
     transfers = [build_transfer(date_requested=datetime(year=2021, month=2, day=1))]
@@ -83,9 +79,8 @@ def test_includes_transfer_on_a_metric_month_end():
     metric_month_start = a_datetime(year=2021, month=3, day=1)
 
     reporting_window = MonthlyReportingWindow(
-        metric_month_start=metric_month_start,
         date_anchor_month_start=a_datetime(year=2021, month=4, day=1),
-        metric_months=[metric_month_start],
+        metric_monthly_datetimes=[metric_month_start],
     )
 
     transfers = [build_transfer(date_requested=a_datetime(year=2021, month=3, day=31))]
@@ -101,9 +96,8 @@ def test_filters_multiple_transfers():
     metric_month_start = a_datetime(year=2021, month=1, day=1)
 
     reporting_window = MonthlyReportingWindow(
-        metric_month_start=metric_month_start,
         date_anchor_month_start=a_datetime(year=2021, month=2, day=1, hour=0),
-        metric_months=[metric_month_start],
+        metric_monthly_datetimes=[metric_month_start],
     )
 
     transfer_in_a_metric_month = build_transfer(
