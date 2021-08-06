@@ -9,6 +9,10 @@ from dateutil.tz import UTC
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 
 
+class UnexpectedTransferOutcome(Exception):
+    pass
+
+
 class TransferStatus(Enum):
     INTEGRATED_ON_TIME = "INTEGRATED_ON_TIME"
     TECHNICAL_FAILURE = "TECHNICAL_FAILURE"
@@ -83,11 +87,26 @@ def _convert_pydict_to_list_of_dictionaries(pydict: dict):
     return (dict(zip(pydict.keys(), items)) for items in zip(*pydict.values()))
 
 
+def _map_transfer_failure_reason(failure_reason: str) -> TransferFailureReason:
+    try:
+        return TransferFailureReason(failure_reason)
+    except ValueError:
+        raise UnexpectedTransferOutcome(
+            f"Unexpected Failure Reason: {failure_reason} - cannot be mapped."
+        )
+
+
+def _map_transfer_status(status: str) -> TransferStatus:
+    try:
+        return TransferStatus(status)
+    except ValueError:
+        raise UnexpectedTransferOutcome(f"Unexpected Status: {status} - cannot be mapped.")
+
+
 def convert_table_to_transfers(table: pa.Table) -> List[Transfer]:
     transfer_dict = table.to_pydict()
 
     transfers = _convert_pydict_to_list_of_dictionaries(transfer_dict)
-
     return [
         Transfer(
             conversation_id=transfer["conversation_id"],
@@ -96,8 +115,8 @@ def convert_table_to_transfers(table: pa.Table) -> List[Transfer]:
                 asid=transfer["requesting_practice_asid"], supplier=transfer["requesting_supplier"]
             ),
             outcome=TransferOutcome(
-                status=TransferStatus(transfer["status"]),
-                failure_reason=TransferFailureReason(transfer["failure_reason"])
+                status=_map_transfer_status(transfer["status"]),
+                failure_reason=_map_transfer_failure_reason(transfer["failure_reason"])
                 if transfer["failure_reason"]
                 else None,
             ),

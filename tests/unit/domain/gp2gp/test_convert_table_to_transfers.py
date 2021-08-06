@@ -9,6 +9,7 @@ from prmcalculator.domain.gp2gp.transfer import (
     TransferFailureReason,
     Transfer,
     Practice,
+    UnexpectedTransferOutcome,
 )
 import pyarrow as pa
 
@@ -92,6 +93,26 @@ def test_status_and_failure_reason_columns_are_converted_to_a_transfer_outcome_f
     )
 
     assert actual_transfer_outcome == expected_transfer_outcome
+
+
+def test_throw_unexpected_transfer_outcome_when_failure_reason_cannot_be_mapped():
+    table = _build_transfer_table(
+        status=["TECHNICAL_FAILURE"], failure_reason=["Missing Failure Reason"]
+    )
+
+    try:
+        convert_table_to_transfers(table)
+    except UnexpectedTransferOutcome as ex:
+        assert str(ex) == "Unexpected Failure Reason: Missing Failure Reason - cannot be mapped."
+
+
+def test_throw_unexpected_transfer_outcome_when_status_cannot_be_mapped():
+    table = _build_transfer_table(status=["MISSING_STATUS"], failure_reason=["Final Error"])
+
+    try:
+        convert_table_to_transfers(table)
+    except UnexpectedTransferOutcome as ex:
+        assert str(ex) == "Unexpected Status: MISSING_STATUS - cannot be mapped."
 
 
 def test_date_requested_column_is_converted_to_a_transfer_field():
