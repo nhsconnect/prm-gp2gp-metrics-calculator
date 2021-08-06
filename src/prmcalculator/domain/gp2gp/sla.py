@@ -35,11 +35,14 @@ class SlaCounter:
     def total(self) -> int:
         return sum(self._counts.values())
 
+    @property
     def within_3_days(self) -> int:
         return self._counts[SlaBand.WITHIN_3_DAYS]
 
-    def within_8_days(self):
+    @property
+    def within_8_days(self) -> int:
         return self._counts[SlaBand.WITHIN_8_DAYS]
 
-    def beyond_8_days(self):
+    @property
+    def beyond_8_days(self) -> int:
         return self._counts[SlaBand.BEYOND_8_DAYS]

@@ -40,9 +40,9 @@ def _derive_practice_sla_metrics(practice, sla_metrics):
                 month=month,
                 integrated=IntegratedPracticeMetrics(
                     transfer_count=metrics.total(),
-                    within_3_days=metrics.within_3_days(),
-                    within_8_days=metrics.within_8_days(),
-                    beyond_8_days=metrics.beyond_8_days(),
+                    within_3_days=metrics.within_3_days,
+                    within_8_days=metrics.within_8_days,
+                    beyond_8_days=metrics.beyond_8_days,
                 ),
             )
             for (year, month), metrics in sla_metrics.items()

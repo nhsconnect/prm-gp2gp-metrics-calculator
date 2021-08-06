@@ -43,7 +43,7 @@ def test_total_returns_two_given_two_durations():
 def test_within_3_days_returns_zero_given_no_durations():
     counter = SlaCounter()
 
-    actual = counter.within_3_days()
+    actual = counter.within_3_days
 
     expected = 0
 
@@ -60,7 +60,7 @@ def test_within_3_days_only_increments_on_durations_within_three_days():
     counter.increment(duration_one_day)
     counter.increment(duration_two_days)
     counter.increment(duration_four_days)
-    actual = counter.within_3_days()
+    actual = counter.within_3_days
 
     expected = 2
 
@@ -70,7 +70,7 @@ def test_within_3_days_only_increments_on_durations_within_three_days():
 def test_within_8_days_returns_zero_given_no_durations():
     counter = SlaCounter()
 
-    actual = counter.within_8_days()
+    actual = counter.within_8_days
 
     expected = 0
 
@@ -89,7 +89,7 @@ def test_within_8_days_only_increments_on_durations_between_3_and_8_days():
     counter.increment(duration_four_days)
     counter.increment(duration_five_days)
     counter.increment(duration_nine_days)
-    actual = counter.within_8_days()
+    actual = counter.within_8_days
 
     expected = 2
 
@@ -99,7 +99,7 @@ def test_within_8_days_only_increments_on_durations_between_3_and_8_days():
 def test_beyond_8_days_returns_zero_given_no_durations():
     counter = SlaCounter()
 
-    actual = counter.beyond_8_days()
+    actual = counter.beyond_8_days
 
     expected = 0
 
@@ -116,7 +116,7 @@ def test_beyond_8_days_increments_on_durations_beyond_8_days():
     counter.increment(duration_four_days)
     counter.increment(duration_nine_days)
     counter.increment(duration_ten_days)
-    actual = counter.beyond_8_days()
+    actual = counter.beyond_8_days
 
     expected = 2
 
