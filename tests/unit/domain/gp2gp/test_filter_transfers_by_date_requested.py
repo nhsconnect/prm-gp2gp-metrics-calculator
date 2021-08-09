@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List
 
 from prmcalculator.domain.gp2gp.transfer import filter_transfers_by_date_requested, Transfer
@@ -59,14 +58,14 @@ def test_does_not_include_transfer_after_metric_month():
 
 
 def test_includes_transfer_on_a_metric_month_start():
-    metric_month_start = datetime(year=2021, month=2, day=1)
+    metric_month_start = a_datetime(year=2021, month=2, day=1)
 
     reporting_window = MonthlyReportingWindow(
-        date_anchor_month_start=datetime(year=2021, month=3, day=1),
+        date_anchor_month_start=a_datetime(year=2021, month=3, day=1),
         metric_monthly_datetimes=[metric_month_start],
     )
 
-    transfers = [build_transfer(date_requested=datetime(year=2021, month=2, day=1))]
+    transfers = [build_transfer(date_requested=a_datetime(year=2021, month=2, day=1))]
 
     actual = filter_transfers_by_date_requested(transfers, reporting_window)
 

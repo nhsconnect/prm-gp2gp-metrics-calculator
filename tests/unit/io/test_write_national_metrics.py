@@ -2,6 +2,8 @@ from datetime import datetime
 from unittest import mock
 from unittest.mock import Mock
 
+from dateutil.tz import UTC
+
 from prmcalculator.domain.national.metrics_presentation import (
     NationalMetricsPresentation,
     MonthlyNationalMetrics,
@@ -20,7 +22,7 @@ _METRIC_MONTH = 12
 _METRIC_YEAR = 2020
 
 _NATIONAL_METRICS_OBJECT = NationalMetricsPresentation(
-    generated_on=datetime(_DATE_ANCHOR_YEAR, _DATE_ANCHOR_MONTH, 1),
+    generated_on=datetime(_DATE_ANCHOR_YEAR, _DATE_ANCHOR_MONTH, 1, tzinfo=UTC),
     metrics=[
         MonthlyNationalMetrics(
             transfer_count=6,
@@ -41,7 +43,7 @@ _NATIONAL_METRICS_OBJECT = NationalMetricsPresentation(
 )
 
 _NATIONAL_METRICS_DICT = {
-    "generatedOn": datetime(_DATE_ANCHOR_YEAR, _DATE_ANCHOR_MONTH, 1),
+    "generatedOn": datetime(_DATE_ANCHOR_YEAR, _DATE_ANCHOR_MONTH, 1, tzinfo=UTC),
     "metrics": [
         {
             "transferCount": 6,

@@ -56,10 +56,10 @@ from tests.builders.gp2gp import (
 
 @freeze_time(datetime(year=2020, month=1, day=15, hour=23, second=42), tz_offset=0)
 def test_calculates_correct_practice_metrics_given_a_successful_transfer():
-    metric_month_start = datetime(2019, 12, 1, tzinfo=UTC)
+    metric_month_start = a_datetime(year=2019, month=12, day=1)
 
     reporting_window = MonthlyReportingWindow(
-        date_anchor_month_start=datetime(2020, 1, 1, tzinfo=UTC),
+        date_anchor_month_start=a_datetime(year=2020, month=1, day=1),
         metric_monthly_datetimes=[metric_month_start],
     )
 
