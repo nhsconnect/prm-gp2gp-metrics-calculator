@@ -1,6 +1,4 @@
-from datetime import timedelta, datetime
-
-from dateutil.tz import UTC
+from datetime import timedelta
 
 from prmcalculator.domain.gp2gp.transfer import (
     convert_table_to_transfers,
@@ -124,19 +122,6 @@ def test_date_requested_column_is_converted_to_a_transfer_field():
     actual_date_requested = next(iter(transfers)).date_requested
 
     assert actual_date_requested == date_requested
-
-
-def test_naive_date_requested_column_is_converted_to_a_utc_datetime_transfer_field():
-    date_requested = datetime(year=2020, month=2, day=1, hour=1, minute=2, second=3)
-
-    table = _build_transfer_table(date_requested=[date_requested])
-
-    transfers = convert_table_to_transfers(table)
-    actual_date_requested = next(iter(transfers)).date_requested
-
-    assert actual_date_requested == datetime(
-        year=2020, month=2, day=1, hour=1, minute=2, second=3, tzinfo=UTC
-    )
 
 
 def test_converts_multiple_rows_into_list_of_transfers():

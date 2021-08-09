@@ -6,6 +6,7 @@ from os import environ
 from threading import Thread
 import boto3
 from botocore.config import Config
+from dateutil.tz import UTC
 from moto.server import DomainDispatcherApplication, create_backend_app
 from pyarrow._s3fs import S3FileSystem
 from pyarrow.parquet import write_table
@@ -35,7 +36,9 @@ def _read_json(path):
 
 
 def _parse_dates(items):
-    return [None if item is None else datetime.fromisoformat(item) for item in items]
+    return [
+        None if item is None else datetime.fromisoformat(item).astimezone(UTC) for item in items
+    ]
 
 
 def _read_parquet_columns_json(path):

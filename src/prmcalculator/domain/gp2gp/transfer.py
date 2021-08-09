@@ -4,7 +4,6 @@ from enum import Enum
 from typing import NamedTuple, Optional, List, Iterator
 
 import pyarrow as pa
-from dateutil.tz import UTC
 
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 
@@ -120,7 +119,7 @@ def convert_table_to_transfers(table: pa.Table) -> List[Transfer]:
                 if transfer["failure_reason"]
                 else None,
             ),
-            date_requested=transfer["date_requested"].astimezone(UTC),
+            date_requested=transfer["date_requested"],
         )
         for transfer in transfers
     ]
