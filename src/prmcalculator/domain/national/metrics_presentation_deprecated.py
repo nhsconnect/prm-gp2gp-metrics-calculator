@@ -4,30 +4,30 @@ from typing import List
 
 from dateutil.tz import tzutc
 
-from prmcalculator.domain.national.metrics_calculator import NationalMetrics
+from prmcalculator.domain.national.metrics_calculator_deprecated import NationalMetricsDeprecated
 from prmcalculator.utils.calculate_percentage import calculate_percentage
 
 
 @dataclass
-class PaperFallbackMetrics:
+class PaperFallbackMetricsDeprecated:
     transfer_count: int
     transfer_percentage: float
 
 
 @dataclass
-class FailedMetrics:
+class FailedMetricsDeprecated:
     transfer_count: int
     transfer_percentage: float
 
 
 @dataclass
-class PendingMetrics:
+class PendingMetricsDeprecated:
     transfer_count: int
     transfer_percentage: float
 
 
 @dataclass
-class IntegratedMetricsPresentation:
+class IntegratedMetricsPresentationDeprecated:
     transfer_count: int
     transfer_percentage: float
     within_3_days: int
@@ -36,26 +36,26 @@ class IntegratedMetricsPresentation:
 
 
 @dataclass
-class MonthlyNationalMetrics:
+class MonthlyNationalMetricsDeprecated:
     transfer_count: int
-    integrated: IntegratedMetricsPresentation
-    failed: FailedMetrics
-    pending: PendingMetrics
-    paper_fallback: PaperFallbackMetrics
+    integrated: IntegratedMetricsPresentationDeprecated
+    failed: FailedMetricsDeprecated
+    pending: PendingMetricsDeprecated
+    paper_fallback: PaperFallbackMetricsDeprecated
     year: int
     month: int
 
 
 @dataclass
-class NationalMetricsPresentation:
+class NationalMetricsPresentationDeprecated:
     generated_on: datetime
-    metrics: List[MonthlyNationalMetrics]
+    metrics: List[MonthlyNationalMetricsDeprecated]
 
 
 def _construct_integrated_metrics(
-    national_metrics: NationalMetrics,
-) -> IntegratedMetricsPresentation:
-    return IntegratedMetricsPresentation(
+    national_metrics: NationalMetricsDeprecated,
+) -> IntegratedMetricsPresentationDeprecated:
+    return IntegratedMetricsPresentationDeprecated(
         transfer_percentage=calculate_percentage(
             portion=national_metrics.integrated.transfer_count,
             total=national_metrics.initiated_transfer_count,
@@ -68,8 +68,10 @@ def _construct_integrated_metrics(
     )
 
 
-def _construct_failed_metrics(national_metrics: NationalMetrics) -> FailedMetrics:
-    return FailedMetrics(
+def _construct_failed_metrics(
+    national_metrics: NationalMetricsDeprecated,
+) -> FailedMetricsDeprecated:
+    return FailedMetricsDeprecated(
         transfer_count=national_metrics.failed_transfer_count,
         transfer_percentage=calculate_percentage(
             portion=national_metrics.failed_transfer_count,
@@ -79,8 +81,10 @@ def _construct_failed_metrics(national_metrics: NationalMetrics) -> FailedMetric
     )
 
 
-def _construct_pending_metrics(national_metrics: NationalMetrics) -> PendingMetrics:
-    return PendingMetrics(
+def _construct_pending_metrics(
+    national_metrics: NationalMetricsDeprecated,
+) -> PendingMetricsDeprecated:
+    return PendingMetricsDeprecated(
         transfer_count=national_metrics.pending_transfer_count,
         transfer_percentage=calculate_percentage(
             portion=national_metrics.pending_transfer_count,
@@ -90,10 +94,12 @@ def _construct_pending_metrics(national_metrics: NationalMetrics) -> PendingMetr
     )
 
 
-def _construct_paper_fallback_metrics(national_metrics: NationalMetrics) -> PaperFallbackMetrics:
+def _construct_paper_fallback_metrics(
+    national_metrics: NationalMetricsDeprecated,
+) -> PaperFallbackMetricsDeprecated:
     paper_fallback_count = national_metrics.calculate_paper_fallback()
 
-    return PaperFallbackMetrics(
+    return PaperFallbackMetricsDeprecated(
         transfer_count=paper_fallback_count,
         transfer_percentage=calculate_percentage(
             portion=paper_fallback_count,
@@ -103,17 +109,17 @@ def _construct_paper_fallback_metrics(national_metrics: NationalMetrics) -> Pape
     )
 
 
-def construct_national_metrics(
-    national_metrics: NationalMetrics,
+def construct_national_metrics_deprecated(
+    national_metrics: NationalMetricsDeprecated,
     year: int,
     month: int,
-) -> NationalMetricsPresentation:
+) -> NationalMetricsPresentationDeprecated:
     current_datetime = datetime.now(tzutc())
 
-    return NationalMetricsPresentation(
+    return NationalMetricsPresentationDeprecated(
         generated_on=current_datetime,
         metrics=[
-            MonthlyNationalMetrics(
+            MonthlyNationalMetricsDeprecated(
                 transfer_count=national_metrics.initiated_transfer_count,
                 integrated=_construct_integrated_metrics(national_metrics),
                 failed=_construct_failed_metrics(national_metrics),

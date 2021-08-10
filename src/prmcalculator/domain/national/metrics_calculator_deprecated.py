@@ -44,7 +44,7 @@ _PENDING_TRANSFER_REASONS = {
 
 
 @dataclass
-class IntegratedMetrics:
+class IntegratedMetricsDeprecated:
     transfer_count: int
     within_3_days: int
     within_8_days: int
@@ -52,26 +52,26 @@ class IntegratedMetrics:
 
 
 @dataclass
-class NationalMetrics:
+class NationalMetricsDeprecated:
     initiated_transfer_count: int
     pending_transfer_count: int
     failed_transfer_count: int
-    integrated: IntegratedMetrics
+    integrated: IntegratedMetricsDeprecated
 
     def calculate_paper_fallback(self):
         integrated_within_sla = self.integrated.within_3_days + self.integrated.within_8_days
         return self.initiated_transfer_count - integrated_within_sla
 
 
-def calculate_national_metrics(transfers: List[Transfer]) -> NationalMetrics:
+def calculate_national_metrics_deprecated(transfers: List[Transfer]) -> NationalMetricsDeprecated:
     integrated_transfers = _filter_for_integrated_transfers(transfers)
     sla_band_counts = _calculate_sla_band_counts(integrated_transfers)
 
-    return NationalMetrics(
+    return NationalMetricsDeprecated(
         initiated_transfer_count=len(transfers),
         pending_transfer_count=_count_pending_transfers(transfers),
         failed_transfer_count=_count_failed_transfers(transfers),
-        integrated=IntegratedMetrics(
+        integrated=IntegratedMetricsDeprecated(
             transfer_count=len(integrated_transfers),
             within_3_days=sla_band_counts.within_3_days,
             within_8_days=sla_band_counts.within_8_days,

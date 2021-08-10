@@ -4,7 +4,9 @@ import logging
 import pyarrow as pa
 
 from prmcalculator.domain.gp2gp.transfer import Transfer, convert_table_to_transfers
-from prmcalculator.domain.national.metrics_presentation import NationalMetricsPresentation
+from prmcalculator.domain.national.metrics_presentation_deprecated import (
+    NationalMetricsPresentationDeprecated,
+)
 from prmcalculator.domain.practice.metrics_presentation import PracticeMetricsPresentation
 from prmcalculator.domain.ods_portal.organisation_metadata import OrganisationMetadata
 from prmcalculator.utils.io.dictionary import camelize_dict
@@ -83,7 +85,7 @@ class PlatformMetricsIO:
         return OrganisationMetadata.from_dict(ods_metadata_dict)
 
     def write_national_metrics(
-        self, national_metrics_presentation_data: NationalMetricsPresentation
+        self, national_metrics_presentation_data: NationalMetricsPresentationDeprecated
     ):
         national_metrics_path = self._data_platform_metrics_bucket_s3_path(
             self._NATIONAL_METRICS_FILE_NAME

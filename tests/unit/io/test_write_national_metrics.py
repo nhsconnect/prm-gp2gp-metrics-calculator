@@ -4,13 +4,13 @@ from unittest.mock import Mock
 
 from dateutil.tz import UTC
 
-from prmcalculator.domain.national.metrics_presentation import (
-    NationalMetricsPresentation,
-    MonthlyNationalMetrics,
-    FailedMetrics,
-    PendingMetrics,
-    PaperFallbackMetrics,
-    IntegratedMetricsPresentation,
+from prmcalculator.domain.national.metrics_presentation_deprecated import (
+    NationalMetricsPresentationDeprecated,
+    MonthlyNationalMetricsDeprecated,
+    FailedMetricsDeprecated,
+    PendingMetricsDeprecated,
+    PaperFallbackMetricsDeprecated,
+    IntegratedMetricsPresentationDeprecated,
 )
 from prmcalculator.pipeline.io import PlatformMetricsIO, logger
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
@@ -21,21 +21,23 @@ _DATE_ANCHOR_YEAR = 2021
 _METRIC_MONTH = 12
 _METRIC_YEAR = 2020
 
-_NATIONAL_METRICS_OBJECT = NationalMetricsPresentation(
+_NATIONAL_METRICS_OBJECT = NationalMetricsPresentationDeprecated(
     generated_on=datetime(_DATE_ANCHOR_YEAR, _DATE_ANCHOR_MONTH, 1, tzinfo=UTC),
     metrics=[
-        MonthlyNationalMetrics(
+        MonthlyNationalMetricsDeprecated(
             transfer_count=6,
-            integrated=IntegratedMetricsPresentation(
+            integrated=IntegratedMetricsPresentationDeprecated(
                 transfer_percentage=83.33,
                 transfer_count=5,
                 within_3_days=2,
                 within_8_days=2,
                 beyond_8_days=1,
             ),
-            failed=FailedMetrics(transfer_count=1, transfer_percentage=16.67),
-            pending=PendingMetrics(transfer_count=0, transfer_percentage=0.0),
-            paper_fallback=PaperFallbackMetrics(transfer_count=2, transfer_percentage=33.33),
+            failed=FailedMetricsDeprecated(transfer_count=1, transfer_percentage=16.67),
+            pending=PendingMetricsDeprecated(transfer_count=0, transfer_percentage=0.0),
+            paper_fallback=PaperFallbackMetricsDeprecated(
+                transfer_count=2, transfer_percentage=33.33
+            ),
             year=2019,
             month=12,
         )

@@ -1,9 +1,11 @@
 from typing import List
 
-from prmcalculator.domain.national.metrics_calculator import calculate_national_metrics
-from prmcalculator.domain.national.metrics_presentation import (
-    NationalMetricsPresentation,
-    construct_national_metrics,
+from prmcalculator.domain.national.metrics_calculator_deprecated import (
+    calculate_national_metrics_deprecated,
+)
+from prmcalculator.domain.national.metrics_presentation_deprecated import (
+    NationalMetricsPresentationDeprecated,
+    construct_national_metrics_deprecated,
 )
 from prmcalculator.domain.practice.metrics_presentation import (
     construct_practice_summaries,
@@ -41,10 +43,10 @@ def calculate_practice_metrics_data(
 
 def calculate_national_metrics_data(
     transfers: List[Transfer], reporting_window: MonthlyReportingWindow
-) -> NationalMetricsPresentation:
+) -> NationalMetricsPresentationDeprecated:
     metric_month_transfers = filter_transfers_by_date_requested(transfers, reporting_window)
-    national_metrics = calculate_national_metrics(transfers=metric_month_transfers)
-    return construct_national_metrics(
+    national_metrics = calculate_national_metrics_deprecated(transfers=metric_month_transfers)
+    return construct_national_metrics_deprecated(
         national_metrics=national_metrics,
         year=reporting_window.metric_year,
         month=reporting_window.metric_month,

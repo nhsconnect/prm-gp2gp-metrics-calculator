@@ -2,7 +2,9 @@ from typing import List
 
 import pytest
 
-from prmcalculator.domain.national.metrics_calculator import calculate_national_metrics
+from prmcalculator.domain.national.metrics_calculator_deprecated import (
+    calculate_national_metrics_deprecated,
+)
 from prmcalculator.domain.gp2gp.transfer import Transfer
 
 from tests.builders.gp2gp import (
@@ -23,7 +25,7 @@ from tests.builders.gp2gp import (
 
 
 def test_returns_initiated_transfer_count_default_given_no_transfers():
-    national_metrics = calculate_national_metrics([])
+    national_metrics = calculate_national_metrics_deprecated([])
     assert national_metrics.initiated_transfer_count == 0
 
 
@@ -32,7 +34,7 @@ def test_returns_initiated_transfer_count():
         a_transfer_where_the_request_was_never_acknowledged(),
         an_integrated_transfer(),
     ]
-    national_metrics = calculate_national_metrics(transfers)
+    national_metrics = calculate_national_metrics_deprecated(transfers)
     assert national_metrics.initiated_transfer_count == 2
 
 
@@ -42,7 +44,7 @@ def test_returns_integrated_transfer_count_defaults_given_no_successful_transfer
         a_transfer_where_a_copc_triggered_an_error(),
         a_transfer_with_a_final_error(),
     ]
-    national_metrics = calculate_national_metrics(transfers)
+    national_metrics = calculate_national_metrics_deprecated(transfers)
     assert national_metrics.integrated.transfer_count == 0
     assert national_metrics.integrated.within_3_days == 0
     assert national_metrics.integrated.within_8_days == 0
@@ -55,7 +57,7 @@ def test_returns_integrated_transfer_count():
         an_integrated_transfer(),
         a_transfer_integrated_beyond_8_days(),
     ]
-    national_metrics = calculate_national_metrics(transfers)
+    national_metrics = calculate_national_metrics_deprecated(transfers)
     assert national_metrics.integrated.transfer_count == 3
 
 
@@ -77,14 +79,14 @@ def test_returns_integrated_transfer_count():
     ],
 )
 def test_returns_integrated_transfer_count_by_sla_duration(transfers, expected):
-    national_metrics = calculate_national_metrics(transfers)
+    national_metrics = calculate_national_metrics_deprecated(transfers)
     assert national_metrics.integrated.within_3_days == expected["within_3_days"]
     assert national_metrics.integrated.within_8_days == expected["within_8_days"]
     assert national_metrics.integrated.beyond_8_days == expected["beyond_8_days"]
 
 
 def test_returns_failed_transfer_count_default_given_no_transfers():
-    national_metrics = calculate_national_metrics([])
+    national_metrics = calculate_national_metrics_deprecated([])
     assert national_metrics.failed_transfer_count == 0
 
 
@@ -95,14 +97,14 @@ def test_failed_transfer_count_only_counts_transfers_with_a_final_error():
         a_transfer_where_a_copc_triggered_an_error(),
         a_transfer_with_a_final_error(),
     ]
-    national_metrics = calculate_national_metrics(transfers)
+    national_metrics = calculate_national_metrics_deprecated(transfers)
     assert national_metrics.failed_transfer_count == 2
 
 
 def test_returns_pending_transfer_count_default_given_no_transfers():
     transfers: List[Transfer] = []
 
-    national_metrics = calculate_national_metrics(transfers)
+    national_metrics = calculate_national_metrics_deprecated(transfers)
 
     expected_pending_transfer_count = 0
 
@@ -121,7 +123,7 @@ def test_returns_pending_transfer_count_given_only_pending_transfers():
         a_transfer_where_a_copc_triggered_an_error(),
     ]
 
-    national_metrics = calculate_national_metrics(transfers)
+    national_metrics = calculate_national_metrics_deprecated(transfers)
 
     expected_pending_transfer_count = 8
 
@@ -135,7 +137,7 @@ def test_returns_pending_transfer_count_given_a_mixture_of_transfers():
         an_integrated_transfer(),
     ]
 
-    national_metrics = calculate_national_metrics(transfers)
+    national_metrics = calculate_national_metrics_deprecated(transfers)
 
     expected_pending_transfer_count = 1
 

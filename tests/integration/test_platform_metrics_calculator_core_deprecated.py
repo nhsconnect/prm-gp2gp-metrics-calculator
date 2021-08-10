@@ -3,13 +3,13 @@ from datetime import datetime, timedelta
 from dateutil.tz import UTC, tzutc
 from freezegun import freeze_time
 
-from prmcalculator.domain.national.metrics_presentation import (
-    MonthlyNationalMetrics,
-    IntegratedMetricsPresentation,
-    FailedMetrics,
-    PendingMetrics,
-    PaperFallbackMetrics,
-    NationalMetricsPresentation,
+from prmcalculator.domain.national.metrics_presentation_deprecated import (
+    MonthlyNationalMetricsDeprecated,
+    IntegratedMetricsPresentationDeprecated,
+    FailedMetricsDeprecated,
+    PendingMetricsDeprecated,
+    PaperFallbackMetricsDeprecated,
+    NationalMetricsPresentationDeprecated,
 )
 from prmcalculator.domain.practice.metrics_presentation import (
     IntegratedPracticeMetricsPresentation,
@@ -154,23 +154,23 @@ def test_calculates_correct_national_metrics_given_series_of_transfers():
     )
     current_datetime = datetime.now(tzutc())
 
-    expected_national_metrics = MonthlyNationalMetrics(
+    expected_national_metrics = MonthlyNationalMetricsDeprecated(
         transfer_count=15,
-        integrated=IntegratedMetricsPresentation(
+        integrated=IntegratedMetricsPresentationDeprecated(
             transfer_percentage=40.0,
             transfer_count=6,
             within_3_days=1,
             within_8_days=2,
             beyond_8_days=3,
         ),
-        failed=FailedMetrics(transfer_count=1, transfer_percentage=6.67),
-        pending=PendingMetrics(transfer_count=8, transfer_percentage=53.33),
-        paper_fallback=PaperFallbackMetrics(transfer_count=12, transfer_percentage=80.0),
+        failed=FailedMetricsDeprecated(transfer_count=1, transfer_percentage=6.67),
+        pending=PendingMetricsDeprecated(transfer_count=8, transfer_percentage=53.33),
+        paper_fallback=PaperFallbackMetricsDeprecated(transfer_count=12, transfer_percentage=80.0),
         year=2019,
         month=12,
     )
 
-    expected = NationalMetricsPresentation(
+    expected = NationalMetricsPresentationDeprecated(
         generated_on=current_datetime, metrics=[expected_national_metrics]
     )
     actual = calculate_national_metrics_data(transfers, reporting_window)
@@ -204,23 +204,23 @@ def test_calculates_correct_national_metrics_for_transfers_within_reporting_wind
     )
     current_datetime = datetime.now(tzutc())
 
-    expected_national_metrics = MonthlyNationalMetrics(
+    expected_national_metrics = MonthlyNationalMetricsDeprecated(
         transfer_count=1,
-        integrated=IntegratedMetricsPresentation(
+        integrated=IntegratedMetricsPresentationDeprecated(
             transfer_percentage=100.0,
             transfer_count=1,
             within_3_days=1,
             within_8_days=0,
             beyond_8_days=0,
         ),
-        failed=FailedMetrics(transfer_count=0, transfer_percentage=0.0),
-        pending=PendingMetrics(transfer_count=0, transfer_percentage=0.0),
-        paper_fallback=PaperFallbackMetrics(transfer_count=0, transfer_percentage=0.0),
+        failed=FailedMetricsDeprecated(transfer_count=0, transfer_percentage=0.0),
+        pending=PendingMetricsDeprecated(transfer_count=0, transfer_percentage=0.0),
+        paper_fallback=PaperFallbackMetricsDeprecated(transfer_count=0, transfer_percentage=0.0),
         year=2019,
         month=12,
     )
 
-    expected = NationalMetricsPresentation(
+    expected = NationalMetricsPresentationDeprecated(
         generated_on=current_datetime, metrics=[expected_national_metrics]
     )
     actual = calculate_national_metrics_data(transfers, reporting_window)
