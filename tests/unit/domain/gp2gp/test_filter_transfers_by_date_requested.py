@@ -65,7 +65,7 @@ def test_includes_transfer_on_a_metric_month_start():
         metric_monthly_datetimes=[metric_month_start],
     )
 
-    transfers = [build_transfer(date_requested=a_datetime(year=2021, month=2, day=1))]
+    transfers = [build_transfer(date_requested=a_datetime(year=2021, month=2, day=2))]
 
     actual = filter_transfers_by_date_requested(transfers, reporting_window)
 
