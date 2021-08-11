@@ -11,19 +11,18 @@ class TransferOutcomes:
         self.technical_failure = TransferOutcomeCounter()
         self.unclassified_failure = TransferOutcomeCounter()
 
-    # flake8: noqa: C901
     @classmethod
     def group_transfers(cls, transfers: List[Transfer]):
         transfer_outcomes = cls()
 
+        transfer_outcomes_counter_mapping = {
+            TransferStatus.INTEGRATED_ON_TIME: transfer_outcomes.integrated_on_time,
+            TransferStatus.PROCESS_FAILURE: transfer_outcomes.process_failure,
+            TransferStatus.TECHNICAL_FAILURE: transfer_outcomes.technical_failure,
+            TransferStatus.UNCLASSIFIED_FAILURE: transfer_outcomes.unclassified_failure,
+        }
+
         for transfer in transfers:
-            if transfer.outcome.status == TransferStatus.INTEGRATED_ON_TIME:
-                transfer_outcomes.integrated_on_time.add_transfer(transfer)
-            elif transfer.outcome.status == TransferStatus.PROCESS_FAILURE:
-                transfer_outcomes.process_failure.add_transfer(transfer)
-            elif transfer.outcome.status == TransferStatus.TECHNICAL_FAILURE:
-                transfer_outcomes.technical_failure.add_transfer(transfer)
-            elif transfer.outcome.status == TransferStatus.UNCLASSIFIED_FAILURE:
-                transfer_outcomes.unclassified_failure.add_transfer(transfer)
+            transfer_outcomes_counter_mapping[transfer.outcome.status].add_transfer(transfer)
 
         return transfer_outcomes
