@@ -6,15 +6,6 @@ from dateutil.tz import tzutc
 
 
 class MonthlyReportingWindow:
-    @classmethod
-    def prior_to(cls, date_anchor: datetime, number_of_months: int):
-        date_anchor_month_start = datetime(date_anchor.year, date_anchor.month, 1, tzinfo=tzutc())
-        metric_monthly_datetimes = [
-            date_anchor_month_start - relativedelta(months=number + 1)
-            for number in range(number_of_months)
-        ]
-        return cls(date_anchor_month_start, metric_monthly_datetimes)
-
     def __init__(
         self,
         date_anchor_month_start: datetime,
@@ -23,6 +14,15 @@ class MonthlyReportingWindow:
         self._date_anchor_month_start = date_anchor_month_start
         self._metric_monthly_datetimes = metric_monthly_datetimes
         self._latest_metric_month = metric_monthly_datetimes[0]
+
+    @classmethod
+    def prior_to(cls, date_anchor: datetime, number_of_months: int):
+        date_anchor_month_start = datetime(date_anchor.year, date_anchor.month, 1, tzinfo=tzutc())
+        metric_monthly_datetimes = [
+            date_anchor_month_start - relativedelta(months=number + 1)
+            for number in range(number_of_months)
+        ]
+        return cls(date_anchor_month_start, metric_monthly_datetimes)
 
     @property
     def metric_month(self) -> int:
