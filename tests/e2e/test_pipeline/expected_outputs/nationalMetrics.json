@@ -4,25 +4,32 @@
     {
       "year": 2019,
       "month": 12,
-      "transferCount": 7,
-      "integrated": {
-        "transferPercentage": 71.43,
-        "transferCount": 5,
-        "within3Days": 2,
-        "within8Days": 2,
-        "beyond8Days": 1
-      },
-      "failed": {
-        "transferCount": 1,
-        "transferPercentage": 14.29
-      },
-      "pending": {
-        "transferCount": 1,
-        "transferPercentage": 14.29
-      },
-      "paperFallback": {
-        "transferCount": 3,
-        "transferPercentage": 42.86
+      "total": 7,
+      "transferOutcomes": {
+        "integratedOnTime": {
+          "total": 4,
+          "percent": 57.14
+        },
+        "processFailure": {
+          "total": 2,
+          "percent": 28.57,
+          "integratedLate": {
+            "percent": 14.29,
+            "total": 1
+          },
+          "transferredNotIntegrated": {
+            "total": 1,
+            "percent": 14.29
+          }
+        },
+        "technicalFailure": {
+          "total": 1,
+          "percent": 14.29
+        },
+        "unclassifiedFailure": {
+          "total": 0,
+          "percent": 0.0
+        }
       }
     }
   ]
