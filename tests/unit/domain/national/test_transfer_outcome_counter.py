@@ -42,16 +42,16 @@ def test_returns_total_count_by_failure_reason():
     counter.add_transfer(an_integrated_late_transfer)
     counter.add_transfer(an_integrated_late_transfer)
 
-    actual = counter.count_by_failure_reason(TransferFailureReason.INTEGRATED_LATE)
+    actual = counter.failure_reason(TransferFailureReason.INTEGRATED_LATE).total
     expected = 3
 
     assert actual == expected
 
 
-def test_returns_total_count_by_failure_reason_0_when_no_transfers_added():
+def test_returns_total_count_by_failure_reason_when_no_transfers_added():
     counter = TransferOutcomeCounter()
 
-    actual = counter.count_by_failure_reason(TransferFailureReason.INTEGRATED_LATE)
+    actual = counter.failure_reason(TransferFailureReason.INTEGRATED_LATE).total
     expected = 0
 
     assert actual == expected

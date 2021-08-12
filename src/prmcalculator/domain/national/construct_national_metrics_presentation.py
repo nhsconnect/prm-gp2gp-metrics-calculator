@@ -94,15 +94,13 @@ def construct_national_metrics_presentation(national_metrics_months: List[Nation
 def _construct_process_failure_metrics(
     total_number_of_transfers_month: int, transfer_outcomes_month: TransferOutcomes
 ) -> ProcessFailureMetricsPresentation:
-    transferred_not_integrated_total = (
-        transfer_outcomes_month.process_failure.count_by_failure_reason(
-            TransferFailureReason.TRANSFERRED_NOT_INTEGRATED
-        )
-    )
+    transferred_not_integrated_total = transfer_outcomes_month.process_failure.failure_reason(
+        TransferFailureReason.TRANSFERRED_NOT_INTEGRATED
+    ).total
 
-    integrated_late_total = transfer_outcomes_month.process_failure.count_by_failure_reason(
+    integrated_late_total = transfer_outcomes_month.process_failure.failure_reason(
         TransferFailureReason.INTEGRATED_LATE
-    )
+    ).total
 
     return ProcessFailureMetricsPresentation(
         total=transfer_outcomes_month.process_failure.total,

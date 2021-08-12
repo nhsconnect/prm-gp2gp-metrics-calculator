@@ -15,11 +15,13 @@ class TransferCounter:
 
 @dataclass
 class TransferOutcomeCounter(TransferCounter):
-    def count_by_failure_reason(self, failure_reason: TransferFailureReason) -> int:
+    def failure_reason(self, failure_reason: TransferFailureReason) -> TransferCounter:
         transfers_with_failure_reason = [
-            transfer.outcome.failure_reason == failure_reason for transfer in self.transfers
+            transfer
+            for transfer in self.transfers
+            if transfer.outcome.failure_reason == failure_reason
         ]
-        return sum(transfers_with_failure_reason)
+        return TransferCounter(transfers_with_failure_reason)
 
     def add_transfer(self, transfer: Transfer):
         self.transfers.append(transfer)
