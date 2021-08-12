@@ -14,6 +14,8 @@ from tests.builders.gp2gp import (
     a_transfer_with_a_final_error,
     a_transfer_integrated_beyond_8_days,
     a_transfer_that_was_never_integrated,
+    an_integrated_transfer,
+    a_transfer_where_a_copc_triggered_an_error,
 )
 
 a_year = a_datetime().year
@@ -50,6 +52,19 @@ def test_returns_transfers_total_of_2_for_metric_month():
     assert actual.metrics[0].total == 2
 
 
+def test_returns_transfer_outcomes_integrated_on_time_total():
+    transfers = [an_integrated_transfer(), a_transfer_with_a_final_error()]
+    national_metrics_month = NationalMetricsMonth(
+        transfers=transfers,
+        year=a_year,
+        month=a_month,
+    )
+
+    actual = construct_national_metrics_presentation([national_metrics_month])
+
+    assert actual.metrics[0].transfer_outcomes.integrated_on_time.total == 1
+
+
 def test_returns_transfer_outcomes_technical_failure_total():
     transfers = [a_transfer_with_a_final_error(), a_transfer_with_a_final_error(), build_transfer()]
     national_metrics_month = NationalMetricsMonth(
@@ -81,3 +96,16 @@ def test_returns_transfer_outcomes_process_failure_total():
     assert actual.metrics[0].transfer_outcomes.process_failure.total == 3
     assert actual.metrics[0].transfer_outcomes.process_failure.integrated_late.total == 2
     assert actual.metrics[0].transfer_outcomes.process_failure.transferred_not_integrated.total == 1
+
+
+def test_returns_transfer_outcomes_unclassified_failure_total():
+    transfers = [a_transfer_where_a_copc_triggered_an_error()]
+    national_metrics_month = NationalMetricsMonth(
+        transfers=transfers,
+        year=a_year,
+        month=a_month,
+    )
+
+    actual = construct_national_metrics_presentation([national_metrics_month])
+
+    assert actual.metrics[0].transfer_outcomes.unclassified_failure.total == 1

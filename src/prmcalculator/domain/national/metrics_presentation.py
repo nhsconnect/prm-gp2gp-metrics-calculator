@@ -22,8 +22,10 @@ class ProcessFailureMetricsPresentation:
 
 @dataclass
 class TransferOutcomesPresentation:
+    integrated_on_time: OutcomeMetricsPresentation
     technical_failure: OutcomeMetricsPresentation
     process_failure: ProcessFailureMetricsPresentation
+    unclassified_failure: OutcomeMetricsPresentation
 
 
 @dataclass
@@ -52,8 +54,8 @@ def construct_national_metrics_presentation(national_metrics_months: List[Nation
                 month=national_metric_month.month,
                 total=national_metric_month.total,
                 transfer_outcomes=TransferOutcomesPresentation(
-                    technical_failure=OutcomeMetricsPresentation(
-                        total=transfer_outcomes_month.technical_failure.total
+                    integrated_on_time=OutcomeMetricsPresentation(
+                        total=transfer_outcomes_month.integrated_on_time.total
                     ),
                     process_failure=ProcessFailureMetricsPresentation(
                         total=transfer_outcomes_month.process_failure.total,
@@ -67,6 +69,12 @@ def construct_national_metrics_presentation(national_metrics_months: List[Nation
                                 TransferFailureReason.TRANSFERRED_NOT_INTEGRATED
                             )
                         ),
+                    ),
+                    technical_failure=OutcomeMetricsPresentation(
+                        total=transfer_outcomes_month.technical_failure.total
+                    ),
+                    unclassified_failure=OutcomeMetricsPresentation(
+                        total=transfer_outcomes_month.unclassified_failure.total
                     ),
                 ),
             )
