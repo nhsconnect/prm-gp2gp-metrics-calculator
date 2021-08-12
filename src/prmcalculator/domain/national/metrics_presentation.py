@@ -4,6 +4,7 @@ from typing import List
 
 from dateutil.tz import tzutc
 
+from prmcalculator.domain.gp2gp.transfer import TransferFailureReason
 from prmcalculator.domain.national.metrics_calculator import NationalMetricsMonth
 
 
@@ -13,8 +14,16 @@ class OutcomeMetricsPresentation:
 
 
 @dataclass
+class ProcessFailureMetricsPresentation:
+    total: int
+    integrated_late: OutcomeMetricsPresentation
+    transferred_not_integrated: OutcomeMetricsPresentation
+
+
+@dataclass
 class TransferOutcomesPresentation:
     technical_failure: OutcomeMetricsPresentation
+    process_failure: ProcessFailureMetricsPresentation
 
 
 @dataclass
@@ -45,7 +54,20 @@ def construct_national_metrics_presentation(national_metrics_months: List[Nation
                 transfer_outcomes=TransferOutcomesPresentation(
                     technical_failure=OutcomeMetricsPresentation(
                         total=transfer_outcomes_month.technical_failure.total
-                    )
+                    ),
+                    process_failure=ProcessFailureMetricsPresentation(
+                        total=transfer_outcomes_month.process_failure.total,
+                        integrated_late=OutcomeMetricsPresentation(
+                            total=transfer_outcomes_month.process_failure.count_by_failure_reason(
+                                TransferFailureReason.INTEGRATED_LATE
+                            )
+                        ),
+                        transferred_not_integrated=OutcomeMetricsPresentation(
+                            total=transfer_outcomes_month.process_failure.count_by_failure_reason(
+                                TransferFailureReason.TRANSFERRED_NOT_INTEGRATED
+                            )
+                        ),
+                    ),
                 ),
             )
         ],

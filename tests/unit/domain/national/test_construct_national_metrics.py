@@ -9,7 +9,12 @@ from prmcalculator.domain.national.metrics_presentation import (
 )
 
 from tests.builders.common import a_datetime
-from tests.builders.gp2gp import build_transfer, a_transfer_with_a_final_error
+from tests.builders.gp2gp import (
+    build_transfer,
+    a_transfer_with_a_final_error,
+    a_transfer_integrated_beyond_8_days,
+    a_transfer_that_was_never_integrated,
+)
 
 a_year = a_datetime().year
 a_month = a_datetime().month
@@ -45,9 +50,10 @@ def test_returns_transfers_total_of_2_for_metric_month():
     assert actual.metrics[0].total == 2
 
 
-def test_returns_transfer_outcomes_technical_failure_count():
+def test_returns_transfer_outcomes_technical_failure_total():
+    transfers = [a_transfer_with_a_final_error(), a_transfer_with_a_final_error(), build_transfer()]
     national_metrics_month = NationalMetricsMonth(
-        transfers=[a_transfer_with_a_final_error(), a_transfer_with_a_final_error()],
+        transfers=transfers,
         year=a_year,
         month=a_month,
     )
@@ -55,3 +61,23 @@ def test_returns_transfer_outcomes_technical_failure_count():
     actual = construct_national_metrics_presentation([national_metrics_month])
 
     assert actual.metrics[0].transfer_outcomes.technical_failure.total == 2
+
+
+def test_returns_transfer_outcomes_process_failure_total():
+    transfers = [
+        a_transfer_integrated_beyond_8_days(),
+        a_transfer_integrated_beyond_8_days(),
+        a_transfer_that_was_never_integrated(),
+        build_transfer(),
+    ]
+    national_metrics_month = NationalMetricsMonth(
+        transfers=transfers,
+        year=a_year,
+        month=a_month,
+    )
+
+    actual = construct_national_metrics_presentation([national_metrics_month])
+
+    assert actual.metrics[0].transfer_outcomes.process_failure.total == 3
+    assert actual.metrics[0].transfer_outcomes.process_failure.integrated_late.total == 2
+    assert actual.metrics[0].transfer_outcomes.process_failure.transferred_not_integrated.total == 1
