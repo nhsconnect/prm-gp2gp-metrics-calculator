@@ -2,10 +2,11 @@ from os import environ
 import boto3
 import logging
 
-from prmcalculator.pipeline.config import PipelineConfig
-from prmcalculator.domain.national.deprecated.calculate_national_metrics_data_deprecated import (
-    calculate_national_metrics_data_deprecated,
+from prmcalculator.domain.national.calculate_national_metrics_data import (
+    calculate_national_metrics_data,
 )
+from prmcalculator.pipeline.config import PipelineConfig
+
 from prmcalculator.domain.practice.calculate_practice_metrics_data import (
     calculate_practice_metrics_data,
 )
@@ -51,7 +52,7 @@ def main():
     )
 
     logger.info("Calculating national metrics")
-    national_metrics_data = calculate_national_metrics_data_deprecated(
+    national_metrics_data = calculate_national_metrics_data(
         transfers=transfers, reporting_window=reporting_window
     )
 
