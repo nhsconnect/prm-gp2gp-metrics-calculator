@@ -86,7 +86,7 @@ def test_calculates_correct_national_metrics_given_series_of_transfers_deprecate
 
 
 @freeze_time(datetime(year=2020, month=1, day=17, hour=21, second=32), tz_offset=0)
-def test_calculates_correct_national_metrics_for_transfers_within_reporting_window():
+def test_calculates_correct_national_metrics_for_transfers_within_reporting_window_deprecated():
     metric_month_start = a_datetime(year=2019, month=12, day=1)
 
     transfer_within_reporting_window = build_transfer(

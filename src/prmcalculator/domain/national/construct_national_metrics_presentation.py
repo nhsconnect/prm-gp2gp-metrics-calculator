@@ -44,7 +44,9 @@ class NationalMetricsPresentation:
     metrics: List[NationalMetricMonthPresentation]
 
 
-def construct_national_metrics_presentation(national_metrics_months: List[NationalMetricsMonth]):
+def construct_national_metrics_presentation(
+    national_metrics_months: List[NationalMetricsMonth],
+) -> NationalMetricsPresentation:
     national_metric_month = national_metrics_months[0]
     transfer_outcomes_month = national_metric_month.transfer_outcomes
 
