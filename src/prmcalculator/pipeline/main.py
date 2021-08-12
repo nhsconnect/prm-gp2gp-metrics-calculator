@@ -3,9 +3,11 @@ import boto3
 import logging
 
 from prmcalculator.pipeline.config import PipelineConfig
-from prmcalculator.pipeline.core import (
+from prmcalculator.domain.national.deprecated.calculate_national_metrics_data_deprecated import (
+    calculate_national_metrics_data_deprecated,
+)
+from prmcalculator.domain.practice.calculate_practice_metrics_data import (
     calculate_practice_metrics_data,
-    calculate_national_metrics_data,
 )
 from prmcalculator.pipeline.io import PlatformMetricsIO
 from prmcalculator.utils.io.s3 import S3DataManager
@@ -49,7 +51,7 @@ def main():
     )
 
     logger.info("Calculating national metrics")
-    national_metrics_data = calculate_national_metrics_data(
+    national_metrics_data = calculate_national_metrics_data_deprecated(
         transfers=transfers, reporting_window=reporting_window
     )
 
