@@ -52,8 +52,12 @@ def test_returns_transfers_total_of_2_for_metric_month():
     assert actual.metrics[0].total == 2
 
 
-def test_returns_transfer_outcomes_integrated_on_time_total():
-    transfers = [an_integrated_transfer(), a_transfer_with_a_final_error()]
+def test_returns_transfer_outcomes_integrated_on_time_total_and_percent():
+    transfers = [
+        an_integrated_transfer(),
+        an_integrated_transfer(),
+        a_transfer_with_a_final_error(),
+    ]
     national_metrics_month = NationalMetricsMonth(
         transfers=transfers,
         year=a_year,
@@ -62,10 +66,11 @@ def test_returns_transfer_outcomes_integrated_on_time_total():
 
     actual = construct_national_metrics_presentation([national_metrics_month])
 
-    assert actual.metrics[0].transfer_outcomes.integrated_on_time.total == 1
+    assert actual.metrics[0].transfer_outcomes.integrated_on_time.total == 2
+    assert actual.metrics[0].transfer_outcomes.integrated_on_time.percent == 66.67
 
 
-def test_returns_transfer_outcomes_technical_failure_total():
+def test_returns_transfer_outcomes_technical_failure_total_and_percent():
     transfers = [a_transfer_with_a_final_error(), a_transfer_with_a_final_error(), build_transfer()]
     national_metrics_month = NationalMetricsMonth(
         transfers=transfers,
@@ -76,9 +81,10 @@ def test_returns_transfer_outcomes_technical_failure_total():
     actual = construct_national_metrics_presentation([national_metrics_month])
 
     assert actual.metrics[0].transfer_outcomes.technical_failure.total == 2
+    assert actual.metrics[0].transfer_outcomes.technical_failure.percent == 66.67
 
 
-def test_returns_transfer_outcomes_process_failure_total():
+def test_returns_transfer_outcomes_process_failure_total_and_percent():
     transfers = [
         a_transfer_integrated_beyond_8_days(),
         a_transfer_integrated_beyond_8_days(),
@@ -94,12 +100,25 @@ def test_returns_transfer_outcomes_process_failure_total():
     actual = construct_national_metrics_presentation([national_metrics_month])
 
     assert actual.metrics[0].transfer_outcomes.process_failure.total == 3
+    assert actual.metrics[0].transfer_outcomes.process_failure.percent == 75.0
+
     assert actual.metrics[0].transfer_outcomes.process_failure.integrated_late.total == 2
+    assert actual.metrics[0].transfer_outcomes.process_failure.integrated_late.percent == 50.0
+
     assert actual.metrics[0].transfer_outcomes.process_failure.transferred_not_integrated.total == 1
+    assert (
+        actual.metrics[0].transfer_outcomes.process_failure.transferred_not_integrated.percent
+        == 25.0
+    )
 
 
-def test_returns_transfer_outcomes_unclassified_failure_total():
-    transfers = [a_transfer_where_a_copc_triggered_an_error()]
+def test_returns_transfer_outcomes_unclassified_failure_total_and_percent():
+    transfers = [
+        a_transfer_where_a_copc_triggered_an_error(),
+        build_transfer(),
+        build_transfer(),
+        build_transfer(),
+    ]
     national_metrics_month = NationalMetricsMonth(
         transfers=transfers,
         year=a_year,
@@ -109,3 +128,4 @@ def test_returns_transfer_outcomes_unclassified_failure_total():
     actual = construct_national_metrics_presentation([national_metrics_month])
 
     assert actual.metrics[0].transfer_outcomes.unclassified_failure.total == 1
+    assert actual.metrics[0].transfer_outcomes.unclassified_failure.percent == 25.0
