@@ -3,8 +3,8 @@ from datetime import datetime
 from dateutil.tz import tzutc
 from freezegun import freeze_time
 
-from prmcalculator.domain.national.metrics_calculator import NationalMetricsMonth
-from prmcalculator.domain.national.metrics_presentation import (
+from prmcalculator.domain.national.calculate_national_metrics_month import NationalMetricsMonth
+from prmcalculator.domain.national.construct_national_metrics_presentation import (
     construct_national_metrics_presentation,
 )
 

@@ -1,6 +1,8 @@
 from unittest import mock
 
-from prmcalculator.domain.national.metrics_calculator import calculate_national_metrics_month
+from prmcalculator.domain.national.calculate_national_metrics_month import (
+    calculate_national_metrics_month,
+)
 from prmcalculator.domain.national.transfer_outcomes import TransferOutcomes
 from tests.builders.gp2gp import build_transfer
 

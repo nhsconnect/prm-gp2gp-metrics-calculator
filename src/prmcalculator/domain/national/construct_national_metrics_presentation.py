@@ -5,7 +5,7 @@ from typing import List
 from dateutil.tz import tzutc
 
 from prmcalculator.domain.gp2gp.transfer import TransferFailureReason
-from prmcalculator.domain.national.metrics_calculator import NationalMetricsMonth
+from prmcalculator.domain.national.calculate_national_metrics_month import NationalMetricsMonth
 
 
 @dataclass
