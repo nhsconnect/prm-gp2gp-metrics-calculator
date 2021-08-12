@@ -8,44 +8,45 @@ from prmcalculator.domain.national.metrics_calculator import NationalMetricsMont
 
 
 @dataclass
-class NationalMetricMonthPresentation:
-    year: int
-    month: int
-
-
-@dataclass
-class OutcomeMetrics:
+class OutcomeMetricsPresentation:
     total: int
 
 
 @dataclass
 class TransferOutcomesPresentation:
-    technical_failure: OutcomeMetrics
+    technical_failure: OutcomeMetricsPresentation
+
+
+@dataclass
+class NationalMetricMonthPresentation:
+    year: int
+    month: int
+    total: int
+    transfer_outcomes: TransferOutcomesPresentation
 
 
 @dataclass
 class NationalMetricsPresentation:
     generated_on: datetime
-    national_metrics_months: List[NationalMetricsMonth]
-    transfer_outcomes: TransferOutcomesPresentation
-
-    @property
-    def metrics(self) -> List[NationalMetricMonthPresentation]:
-        return [
-            NationalMetricMonthPresentation(
-                year=self.national_metrics_months[0].year,
-                month=self.national_metrics_months[0].month,
-            )
-        ]
+    metrics: List[NationalMetricMonthPresentation]
 
 
 def construct_national_metrics_presentation(national_metrics_months: List[NationalMetricsMonth]):
-    transfer_outcomes_month = national_metrics_months[0].transfer_outcomes
+    national_metric_month = national_metrics_months[0]
+    transfer_outcomes_month = national_metric_month.transfer_outcomes
 
     return NationalMetricsPresentation(
         generated_on=datetime.now(tzutc()),
-        national_metrics_months=national_metrics_months,
-        transfer_outcomes=TransferOutcomesPresentation(
-            technical_failure=OutcomeMetrics(total=transfer_outcomes_month.technical_failure.total)
-        ),
+        metrics=[
+            NationalMetricMonthPresentation(
+                year=national_metric_month.year,
+                month=national_metric_month.month,
+                total=national_metric_month.total,
+                transfer_outcomes=TransferOutcomesPresentation(
+                    technical_failure=OutcomeMetricsPresentation(
+                        total=transfer_outcomes_month.technical_failure.total
+                    )
+                ),
+            )
+        ],
     )

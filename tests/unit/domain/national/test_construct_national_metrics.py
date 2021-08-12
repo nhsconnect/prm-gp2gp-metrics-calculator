@@ -42,7 +42,7 @@ def test_returns_transfers_total_of_2_for_metric_month():
 
     actual = construct_national_metrics_presentation([national_metrics_month])
 
-    assert actual.total == 2
+    assert actual.metrics[0].total == 2
 
 
 def test_returns_transfer_outcomes_technical_failure_count():
@@ -54,4 +54,4 @@ def test_returns_transfer_outcomes_technical_failure_count():
 
     actual = construct_national_metrics_presentation([national_metrics_month])
 
-    assert actual.transfer_outcomes.technical_failure.total == 2
+    assert actual.metrics[0].transfer_outcomes.technical_failure.total == 2
