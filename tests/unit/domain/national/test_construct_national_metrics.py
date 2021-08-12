@@ -9,6 +9,7 @@ from prmcalculator.domain.national.metrics_presentation import (
 )
 
 from tests.builders.common import a_datetime
+from tests.builders.gp2gp import build_transfer, a_transfer_with_a_final_error
 
 a_year = a_datetime().year
 a_month = a_datetime().month
@@ -32,3 +33,25 @@ def test_has_correct_metric_month_and_year():
     assert len(actual.metrics) == 1
     assert actual.metrics[0].year == a_year
     assert actual.metrics[0].month == a_month
+
+
+def test_returns_transfers_total_of_2_for_metric_month():
+    national_metrics_month = NationalMetricsMonth(
+        transfers=[build_transfer(), build_transfer()], year=a_year, month=a_month
+    )
+
+    actual = construct_national_metrics_presentation([national_metrics_month])
+
+    assert actual.total == 2
+
+
+def test_returns_transfer_outcomes_technical_failure_count():
+    national_metrics_month = NationalMetricsMonth(
+        transfers=[a_transfer_with_a_final_error(), a_transfer_with_a_final_error()],
+        year=a_year,
+        month=a_month,
+    )
+
+    actual = construct_national_metrics_presentation([national_metrics_month])
+
+    assert actual.transfer_outcomes.technical_failure.total == 2

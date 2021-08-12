@@ -14,9 +14,20 @@ class NationalMetricMonthPresentation:
 
 
 @dataclass
+class OutcomeMetrics:
+    total: int
+
+
+@dataclass
+class TransferOutcomesPresentation:
+    technical_failure: OutcomeMetrics
+
+
+@dataclass
 class NationalMetricsPresentation:
     generated_on: datetime
     national_metrics_months: List[NationalMetricsMonth]
+    transfer_outcomes: TransferOutcomesPresentation
 
     @property
     def metrics(self) -> List[NationalMetricMonthPresentation]:
@@ -29,7 +40,12 @@ class NationalMetricsPresentation:
 
 
 def construct_national_metrics_presentation(national_metrics_months: List[NationalMetricsMonth]):
-    current_date = datetime.now(tzutc())
+    transfer_outcomes_month = national_metrics_months[0].transfer_outcomes
+
     return NationalMetricsPresentation(
-        generated_on=current_date, national_metrics_months=national_metrics_months
+        generated_on=datetime.now(tzutc()),
+        national_metrics_months=national_metrics_months,
+        transfer_outcomes=TransferOutcomesPresentation(
+            technical_failure=OutcomeMetrics(total=transfer_outcomes_month.technical_failure.total)
+        ),
     )
