@@ -63,7 +63,6 @@ def construct_national_metrics_presentation(national_metrics_months: List[Nation
                         percent=calculate_percentage(
                             portion=transfer_outcomes_month.integrated_on_time.total,
                             total=total_number_of_transfers_month,
-                            num_digits=2,
                         ),
                     ),
                     process_failure=_construct_process_failure_metrics(
@@ -74,7 +73,6 @@ def construct_national_metrics_presentation(national_metrics_months: List[Nation
                         percent=calculate_percentage(
                             portion=transfer_outcomes_month.technical_failure.total,
                             total=total_number_of_transfers_month,
-                            num_digits=2,
                         ),
                     ),
                     unclassified_failure=OutcomeMetricsPresentation(
@@ -82,7 +80,6 @@ def construct_national_metrics_presentation(national_metrics_months: List[Nation
                         percent=calculate_percentage(
                             portion=transfer_outcomes_month.unclassified_failure.total,
                             total=total_number_of_transfers_month,
-                            num_digits=2,
                         ),
                     ),
                 ),
@@ -107,14 +104,12 @@ def _construct_process_failure_metrics(
         percent=calculate_percentage(
             portion=transfer_outcomes_month.process_failure.total,
             total=total_number_of_transfers_month,
-            num_digits=2,
         ),
         integrated_late=OutcomeMetricsPresentation(
             total=integrated_late_total,
             percent=calculate_percentage(
                 portion=integrated_late_total,
                 total=total_number_of_transfers_month,
-                num_digits=2,
             ),
         ),
         transferred_not_integrated=OutcomeMetricsPresentation(
@@ -122,7 +117,6 @@ def _construct_process_failure_metrics(
             percent=calculate_percentage(
                 portion=transferred_not_integrated_total,
                 total=total_number_of_transfers_month,
-                num_digits=2,
             ),
         ),
     )

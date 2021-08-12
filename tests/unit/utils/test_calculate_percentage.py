@@ -13,3 +13,10 @@ def test_rounds_up_2_digits():
     actual = calculate_percentage(portion=2, total=3, num_digits=2)
 
     assert actual == expected
+
+
+def test_rounds_up_2_digits_by_default():
+    expected = 66.67
+    actual = calculate_percentage(portion=2, total=3)
+
+    assert actual == expected
