@@ -2,7 +2,7 @@ from typing import List
 
 import pytest
 
-from prmcalculator.domain.national.metrics_calculator_deprecated import (
+from prmcalculator.domain.national.deprecated.metrics_calculator_deprecated import (
     calculate_national_metrics_deprecated,
 )
 from prmcalculator.domain.gp2gp.transfer import Transfer

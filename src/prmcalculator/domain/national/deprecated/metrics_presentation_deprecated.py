@@ -4,7 +4,9 @@ from typing import List
 
 from dateutil.tz import tzutc
 
-from prmcalculator.domain.national.metrics_calculator_deprecated import NationalMetricsDeprecated
+from prmcalculator.domain.national.deprecated.metrics_calculator_deprecated import (
+    NationalMetricsDeprecated,
+)
 from prmcalculator.utils.calculate_percentage import calculate_percentage
 
 

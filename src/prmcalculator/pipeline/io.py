@@ -4,7 +4,7 @@ import logging
 import pyarrow as pa
 
 from prmcalculator.domain.gp2gp.transfer import Transfer, convert_table_to_transfers
-from prmcalculator.domain.national.metrics_presentation_deprecated import (
+from prmcalculator.domain.national.deprecated.metrics_presentation_deprecated import (
     NationalMetricsPresentationDeprecated,
 )
 from prmcalculator.domain.practice.metrics_presentation import PracticeMetricsPresentation

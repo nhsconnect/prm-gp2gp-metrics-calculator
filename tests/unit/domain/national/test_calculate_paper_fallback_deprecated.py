@@ -1,4 +1,4 @@
-from prmcalculator.domain.national.metrics_calculator_deprecated import (
+from prmcalculator.domain.national.deprecated.metrics_calculator_deprecated import (
     NationalMetricsDeprecated,
     IntegratedMetricsDeprecated,
 )

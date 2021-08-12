@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from dateutil.tz import UTC, tzutc
 from freezegun import freeze_time
 
-from prmcalculator.domain.national.metrics_presentation_deprecated import (
+from prmcalculator.domain.national.deprecated.metrics_presentation_deprecated import (
     MonthlyNationalMetricsDeprecated,
     IntegratedMetricsPresentationDeprecated,
     FailedMetricsDeprecated,

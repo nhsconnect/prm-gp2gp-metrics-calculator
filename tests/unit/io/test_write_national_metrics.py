@@ -4,7 +4,7 @@ from unittest.mock import Mock
 
 from dateutil.tz import UTC
 
-from prmcalculator.domain.national.metrics_presentation_deprecated import (
+from prmcalculator.domain.national.deprecated.metrics_presentation_deprecated import (
     NationalMetricsPresentationDeprecated,
     MonthlyNationalMetricsDeprecated,
     FailedMetricsDeprecated,

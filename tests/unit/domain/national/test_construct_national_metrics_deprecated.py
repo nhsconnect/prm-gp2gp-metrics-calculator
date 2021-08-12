@@ -4,10 +4,10 @@ import pytest
 from dateutil.tz import tzutc
 from freezegun import freeze_time
 
-from prmcalculator.domain.national.metrics_presentation_deprecated import (
+from prmcalculator.domain.national.deprecated.metrics_presentation_deprecated import (
     construct_national_metrics_deprecated,
 )
-from prmcalculator.domain.national.metrics_calculator_deprecated import (
+from prmcalculator.domain.national.deprecated.metrics_calculator_deprecated import (
     NationalMetricsDeprecated,
     IntegratedMetricsDeprecated,
 )

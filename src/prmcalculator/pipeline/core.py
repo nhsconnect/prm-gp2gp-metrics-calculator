@@ -1,9 +1,9 @@
 from typing import List
 
-from prmcalculator.domain.national.metrics_calculator_deprecated import (
+from prmcalculator.domain.national.deprecated.metrics_calculator_deprecated import (
     calculate_national_metrics_deprecated,
 )
-from prmcalculator.domain.national.metrics_presentation_deprecated import (
+from prmcalculator.domain.national.deprecated.metrics_presentation_deprecated import (
     NationalMetricsPresentationDeprecated,
     construct_national_metrics_deprecated,
 )
