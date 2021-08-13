@@ -9,25 +9,29 @@
         "transferCount": 4,
         "transferPercentage": 57.14
       },
-      "processFailure": {
-        "transferCount": 2,
-        "transferPercentage": 28.57,
-        "integratedLate": {
-          "transferPercentage": 14.29,
-          "transferCount": 1
+      "paperFallback": {
+        "transferCount": 3,
+        "transferPercentage": 42.86,
+        "processFailure": {
+          "transferCount": 2,
+          "transferPercentage": 28.57,
+          "integratedLate": {
+            "transferPercentage": 14.29,
+            "transferCount": 1
+          },
+          "transferredNotIntegrated": {
+            "transferCount": 1,
+            "transferPercentage": 14.29
+          }
         },
-        "transferredNotIntegrated": {
+        "technicalFailure": {
           "transferCount": 1,
           "transferPercentage": 14.29
+        },
+        "unclassifiedFailure": {
+          "transferCount": 0,
+          "transferPercentage": 0.0
         }
-      },
-      "technicalFailure": {
-        "transferCount": 1,
-        "transferPercentage": 14.29
-      },
-      "unclassifiedFailure": {
-        "transferCount": 0,
-        "transferPercentage": 0.0
       }
     }
   ]

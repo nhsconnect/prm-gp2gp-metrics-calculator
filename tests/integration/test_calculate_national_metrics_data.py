@@ -11,6 +11,7 @@ from prmcalculator.domain.national.construct_national_metrics_presentation impor
     NationalMetricMonthPresentation,
     OutcomeMetricsPresentation,
     ProcessFailureMetricsPresentation,
+    PaperFallbackMetricsPresentation,
 )
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 from tests.builders.common import a_duration, a_datetime
@@ -79,25 +80,29 @@ def test_calculates_correct_national_metrics_given_series_of_transfers():
             transfer_count=3,
             transfer_percentage=20.0,
         ),
-        process_failure=ProcessFailureMetricsPresentation(
-            transfer_count=4,
-            transfer_percentage=26.67,
-            integrated_late=OutcomeMetricsPresentation(
-                transfer_count=3,
-                transfer_percentage=20.0,
+        paper_fallback=PaperFallbackMetricsPresentation(
+            transfer_count=12,
+            transfer_percentage=80.0,
+            process_failure=ProcessFailureMetricsPresentation(
+                transfer_count=4,
+                transfer_percentage=26.67,
+                integrated_late=OutcomeMetricsPresentation(
+                    transfer_count=3,
+                    transfer_percentage=20.0,
+                ),
+                transferred_not_integrated=OutcomeMetricsPresentation(
+                    transfer_count=1,
+                    transfer_percentage=6.67,
+                ),
             ),
-            transferred_not_integrated=OutcomeMetricsPresentation(
+            technical_failure=OutcomeMetricsPresentation(
+                transfer_count=7,
+                transfer_percentage=46.67,
+            ),
+            unclassified_failure=OutcomeMetricsPresentation(
                 transfer_count=1,
                 transfer_percentage=6.67,
             ),
-        ),
-        technical_failure=OutcomeMetricsPresentation(
-            transfer_count=7,
-            transfer_percentage=46.67,
-        ),
-        unclassified_failure=OutcomeMetricsPresentation(
-            transfer_count=1,
-            transfer_percentage=6.67,
         ),
     )
 
@@ -144,25 +149,29 @@ def test_calculates_correct_national_metrics_for_transfers_within_reporting_wind
             transfer_count=1,
             transfer_percentage=100.0,
         ),
-        process_failure=ProcessFailureMetricsPresentation(
+        paper_fallback=PaperFallbackMetricsPresentation(
             transfer_count=0,
             transfer_percentage=0.0,
-            integrated_late=OutcomeMetricsPresentation(
+            process_failure=ProcessFailureMetricsPresentation(
+                transfer_count=0,
+                transfer_percentage=0.0,
+                integrated_late=OutcomeMetricsPresentation(
+                    transfer_count=0,
+                    transfer_percentage=0.0,
+                ),
+                transferred_not_integrated=OutcomeMetricsPresentation(
+                    transfer_count=0,
+                    transfer_percentage=0.0,
+                ),
+            ),
+            technical_failure=OutcomeMetricsPresentation(
                 transfer_count=0,
                 transfer_percentage=0.0,
             ),
-            transferred_not_integrated=OutcomeMetricsPresentation(
+            unclassified_failure=OutcomeMetricsPresentation(
                 transfer_count=0,
                 transfer_percentage=0.0,
             ),
-        ),
-        technical_failure=OutcomeMetricsPresentation(
-            transfer_count=0,
-            transfer_percentage=0.0,
-        ),
-        unclassified_failure=OutcomeMetricsPresentation(
-            transfer_count=0,
-            transfer_percentage=0.0,
         ),
     )
 
