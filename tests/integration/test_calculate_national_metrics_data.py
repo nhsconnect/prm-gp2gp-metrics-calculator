@@ -9,7 +9,6 @@ from prmcalculator.domain.national.calculate_national_metrics_data import (
 from prmcalculator.domain.national.construct_national_metrics_presentation import (
     NationalMetricsPresentation,
     NationalMetricMonthPresentation,
-    TransferOutcomesPresentation,
     OutcomeMetricsPresentation,
     ProcessFailureMetricsPresentation,
 )
@@ -76,31 +75,29 @@ def test_calculates_correct_national_metrics_given_series_of_transfers():
         year=2019,
         month=12,
         transfer_count=15,
-        transfer_outcomes=TransferOutcomesPresentation(
-            integrated_on_time=OutcomeMetricsPresentation(
+        integrated_on_time=OutcomeMetricsPresentation(
+            transfer_count=3,
+            transfer_percentage=20.0,
+        ),
+        process_failure=ProcessFailureMetricsPresentation(
+            transfer_count=4,
+            transfer_percentage=26.67,
+            integrated_late=OutcomeMetricsPresentation(
                 transfer_count=3,
                 transfer_percentage=20.0,
             ),
-            process_failure=ProcessFailureMetricsPresentation(
-                transfer_count=4,
-                transfer_percentage=26.67,
-                integrated_late=OutcomeMetricsPresentation(
-                    transfer_count=3,
-                    transfer_percentage=20.0,
-                ),
-                transferred_not_integrated=OutcomeMetricsPresentation(
-                    transfer_count=1,
-                    transfer_percentage=6.67,
-                ),
-            ),
-            technical_failure=OutcomeMetricsPresentation(
-                transfer_count=7,
-                transfer_percentage=46.67,
-            ),
-            unclassified_failure=OutcomeMetricsPresentation(
+            transferred_not_integrated=OutcomeMetricsPresentation(
                 transfer_count=1,
                 transfer_percentage=6.67,
             ),
+        ),
+        technical_failure=OutcomeMetricsPresentation(
+            transfer_count=7,
+            transfer_percentage=46.67,
+        ),
+        unclassified_failure=OutcomeMetricsPresentation(
+            transfer_count=1,
+            transfer_percentage=6.67,
         ),
     )
 
@@ -143,31 +140,29 @@ def test_calculates_correct_national_metrics_for_transfers_within_reporting_wind
         year=2019,
         month=12,
         transfer_count=1,
-        transfer_outcomes=TransferOutcomesPresentation(
-            integrated_on_time=OutcomeMetricsPresentation(
-                transfer_count=1,
-                transfer_percentage=100.0,
-            ),
-            process_failure=ProcessFailureMetricsPresentation(
-                transfer_count=0,
-                transfer_percentage=0.0,
-                integrated_late=OutcomeMetricsPresentation(
-                    transfer_count=0,
-                    transfer_percentage=0.0,
-                ),
-                transferred_not_integrated=OutcomeMetricsPresentation(
-                    transfer_count=0,
-                    transfer_percentage=0.0,
-                ),
-            ),
-            technical_failure=OutcomeMetricsPresentation(
+        integrated_on_time=OutcomeMetricsPresentation(
+            transfer_count=1,
+            transfer_percentage=100.0,
+        ),
+        process_failure=ProcessFailureMetricsPresentation(
+            transfer_count=0,
+            transfer_percentage=0.0,
+            integrated_late=OutcomeMetricsPresentation(
                 transfer_count=0,
                 transfer_percentage=0.0,
             ),
-            unclassified_failure=OutcomeMetricsPresentation(
+            transferred_not_integrated=OutcomeMetricsPresentation(
                 transfer_count=0,
                 transfer_percentage=0.0,
             ),
+        ),
+        technical_failure=OutcomeMetricsPresentation(
+            transfer_count=0,
+            transfer_percentage=0.0,
+        ),
+        unclassified_failure=OutcomeMetricsPresentation(
+            transfer_count=0,
+            transfer_percentage=0.0,
         ),
     )
 

@@ -23,19 +23,14 @@ class ProcessFailureMetricsPresentation(OutcomeMetricsPresentation):
 
 
 @dataclass
-class TransferOutcomesPresentation:
-    integrated_on_time: OutcomeMetricsPresentation
-    technical_failure: OutcomeMetricsPresentation
-    process_failure: ProcessFailureMetricsPresentation
-    unclassified_failure: OutcomeMetricsPresentation
-
-
-@dataclass
 class NationalMetricMonthPresentation:
     year: int
     month: int
     transfer_count: int
-    transfer_outcomes: TransferOutcomesPresentation
+    integrated_on_time: OutcomeMetricsPresentation
+    technical_failure: OutcomeMetricsPresentation
+    process_failure: ProcessFailureMetricsPresentation
+    unclassified_failure: OutcomeMetricsPresentation
 
 
 @dataclass
@@ -59,30 +54,28 @@ def construct_national_metrics_presentation(
                 year=national_metric_month.year,
                 month=national_metric_month.month,
                 transfer_count=total_number_of_transfers_month,
-                transfer_outcomes=TransferOutcomesPresentation(
-                    integrated_on_time=OutcomeMetricsPresentation(
-                        transfer_count=transfer_outcomes_month.integrated_on_time.total,
-                        transfer_percentage=calculate_percentage(
-                            portion=transfer_outcomes_month.integrated_on_time.total,
-                            total=total_number_of_transfers_month,
-                        ),
+                integrated_on_time=OutcomeMetricsPresentation(
+                    transfer_count=transfer_outcomes_month.integrated_on_time.total,
+                    transfer_percentage=calculate_percentage(
+                        portion=transfer_outcomes_month.integrated_on_time.total,
+                        total=total_number_of_transfers_month,
                     ),
-                    process_failure=_construct_process_failure_metrics(
-                        total_number_of_transfers_month, transfer_outcomes_month
+                ),
+                process_failure=_construct_process_failure_metrics(
+                    total_number_of_transfers_month, transfer_outcomes_month
+                ),
+                technical_failure=OutcomeMetricsPresentation(
+                    transfer_count=transfer_outcomes_month.technical_failure.total,
+                    transfer_percentage=calculate_percentage(
+                        portion=transfer_outcomes_month.technical_failure.total,
+                        total=total_number_of_transfers_month,
                     ),
-                    technical_failure=OutcomeMetricsPresentation(
-                        transfer_count=transfer_outcomes_month.technical_failure.total,
-                        transfer_percentage=calculate_percentage(
-                            portion=transfer_outcomes_month.technical_failure.total,
-                            total=total_number_of_transfers_month,
-                        ),
-                    ),
-                    unclassified_failure=OutcomeMetricsPresentation(
-                        transfer_count=transfer_outcomes_month.unclassified_failure.total,
-                        transfer_percentage=calculate_percentage(
-                            portion=transfer_outcomes_month.unclassified_failure.total,
-                            total=total_number_of_transfers_month,
-                        ),
+                ),
+                unclassified_failure=OutcomeMetricsPresentation(
+                    transfer_count=transfer_outcomes_month.unclassified_failure.total,
+                    transfer_percentage=calculate_percentage(
+                        portion=transfer_outcomes_month.unclassified_failure.total,
+                        total=total_number_of_transfers_month,
                     ),
                 ),
             )

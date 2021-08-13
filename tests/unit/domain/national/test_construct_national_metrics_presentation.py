@@ -66,8 +66,8 @@ def test_returns_transfer_outcomes_integrated_on_time_total_and_percent():
 
     actual = construct_national_metrics_presentation([national_metrics_month])
 
-    assert actual.metrics[0].transfer_outcomes.integrated_on_time.transfer_count == 2
-    assert actual.metrics[0].transfer_outcomes.integrated_on_time.transfer_percentage == 66.67
+    assert actual.metrics[0].integrated_on_time.transfer_count == 2
+    assert actual.metrics[0].integrated_on_time.transfer_percentage == 66.67
 
 
 def test_returns_transfer_outcomes_technical_failure_total_and_percent():
@@ -80,8 +80,8 @@ def test_returns_transfer_outcomes_technical_failure_total_and_percent():
 
     actual = construct_national_metrics_presentation([national_metrics_month])
 
-    assert actual.metrics[0].transfer_outcomes.technical_failure.transfer_count == 2
-    assert actual.metrics[0].transfer_outcomes.technical_failure.transfer_percentage == 66.67
+    assert actual.metrics[0].technical_failure.transfer_count == 2
+    assert actual.metrics[0].technical_failure.transfer_percentage == 66.67
 
 
 def test_returns_transfer_outcomes_process_failure_total_and_percent():
@@ -99,27 +99,14 @@ def test_returns_transfer_outcomes_process_failure_total_and_percent():
 
     actual = construct_national_metrics_presentation([national_metrics_month])
 
-    assert actual.metrics[0].transfer_outcomes.process_failure.transfer_count == 3
-    assert actual.metrics[0].transfer_outcomes.process_failure.transfer_percentage == 75.0
+    assert actual.metrics[0].process_failure.transfer_count == 3
+    assert actual.metrics[0].process_failure.transfer_percentage == 75.0
 
-    assert actual.metrics[0].transfer_outcomes.process_failure.integrated_late.transfer_count == 2
-    assert (
-        actual.metrics[0].transfer_outcomes.process_failure.integrated_late.transfer_percentage
-        == 50.0
-    )
+    assert actual.metrics[0].process_failure.integrated_late.transfer_count == 2
+    assert actual.metrics[0].process_failure.integrated_late.transfer_percentage == 50.0
 
-    assert (
-        actual.metrics[
-            0
-        ].transfer_outcomes.process_failure.transferred_not_integrated.transfer_count
-        == 1
-    )
-    assert (
-        actual.metrics[
-            0
-        ].transfer_outcomes.process_failure.transferred_not_integrated.transfer_percentage
-        == 25.0
-    )
+    assert actual.metrics[0].process_failure.transferred_not_integrated.transfer_count == 1
+    assert actual.metrics[0].process_failure.transferred_not_integrated.transfer_percentage == 25.0
 
 
 def test_returns_transfer_outcomes_unclassified_failure_total_and_percent():
@@ -137,5 +124,5 @@ def test_returns_transfer_outcomes_unclassified_failure_total_and_percent():
 
     actual = construct_national_metrics_presentation([national_metrics_month])
 
-    assert actual.metrics[0].transfer_outcomes.unclassified_failure.transfer_count == 1
-    assert actual.metrics[0].transfer_outcomes.unclassified_failure.transfer_percentage == 25.0
+    assert actual.metrics[0].unclassified_failure.transfer_count == 1
+    assert actual.metrics[0].unclassified_failure.transfer_percentage == 25.0
