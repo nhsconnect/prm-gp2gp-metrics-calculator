@@ -84,8 +84,6 @@ def test_calculates_correct_national_metrics_given_series_of_transfers():
             transfer_count=12,
             transfer_percentage=80.0,
             process_failure=ProcessFailureMetricsPresentation(
-                transfer_count=4,
-                transfer_percentage=26.67,
                 integrated_late=OutcomeMetricsPresentation(
                     transfer_count=3,
                     transfer_percentage=20.0,
@@ -153,8 +151,6 @@ def test_calculates_correct_national_metrics_for_transfers_within_reporting_wind
             transfer_count=0,
             transfer_percentage=0.0,
             process_failure=ProcessFailureMetricsPresentation(
-                transfer_count=0,
-                transfer_percentage=0.0,
                 integrated_late=OutcomeMetricsPresentation(
                     transfer_count=0,
                     transfer_percentage=0.0,

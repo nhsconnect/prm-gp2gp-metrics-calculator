@@ -13,8 +13,6 @@
         "transferCount": 3,
         "transferPercentage": 42.86,
         "processFailure": {
-          "transferCount": 2,
-          "transferPercentage": 28.57,
           "integratedLate": {
             "transferPercentage": 14.29,
             "transferCount": 1

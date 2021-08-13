@@ -17,7 +17,7 @@ class OutcomeMetricsPresentation:
 
 
 @dataclass
-class ProcessFailureMetricsPresentation(OutcomeMetricsPresentation):
+class ProcessFailureMetricsPresentation:
     integrated_late: OutcomeMetricsPresentation
     transferred_not_integrated: OutcomeMetricsPresentation
 
@@ -118,11 +118,6 @@ def _construct_process_failure_metrics(
     ).total
 
     return ProcessFailureMetricsPresentation(
-        transfer_count=transfer_outcomes_month.process_failure.total,
-        transfer_percentage=calculate_percentage(
-            portion=transfer_outcomes_month.process_failure.total,
-            total=total_number_of_transfers_month,
-        ),
         integrated_late=OutcomeMetricsPresentation(
             transfer_count=integrated_late_total,
             transfer_percentage=calculate_percentage(

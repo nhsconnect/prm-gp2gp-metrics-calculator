@@ -119,9 +119,6 @@ def test_returns_process_failure_metrics_transfer_count_and_percent():
     actual = construct_national_metrics_presentation([national_metrics_month])
     actual_process_failure_metric_month = actual.metrics[0].paper_fallback.process_failure
 
-    assert actual_process_failure_metric_month.transfer_count == 3
-    assert actual_process_failure_metric_month.transfer_percentage == 75.0
-
     assert actual_process_failure_metric_month.integrated_late.transfer_count == 2
     assert actual_process_failure_metric_month.integrated_late.transfer_percentage == 50.0
 
