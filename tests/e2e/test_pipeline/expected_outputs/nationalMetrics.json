@@ -4,31 +4,31 @@
     {
       "year": 2019,
       "month": 12,
-      "total": 7,
+      "transferCount": 7,
       "transferOutcomes": {
         "integratedOnTime": {
-          "total": 4,
-          "percent": 57.14
+          "transferCount": 4,
+          "transferPercentage": 57.14
         },
         "processFailure": {
-          "total": 2,
-          "percent": 28.57,
+          "transferCount": 2,
+          "transferPercentage": 28.57,
           "integratedLate": {
-            "percent": 14.29,
-            "total": 1
+            "transferPercentage": 14.29,
+            "transferCount": 1
           },
           "transferredNotIntegrated": {
-            "total": 1,
-            "percent": 14.29
+            "transferCount": 1,
+            "transferPercentage": 14.29
           }
         },
         "technicalFailure": {
-          "total": 1,
-          "percent": 14.29
+          "transferCount": 1,
+          "transferPercentage": 14.29
         },
         "unclassifiedFailure": {
-          "total": 0,
-          "percent": 0.0
+          "transferCount": 0,
+          "transferPercentage": 0.0
         }
       }
     }

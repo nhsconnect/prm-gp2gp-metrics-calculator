@@ -75,31 +75,31 @@ def test_calculates_correct_national_metrics_given_series_of_transfers():
     expected_national_metrics_month_presentation = NationalMetricMonthPresentation(
         year=2019,
         month=12,
-        total=15,
+        transfer_count=15,
         transfer_outcomes=TransferOutcomesPresentation(
             integrated_on_time=OutcomeMetricsPresentation(
-                total=3,
-                percent=20.0,
+                transfer_count=3,
+                transfer_percentage=20.0,
             ),
             process_failure=ProcessFailureMetricsPresentation(
-                total=4,
-                percent=26.67,
+                transfer_count=4,
+                transfer_percentage=26.67,
                 integrated_late=OutcomeMetricsPresentation(
-                    total=3,
-                    percent=20.0,
+                    transfer_count=3,
+                    transfer_percentage=20.0,
                 ),
                 transferred_not_integrated=OutcomeMetricsPresentation(
-                    total=1,
-                    percent=6.67,
+                    transfer_count=1,
+                    transfer_percentage=6.67,
                 ),
             ),
             technical_failure=OutcomeMetricsPresentation(
-                total=7,
-                percent=46.67,
+                transfer_count=7,
+                transfer_percentage=46.67,
             ),
             unclassified_failure=OutcomeMetricsPresentation(
-                total=1,
-                percent=6.67,
+                transfer_count=1,
+                transfer_percentage=6.67,
             ),
         ),
     )
@@ -142,31 +142,31 @@ def test_calculates_correct_national_metrics_for_transfers_within_reporting_wind
     expected_national_metrics_month_presentation = NationalMetricMonthPresentation(
         year=2019,
         month=12,
-        total=1,
+        transfer_count=1,
         transfer_outcomes=TransferOutcomesPresentation(
             integrated_on_time=OutcomeMetricsPresentation(
-                total=1,
-                percent=100.0,
+                transfer_count=1,
+                transfer_percentage=100.0,
             ),
             process_failure=ProcessFailureMetricsPresentation(
-                total=0,
-                percent=0.0,
+                transfer_count=0,
+                transfer_percentage=0.0,
                 integrated_late=OutcomeMetricsPresentation(
-                    total=0,
-                    percent=0.0,
+                    transfer_count=0,
+                    transfer_percentage=0.0,
                 ),
                 transferred_not_integrated=OutcomeMetricsPresentation(
-                    total=0,
-                    percent=0.0,
+                    transfer_count=0,
+                    transfer_percentage=0.0,
                 ),
             ),
             technical_failure=OutcomeMetricsPresentation(
-                total=0,
-                percent=0.0,
+                transfer_count=0,
+                transfer_percentage=0.0,
             ),
             unclassified_failure=OutcomeMetricsPresentation(
-                total=0,
-                percent=0.0,
+                transfer_count=0,
+                transfer_percentage=0.0,
             ),
         ),
     )

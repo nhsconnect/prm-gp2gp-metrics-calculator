@@ -12,8 +12,8 @@ from prmcalculator.utils.calculate_percentage import calculate_percentage
 
 @dataclass
 class OutcomeMetricsPresentation:
-    total: int
-    percent: float
+    transfer_count: int
+    transfer_percentage: float
 
 
 @dataclass
@@ -34,7 +34,7 @@ class TransferOutcomesPresentation:
 class NationalMetricMonthPresentation:
     year: int
     month: int
-    total: int
+    transfer_count: int
     transfer_outcomes: TransferOutcomesPresentation
 
 
@@ -58,11 +58,11 @@ def construct_national_metrics_presentation(
             NationalMetricMonthPresentation(
                 year=national_metric_month.year,
                 month=national_metric_month.month,
-                total=total_number_of_transfers_month,
+                transfer_count=total_number_of_transfers_month,
                 transfer_outcomes=TransferOutcomesPresentation(
                     integrated_on_time=OutcomeMetricsPresentation(
-                        total=transfer_outcomes_month.integrated_on_time.total,
-                        percent=calculate_percentage(
+                        transfer_count=transfer_outcomes_month.integrated_on_time.total,
+                        transfer_percentage=calculate_percentage(
                             portion=transfer_outcomes_month.integrated_on_time.total,
                             total=total_number_of_transfers_month,
                         ),
@@ -71,15 +71,15 @@ def construct_national_metrics_presentation(
                         total_number_of_transfers_month, transfer_outcomes_month
                     ),
                     technical_failure=OutcomeMetricsPresentation(
-                        total=transfer_outcomes_month.technical_failure.total,
-                        percent=calculate_percentage(
+                        transfer_count=transfer_outcomes_month.technical_failure.total,
+                        transfer_percentage=calculate_percentage(
                             portion=transfer_outcomes_month.technical_failure.total,
                             total=total_number_of_transfers_month,
                         ),
                     ),
                     unclassified_failure=OutcomeMetricsPresentation(
-                        total=transfer_outcomes_month.unclassified_failure.total,
-                        percent=calculate_percentage(
+                        transfer_count=transfer_outcomes_month.unclassified_failure.total,
+                        transfer_percentage=calculate_percentage(
                             portion=transfer_outcomes_month.unclassified_failure.total,
                             total=total_number_of_transfers_month,
                         ),
@@ -102,21 +102,21 @@ def _construct_process_failure_metrics(
     ).total
 
     return ProcessFailureMetricsPresentation(
-        total=transfer_outcomes_month.process_failure.total,
-        percent=calculate_percentage(
+        transfer_count=transfer_outcomes_month.process_failure.total,
+        transfer_percentage=calculate_percentage(
             portion=transfer_outcomes_month.process_failure.total,
             total=total_number_of_transfers_month,
         ),
         integrated_late=OutcomeMetricsPresentation(
-            total=integrated_late_total,
-            percent=calculate_percentage(
+            transfer_count=integrated_late_total,
+            transfer_percentage=calculate_percentage(
                 portion=integrated_late_total,
                 total=total_number_of_transfers_month,
             ),
         ),
         transferred_not_integrated=OutcomeMetricsPresentation(
-            total=transferred_not_integrated_total,
-            percent=calculate_percentage(
+            transfer_count=transferred_not_integrated_total,
+            transfer_percentage=calculate_percentage(
                 portion=transferred_not_integrated_total,
                 total=total_number_of_transfers_month,
             ),
