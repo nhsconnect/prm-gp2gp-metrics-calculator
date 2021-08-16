@@ -33,7 +33,7 @@ class TransferFailureReason(Enum):
     AMBIGUOUS_COPCS = "Ambiguous COPC messages"
 
 
-@dataclass
+@dataclass(frozen=True)
 class TransferOutcome:
     status: TransferStatus
     failure_reason: Optional[TransferFailureReason]

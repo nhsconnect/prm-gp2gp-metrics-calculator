@@ -4,9 +4,7 @@ from typing import List
 
 from dateutil.tz import tzutc
 
-from prmcalculator.domain.gp2gp.transfer import TransferFailureReason
 from prmcalculator.domain.national.calculate_national_metrics_month import NationalMetricsMonth
-from prmcalculator.domain.national.transfer_outcomes import TransferOutcomes
 from prmcalculator.utils.calculate_percentage import calculate_percentage
 
 
@@ -48,7 +46,6 @@ def construct_national_metrics_presentation(
     national_metrics_months: List[NationalMetricsMonth],
 ) -> NationalMetricsPresentation:
     national_metric_month = national_metrics_months[0]
-    transfer_outcomes_month = national_metric_month.transfer_outcomes
 
     total_number_of_transfers_month = national_metric_month.total
 
@@ -60,14 +57,14 @@ def construct_national_metrics_presentation(
                 month=national_metric_month.month,
                 transfer_count=total_number_of_transfers_month,
                 integrated_on_time=OutcomeMetricsPresentation(
-                    transfer_count=transfer_outcomes_month.integrated_on_time.total,
+                    transfer_count=national_metric_month.integrated_on_time_total(),
                     transfer_percentage=calculate_percentage(
-                        portion=transfer_outcomes_month.integrated_on_time.total,
+                        portion=national_metric_month.integrated_on_time_total(),
                         total=total_number_of_transfers_month,
                     ),
                 ),
                 paper_fallback=_construct_paper_fallback_metrics(
-                    total_number_of_transfers_month, transfer_outcomes_month
+                    total_number_of_transfers_month, national_metric_month
                 ),
             )
         ],
@@ -75,10 +72,10 @@ def construct_national_metrics_presentation(
 
 
 def _construct_paper_fallback_metrics(
-    total_number_of_transfers_month: int, transfer_outcomes_month: TransferOutcomes
+    total_number_of_transfers_month: int, metrics_month: NationalMetricsMonth
 ) -> PaperFallbackMetricsPresentation:
     paper_fallback_total = (
-        total_number_of_transfers_month - transfer_outcomes_month.integrated_on_time.total
+        total_number_of_transfers_month - metrics_month.integrated_on_time_total()
     )
     paper_fallback_percent = calculate_percentage(
         portion=paper_fallback_total, total=total_number_of_transfers_month
@@ -87,19 +84,19 @@ def _construct_paper_fallback_metrics(
         transfer_count=paper_fallback_total,
         transfer_percentage=paper_fallback_percent,
         process_failure=_construct_process_failure_metrics(
-            total_number_of_transfers_month, transfer_outcomes_month
+            total_number_of_transfers_month, metrics_month
         ),
         technical_failure=OutcomeMetricsPresentation(
-            transfer_count=transfer_outcomes_month.technical_failure.total,
+            transfer_count=metrics_month.technical_failure_total(),
             transfer_percentage=calculate_percentage(
-                portion=transfer_outcomes_month.technical_failure.total,
+                portion=metrics_month.technical_failure_total(),
                 total=total_number_of_transfers_month,
             ),
         ),
         unclassified_failure=OutcomeMetricsPresentation(
-            transfer_count=transfer_outcomes_month.unclassified_failure.total,
+            transfer_count=metrics_month.unclassified_failure_total(),
             transfer_percentage=calculate_percentage(
-                portion=transfer_outcomes_month.unclassified_failure.total,
+                portion=metrics_month.unclassified_failure_total(),
                 total=total_number_of_transfers_month,
             ),
         ),
@@ -107,15 +104,11 @@ def _construct_paper_fallback_metrics(
 
 
 def _construct_process_failure_metrics(
-    total_number_of_transfers_month: int, transfer_outcomes_month: TransferOutcomes
+    total_number_of_transfers_month: int, metrics_month: NationalMetricsMonth
 ) -> ProcessFailureMetricsPresentation:
-    transferred_not_integrated_total = transfer_outcomes_month.process_failure.failure_reason(
-        TransferFailureReason.TRANSFERRED_NOT_INTEGRATED
-    ).total
 
-    integrated_late_total = transfer_outcomes_month.process_failure.failure_reason(
-        TransferFailureReason.INTEGRATED_LATE
-    ).total
+    transferred_not_integrated_total = metrics_month.process_failure_not_integrated()
+    integrated_late_total = metrics_month.process_failure_integrated_late()
 
     return ProcessFailureMetricsPresentation(
         integrated_late=OutcomeMetricsPresentation(
