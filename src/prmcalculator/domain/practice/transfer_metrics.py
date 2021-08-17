@@ -47,3 +47,6 @@ class TransferMetrics:
 
     def integrated_beyond_8_days(self) -> int:
         return self._counts_by_outcome[_INTEGRATED_LATE]
+
+    def received_by_practice_total(self) -> int:
+        return self.integrated_total() + self.process_failure_not_integrated()
