@@ -5,7 +5,7 @@ from prmcalculator.domain.gp2gp.transfer import Transfer
 from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
 
 
-class PracticeTransfers:
+class PracticeTransferMetrics:
     def __init__(self, ods_code: str, transfers=Iterable[Transfer]):
         self.ods_code = ods_code
         self._transfers_by_month = defaultdict(list)
