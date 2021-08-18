@@ -4,13 +4,15 @@ from typing import List, Iterable
 
 from dateutil.tz import tzutc
 
-from prmcalculator.domain.practice.metrics_calculator import PracticeMetrics
+from prmcalculator.domain.practice.deprecated.metrics_calculator_deprecated import (
+    PracticeMetricsDeprecated,
+)
 from prmcalculator.utils.calculate_percentage import calculate_percentage
 from prmcalculator.domain.ods_portal.organisation_metadata import CcgDetails
 
 
 @dataclass
-class IntegratedPracticeMetricsPresentation:
+class IntegratedPracticeMetricsPresentationDeprecated:
     transfer_count: int
     within_3_days_percentage: float
     within_8_days_percentage: float
@@ -18,42 +20,44 @@ class IntegratedPracticeMetricsPresentation:
 
 
 @dataclass
-class RequesterMetrics:
-    integrated: IntegratedPracticeMetricsPresentation
+class RequesterMetricsDeprecated:
+    integrated: IntegratedPracticeMetricsPresentationDeprecated
 
 
 @dataclass
-class MonthlyMetricsPresentation:
+class MonthlyMetricsPresentationDeprecated:
     year: int
     month: int
-    requester: RequesterMetrics
+    requester: RequesterMetricsDeprecated
 
 
 @dataclass
-class PracticeSummary:
+class PracticeSummaryDeprecated:
     ods_code: str
     name: str
-    metrics: List[MonthlyMetricsPresentation]
+    metrics: List[MonthlyMetricsPresentationDeprecated]
 
 
 @dataclass
-class PracticeMetricsPresentation:
+class PracticeMetricsPresentationDeprecated:
     generated_on: datetime
-    practices: List[PracticeSummary]
+    practices: List[PracticeSummaryDeprecated]
     ccgs: List[CcgDetails]
 
 
-def construct_practice_summaries(sla_metrics: Iterable[PracticeMetrics]) -> List[PracticeSummary]:
+def construct_practice_summaries_deprecated(
+    sla_metrics: Iterable[PracticeMetricsDeprecated],
+) -> List[PracticeSummaryDeprecated]:
     return [
-        PracticeSummary(
+        PracticeSummaryDeprecated(
             ods_code=practice.ods_code,
             name=practice.name,
             metrics=[
-                MonthlyMetricsPresentation(
+                MonthlyMetricsPresentationDeprecated(
                     year=metric.year,
                     month=metric.month,
-                    requester=RequesterMetrics(
-                        integrated=IntegratedPracticeMetricsPresentation(
+                    requester=RequesterMetricsDeprecated(
+                        integrated=IntegratedPracticeMetricsPresentationDeprecated(
                             transfer_count=metric.integrated.transfer_count,
                             within_3_days_percentage=calculate_percentage(
                                 portion=metric.integrated.within_3_days,
@@ -80,10 +84,10 @@ def construct_practice_summaries(sla_metrics: Iterable[PracticeMetrics]) -> List
     ]
 
 
-def construct_practice_metrics_presentation(
-    practice_summaries: List[PracticeSummary],
+def construct_practice_metrics_presentation_deprecated(
+    practice_summaries: List[PracticeSummaryDeprecated],
     ccgs: List[CcgDetails],
-) -> PracticeMetricsPresentation:
-    return PracticeMetricsPresentation(
+) -> PracticeMetricsPresentationDeprecated:
+    return PracticeMetricsPresentationDeprecated(
         generated_on=datetime.now(tzutc()), practices=practice_summaries, ccgs=ccgs
     )

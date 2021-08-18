@@ -2,12 +2,12 @@ from datetime import datetime
 from unittest import mock
 from unittest.mock import Mock
 
-from prmcalculator.domain.practice.metrics_presentation import (
-    PracticeMetricsPresentation,
-    PracticeSummary,
-    MonthlyMetricsPresentation,
-    RequesterMetrics,
-    IntegratedPracticeMetricsPresentation,
+from prmcalculator.domain.practice.deprecated.metrics_presentation_deprecated import (
+    PracticeMetricsPresentationDeprecated,
+    PracticeSummaryDeprecated,
+    MonthlyMetricsPresentationDeprecated,
+    RequesterMetricsDeprecated,
+    IntegratedPracticeMetricsPresentationDeprecated,
 )
 from prmcalculator.domain.ods_portal.organisation_metadata import CcgDetails
 from prmcalculator.pipeline.io import PlatformMetricsIO, logger
@@ -19,18 +19,18 @@ _DATE_ANCHOR_YEAR = 2021
 _METRIC_MONTH = 12
 _METRIC_YEAR = 2020
 
-_PRACTICE_METRICS_OBJECT = PracticeMetricsPresentation(
+_PRACTICE_METRICS_OBJECT = PracticeMetricsPresentationDeprecated(
     generated_on=datetime(_DATE_ANCHOR_YEAR, _DATE_ANCHOR_MONTH, 1),
     practices=[
-        PracticeSummary(
+        PracticeSummaryDeprecated(
             ods_code="A12345",
             name="A test GP practice",
             metrics=[
-                MonthlyMetricsPresentation(
+                MonthlyMetricsPresentationDeprecated(
                     year=2021,
                     month=1,
-                    requester=RequesterMetrics(
-                        integrated=IntegratedPracticeMetricsPresentation(
+                    requester=RequesterMetricsDeprecated(
+                        integrated=IntegratedPracticeMetricsPresentationDeprecated(
                             transfer_count=1,
                             within_3_days_percentage=100.0,
                             within_8_days_percentage=0.0,

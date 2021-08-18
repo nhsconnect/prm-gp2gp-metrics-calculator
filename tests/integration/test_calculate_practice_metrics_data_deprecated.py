@@ -14,15 +14,15 @@ from prmcalculator.domain.ods_portal.organisation_metadata import (
     CcgDetails,
     OrganisationMetadata,
 )
-from prmcalculator.domain.practice.calculate_practice_metrics_data import (
-    calculate_practice_metrics_data,
+from prmcalculator.domain.practice.deprecated.calculate_practice_metrics_data_deprecated import (
+    calculate_practice_metrics_data_deprecated,
 )
-from prmcalculator.domain.practice.metrics_presentation import (
-    IntegratedPracticeMetricsPresentation,
-    RequesterMetrics,
-    MonthlyMetricsPresentation,
-    PracticeSummary,
-    PracticeMetricsPresentation,
+from prmcalculator.domain.practice.deprecated.metrics_presentation_deprecated import (
+    IntegratedPracticeMetricsPresentationDeprecated,
+    RequesterMetricsDeprecated,
+    MonthlyMetricsPresentationDeprecated,
+    PracticeSummaryDeprecated,
+    PracticeMetricsPresentationDeprecated,
 )
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 from tests.builders.common import a_datetime
@@ -70,18 +70,18 @@ def test_calculates_correct_practice_metrics_given_a_successful_transfer():
         ccgs=ccg_list,
     )
 
-    expected = PracticeMetricsPresentation(
+    expected = PracticeMetricsPresentationDeprecated(
         generated_on=datetime(year=2020, month=1, day=15, hour=23, second=42, tzinfo=UTC),
         practices=[
-            PracticeSummary(
+            PracticeSummaryDeprecated(
                 ods_code=requesting_ods_code,
                 name=requesting_practice_name,
                 metrics=[
-                    MonthlyMetricsPresentation(
+                    MonthlyMetricsPresentationDeprecated(
                         year=2019,
                         month=12,
-                        requester=RequesterMetrics(
-                            integrated=IntegratedPracticeMetricsPresentation(
+                        requester=RequesterMetricsDeprecated(
+                            integrated=IntegratedPracticeMetricsPresentationDeprecated(
                                 transfer_count=1,
                                 within_3_days_percentage=100,
                                 within_8_days_percentage=0,
@@ -95,6 +95,8 @@ def test_calculates_correct_practice_metrics_given_a_successful_transfer():
         ccgs=ccg_list,
     )
 
-    actual = calculate_practice_metrics_data(transfers, organisation_metadata, reporting_window)
+    actual = calculate_practice_metrics_data_deprecated(
+        transfers, organisation_metadata, reporting_window
+    )
 
     assert actual == expected

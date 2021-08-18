@@ -1,9 +1,9 @@
 from datetime import timedelta
 
-from prmcalculator.domain.practice.metrics_calculator import (
-    PracticeMetrics,
-    IntegratedPracticeMetrics,
-    MonthlyMetrics,
+from prmcalculator.domain.practice.deprecated.metrics_calculator_deprecated import (
+    PracticeMetricsDeprecated,
+    IntegratedPracticeMetricsDeprecated,
+    MonthlyMetricsDeprecated,
 )
 
 from prmcalculator.domain.gp2gp.sla import EIGHT_DAYS_IN_SECONDS, THREE_DAYS_IN_SECONDS
@@ -32,12 +32,12 @@ def build_transfer(**kwargs) -> Transfer:
     )
 
 
-def build_practice_metrics(**kwargs) -> PracticeMetrics:
+def build_practice_metrics(**kwargs) -> PracticeMetricsDeprecated:
     metrics = [
-        MonthlyMetrics(
+        MonthlyMetricsDeprecated(
             year=kwargs.get("year", 2019),
             month=kwargs.get("month", 12),
-            integrated=IntegratedPracticeMetrics(
+            integrated=IntegratedPracticeMetricsDeprecated(
                 transfer_count=kwargs.get("transfer_count", an_integer()),
                 within_3_days=kwargs.get("within_3_days", an_integer()),
                 within_8_days=kwargs.get("within_8_days", an_integer()),
@@ -45,7 +45,7 @@ def build_practice_metrics(**kwargs) -> PracticeMetrics:
             ),
         )
     ]
-    return PracticeMetrics(
+    return PracticeMetricsDeprecated(
         ods_code=kwargs.get("ods_code", a_string(6)),
         name=kwargs.get("name", a_string()),
         metrics=kwargs.get("metrics", metrics),

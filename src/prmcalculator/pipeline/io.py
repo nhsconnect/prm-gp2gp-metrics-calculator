@@ -10,7 +10,9 @@ from prmcalculator.domain.national.construct_national_metrics_presentation impor
 from prmcalculator.domain.national.deprecated.metrics_presentation_deprecated import (
     NationalMetricsPresentationDeprecated,
 )
-from prmcalculator.domain.practice.metrics_presentation import PracticeMetricsPresentation
+from prmcalculator.domain.practice.deprecated.metrics_presentation_deprecated import (
+    PracticeMetricsPresentationDeprecated,
+)
 from prmcalculator.domain.ods_portal.organisation_metadata import OrganisationMetadata
 from prmcalculator.utils.io.dictionary import camelize_dict
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
@@ -104,7 +106,7 @@ class PlatformMetricsIO:
             f"Successfully calculated national metrics and uploaded to s3://{national_metrics_path}"
         )
 
-    def write_practice_metrics(self, practice_metrics: PracticeMetricsPresentation):
+    def write_practice_metrics(self, practice_metrics: PracticeMetricsPresentationDeprecated):
         practice_metrics_path = self._data_platform_metrics_bucket_s3_path(
             self._PRACTICE_METRICS_FILE_NAME
         )

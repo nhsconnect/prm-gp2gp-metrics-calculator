@@ -7,11 +7,11 @@ import pytest
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 from prmcalculator.domain.gp2gp.transfer import Transfer, Practice
 from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
-from prmcalculator.domain.practice.metrics_calculator import (
-    PracticeMetrics,
-    calculate_monthly_sla_by_practice,
-    IntegratedPracticeMetrics,
-    MonthlyMetrics,
+from prmcalculator.domain.practice.deprecated.metrics_calculator_deprecated import (
+    PracticeMetricsDeprecated,
+    calculate_monthly_sla_by_practice_deprecated,
+    IntegratedPracticeMetricsDeprecated,
+    MonthlyMetricsDeprecated,
 )
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 
@@ -23,14 +23,15 @@ reporting_window = MonthlyReportingWindow.prior_to(
 )
 
 
-def _assert_has_ods_codes(practices: Iterator[PracticeMetrics], expected: Set[str]):
+def _assert_has_ods_codes(practices: Iterator[PracticeMetricsDeprecated], expected: Set[str]):
     actual_counts = Counter((practice.ods_code for practice in practices))
     expected_counts = Counter(expected)
     assert actual_counts == expected_counts
 
 
 def _assert_summaries_have_integrated_practice_metrics(
-    practices: Iterator[PracticeMetrics], expected_slas: List[IntegratedPracticeMetrics]
+    practices: Iterator[PracticeMetricsDeprecated],
+    expected_slas: List[IntegratedPracticeMetricsDeprecated],
 ):
     practice_list = list(practices)
 
@@ -51,7 +52,7 @@ def test_groups_by_ods_code_given_single_practice_and_single_transfer():
         build_transfer(requesting_practice=Practice(asid="121212121212", supplier=a_string(12)))
     ]
 
-    actual = calculate_monthly_sla_by_practice(lookup, transfers, reporting_window)
+    actual = calculate_monthly_sla_by_practice_deprecated(lookup, transfers, reporting_window)
 
     _assert_has_ods_codes(actual, {"A12345"})
 
@@ -62,7 +63,7 @@ def test_groups_by_ods_code_given_single_practice_and_no_transfers():
     )
     transfers: List[Transfer] = []
 
-    actual = calculate_monthly_sla_by_practice(lookup, transfers, reporting_window)
+    actual = calculate_monthly_sla_by_practice_deprecated(lookup, transfers, reporting_window)
 
     _assert_has_ods_codes(actual, {"A12345"})
 
@@ -74,7 +75,7 @@ def test_warns_about_transfer_with_unexpected_asid():
     ]
 
     with pytest.warns(RuntimeWarning):
-        calculate_monthly_sla_by_practice(lookup, transfers, reporting_window)
+        calculate_monthly_sla_by_practice_deprecated(lookup, transfers, reporting_window)
 
 
 def test_groups_by_asid_given_two_practices_and_two_transfers_from_different_practices():
@@ -89,7 +90,7 @@ def test_groups_by_asid_given_two_practices_and_two_transfers_from_different_pra
         build_transfer(requesting_practice=Practice(asid="343434343434", supplier=a_string(12))),
     ]
 
-    actual = calculate_monthly_sla_by_practice(lookup, transfers, reporting_window)
+    actual = calculate_monthly_sla_by_practice_deprecated(lookup, transfers, reporting_window)
 
     _assert_has_ods_codes(actual, {"A12345", "X67890"})
 
@@ -103,7 +104,7 @@ def test_groups_by_asid_given_single_practice_and_transfers_from_the_same_practi
         build_transfer(requesting_practice=Practice(asid="121212121212", supplier=a_string(12))),
     ]
 
-    actual = calculate_monthly_sla_by_practice(lookup, transfers, reporting_window)
+    actual = calculate_monthly_sla_by_practice_deprecated(lookup, transfers, reporting_window)
 
     _assert_has_ods_codes(actual, {"A12345"})
 
@@ -115,9 +116,9 @@ def test_contains_practice_name():
     )
     transfers: List[Transfer] = []
 
-    actual_name = list(calculate_monthly_sla_by_practice(lookup, transfers, reporting_window))[
-        0
-    ].name
+    actual_name = list(
+        calculate_monthly_sla_by_practice_deprecated(lookup, transfers, reporting_window)
+    )[0].name
 
     assert actual_name == expected_name
 
@@ -128,9 +129,9 @@ def test_returns_practice_sla_metrics_placeholder_given_a_list_with_one_practice
     )
     transfers: List[Transfer] = []
 
-    actual = calculate_monthly_sla_by_practice(lookup, transfers, reporting_window)
+    actual = calculate_monthly_sla_by_practice_deprecated(lookup, transfers, reporting_window)
     expected = [
-        IntegratedPracticeMetrics(
+        IntegratedPracticeMetricsDeprecated(
             transfer_count=0, within_3_days=0, within_8_days=0, beyond_8_days=0
         )
     ]
@@ -147,9 +148,9 @@ def test_calculate_sla_by_practice_calculates_sla_given_one_transfer_within_3_da
         sla_duration=timedelta(hours=1, minutes=10),
     )
 
-    actual = calculate_monthly_sla_by_practice(lookup, [transfer], reporting_window)
+    actual = calculate_monthly_sla_by_practice_deprecated(lookup, [transfer], reporting_window)
     expected = [
-        IntegratedPracticeMetrics(
+        IntegratedPracticeMetricsDeprecated(
             transfer_count=1, within_3_days=1, within_8_days=0, beyond_8_days=0
         )
     ]
@@ -165,9 +166,9 @@ def test_calculate_sla_by_practice_calculates_sla_given_one_transfer_within_8_da
         requesting_practice=Practice(asid="121212121212", supplier=a_string(12)),
         sla_duration=timedelta(days=7, hours=1, minutes=10),
     )
-    actual = calculate_monthly_sla_by_practice(lookup, [transfer], reporting_window)
+    actual = calculate_monthly_sla_by_practice_deprecated(lookup, [transfer], reporting_window)
     expected = [
-        IntegratedPracticeMetrics(
+        IntegratedPracticeMetricsDeprecated(
             transfer_count=1, within_3_days=0, within_8_days=1, beyond_8_days=0
         )
     ]
@@ -183,9 +184,9 @@ def test_calculate_sla_by_practice_calculates_sla_given_one_transfer_beyond_8_da
         requesting_practice=Practice(asid="121212121212", supplier=a_string(12)),
         sla_duration=timedelta(days=8, hours=1, minutes=10),
     )
-    actual = calculate_monthly_sla_by_practice(lookup, [transfer], reporting_window)
+    actual = calculate_monthly_sla_by_practice_deprecated(lookup, [transfer], reporting_window)
     expected = [
-        IntegratedPracticeMetrics(
+        IntegratedPracticeMetricsDeprecated(
             transfer_count=1, within_3_days=0, within_8_days=0, beyond_8_days=1
         )
     ]
@@ -206,9 +207,9 @@ def test_counts_second_asid_for_practice_with_two_asids():
         sla_duration=timedelta(hours=1, minutes=10),
     )
 
-    actual = calculate_monthly_sla_by_practice(lookup, [transfer], reporting_window)
+    actual = calculate_monthly_sla_by_practice_deprecated(lookup, [transfer], reporting_window)
     expected = [
-        IntegratedPracticeMetrics(
+        IntegratedPracticeMetricsDeprecated(
             transfer_count=1, within_3_days=1, within_8_days=0, beyond_8_days=0
         )
     ]
@@ -235,9 +236,9 @@ def test_counts_both_asids_for_practice_with_two_asids():
         ),
     ]
 
-    actual = calculate_monthly_sla_by_practice(lookup, transfers, reporting_window)
+    actual = calculate_monthly_sla_by_practice_deprecated(lookup, transfers, reporting_window)
     expected = [
-        IntegratedPracticeMetrics(
+        IntegratedPracticeMetricsDeprecated(
             transfer_count=2, within_3_days=1, within_8_days=1, beyond_8_days=0
         )
     ]
@@ -266,12 +267,14 @@ def test_calculates_sla_given_two_transfers_from_different_months():
         ),
     ]
 
-    actual = calculate_monthly_sla_by_practice(lookup, transfers, two_month_reporting_window)
+    actual = calculate_monthly_sla_by_practice_deprecated(
+        lookup, transfers, two_month_reporting_window
+    )
     expected = [
-        IntegratedPracticeMetrics(
+        IntegratedPracticeMetricsDeprecated(
             transfer_count=1, within_3_days=1, within_8_days=0, beyond_8_days=0
         ),
-        IntegratedPracticeMetrics(
+        IntegratedPracticeMetricsDeprecated(
             transfer_count=1, within_3_days=0, within_8_days=0, beyond_8_days=1
         ),
     ]
@@ -310,27 +313,27 @@ def test_calculate_sla_by_practice_calculates_sla_given_transfers_for_2_practice
     ]
 
     expected = [
-        PracticeMetrics(
+        PracticeMetricsDeprecated(
             ods_code="A12345",
             name="A Practice",
             metrics=[
-                MonthlyMetrics(
+                MonthlyMetricsDeprecated(
                     year=2019,
                     month=12,
-                    integrated=IntegratedPracticeMetrics(
+                    integrated=IntegratedPracticeMetricsDeprecated(
                         transfer_count=2, within_3_days=1, within_8_days=0, beyond_8_days=1
                     ),
                 )
             ],
         ),
-        PracticeMetrics(
+        PracticeMetricsDeprecated(
             ods_code="B12345",
             name="Another Practice",
             metrics=[
-                MonthlyMetrics(
+                MonthlyMetricsDeprecated(
                     year=2019,
                     month=12,
-                    integrated=IntegratedPracticeMetrics(
+                    integrated=IntegratedPracticeMetricsDeprecated(
                         transfer_count=3, within_3_days=0, within_8_days=2, beyond_8_days=1
                     ),
                 ),
@@ -338,6 +341,6 @@ def test_calculate_sla_by_practice_calculates_sla_given_transfers_for_2_practice
         ),
     ]
 
-    actual = calculate_monthly_sla_by_practice(lookup, transfers, reporting_window)
+    actual = calculate_monthly_sla_by_practice_deprecated(lookup, transfers, reporting_window)
 
     assert list(actual) == expected

@@ -7,8 +7,8 @@ from prmcalculator.domain.national.calculate_national_metrics_data import (
 )
 from prmcalculator.pipeline.config import PipelineConfig
 
-from prmcalculator.domain.practice.calculate_practice_metrics_data import (
-    calculate_practice_metrics_data,
+from prmcalculator.domain.practice.deprecated.calculate_practice_metrics_data_deprecated import (
+    calculate_practice_metrics_data_deprecated,
 )
 from prmcalculator.pipeline.io import PlatformMetricsIO
 from prmcalculator.utils.io.s3 import S3DataManager
@@ -47,7 +47,7 @@ def main():
     transfers = metrics_io.read_transfer_data()
 
     logger.info("Calculating practice metrics")
-    practice_metrics_data = calculate_practice_metrics_data(
+    practice_metrics_data = calculate_practice_metrics_data_deprecated(
         transfers, organisation_metadata, reporting_window
     )
 

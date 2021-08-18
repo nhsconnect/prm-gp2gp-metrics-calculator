@@ -9,7 +9,7 @@ from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 
 
 @dataclass
-class IntegratedPracticeMetrics:
+class IntegratedPracticeMetricsDeprecated:
     transfer_count: int
     within_3_days: int
     within_8_days: int
@@ -17,28 +17,28 @@ class IntegratedPracticeMetrics:
 
 
 @dataclass
-class MonthlyMetrics:
+class MonthlyMetricsDeprecated:
     year: int
     month: int
-    integrated: IntegratedPracticeMetrics
+    integrated: IntegratedPracticeMetricsDeprecated
 
 
 @dataclass
-class PracticeMetrics:
+class PracticeMetricsDeprecated:
     ods_code: str
     name: str
-    metrics: List[MonthlyMetrics]
+    metrics: List[MonthlyMetricsDeprecated]
 
 
 def _derive_practice_sla_metrics(practice, sla_metrics):
-    return PracticeMetrics(
+    return PracticeMetricsDeprecated(
         practice.ods_code,
         practice.name,
         metrics=[
-            MonthlyMetrics(
+            MonthlyMetricsDeprecated(
                 year=year,
                 month=month,
-                integrated=IntegratedPracticeMetrics(
+                integrated=IntegratedPracticeMetricsDeprecated(
                     transfer_count=metrics.total(),
                     within_3_days=metrics.within_3_days,
                     within_8_days=metrics.within_8_days,
@@ -59,11 +59,11 @@ def _create_practice_monthly_counts(
     return {ods_code: _monthly_sla_counters() for ods_code in practice_lookup.all_ods_codes()}
 
 
-def calculate_monthly_sla_by_practice(
+def calculate_monthly_sla_by_practice_deprecated(
     practice_lookup: PracticeLookup,
     transfers: Iterable[Transfer],
     reporting_window: MonthlyReportingWindow,
-) -> Iterator[PracticeMetrics]:
+) -> Iterator[PracticeMetricsDeprecated]:
     practice_counts = _create_practice_monthly_counts(practice_lookup, reporting_window)
 
     unexpected_asids = set()
