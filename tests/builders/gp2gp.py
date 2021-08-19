@@ -32,7 +32,7 @@ def build_transfer(**kwargs) -> Transfer:
     )
 
 
-def build_practice_metrics(**kwargs) -> PracticeMetricsDeprecated:
+def build_practice_metrics_deprecated(**kwargs) -> PracticeMetricsDeprecated:
     metrics = [
         MonthlyMetricsDeprecated(
             year=kwargs.get("year", 2019),

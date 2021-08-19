@@ -12,7 +12,7 @@ from prmcalculator.domain.practice.deprecated.metrics_presentation_deprecated im
     MonthlyMetricsPresentationDeprecated,
     PracticeSummaryDeprecated,
 )
-from tests.builders.gp2gp import build_practice_metrics
+from tests.builders.gp2gp import build_practice_metrics_deprecated
 
 
 def _assert_has_ods_codes(practices: Iterable[PracticeSummaryDeprecated], expected: Set[str]):
@@ -22,7 +22,7 @@ def _assert_has_ods_codes(practices: Iterable[PracticeSummaryDeprecated], expect
 
 
 def test_has_correct_ods_code_given_a_single_practice():
-    sla_metrics = [build_practice_metrics(ods_code="A12345")]
+    sla_metrics = [build_practice_metrics_deprecated(ods_code="A12345")]
 
     expected_ods_codes = "A12345"
 
@@ -33,8 +33,8 @@ def test_has_correct_ods_code_given_a_single_practice():
 
 def test_has_correct_ods_code_given_two_practices():
     sla_metrics = [
-        build_practice_metrics(ods_code="A12345"),
-        build_practice_metrics(ods_code="Z56789"),
+        build_practice_metrics_deprecated(ods_code="A12345"),
+        build_practice_metrics_deprecated(ods_code="Z56789"),
     ]
 
     expected_ods_codes = {"A12345", "Z56789"}
@@ -45,7 +45,7 @@ def test_has_correct_ods_code_given_two_practices():
 
 
 def test_has_correct_practice_name_given_a_single_practice():
-    sla_metrics = [build_practice_metrics(name="A Practice")]
+    sla_metrics = [build_practice_metrics_deprecated(name="A Practice")]
 
     expected_name = "A Practice"
 
@@ -55,7 +55,7 @@ def test_has_correct_practice_name_given_a_single_practice():
 
 
 def test_has_correct_year_given_a_single_practice():
-    sla_metrics = [build_practice_metrics(ods_code="A12345")]
+    sla_metrics = [build_practice_metrics_deprecated(ods_code="A12345")]
 
     expected_year = 2019
 
@@ -65,7 +65,7 @@ def test_has_correct_year_given_a_single_practice():
 
 
 def test_has_correct_month_given_a_single_practice():
-    sla_metrics = [build_practice_metrics(ods_code="A12345")]
+    sla_metrics = [build_practice_metrics_deprecated(ods_code="A12345")]
 
     expected_month = 12
 
@@ -76,7 +76,9 @@ def test_has_correct_month_given_a_single_practice():
 
 def test_has_correct_requester_sla_metrics_given_single_practice():
     sla_metrics = [
-        build_practice_metrics(transfer_count=3, within_3_days=1, within_8_days=0, beyond_8_days=2)
+        build_practice_metrics_deprecated(
+            transfer_count=3, within_3_days=1, within_8_days=0, beyond_8_days=2
+        )
     ]
 
     expected_requester_sla_metrics = IntegratedPracticeMetricsPresentationDeprecated(
@@ -94,7 +96,7 @@ def test_has_correct_requester_sla_metrics_given_single_practice():
 
 def test_has_correct_requester_sla_metrics_given_two_practices():
     sla_metrics = [
-        build_practice_metrics(
+        build_practice_metrics_deprecated(
             ods_code="A12345",
             name="A practice",
             transfer_count=3,
@@ -102,7 +104,7 @@ def test_has_correct_requester_sla_metrics_given_two_practices():
             within_8_days=0,
             beyond_8_days=2,
         ),
-        build_practice_metrics(
+        build_practice_metrics_deprecated(
             ods_code="Z98765",
             name="Another practice",
             transfer_count=7,
@@ -158,7 +160,7 @@ def test_has_correct_requester_sla_metrics_given_two_practices():
 
 def test_has_correct_requester_sla_metrics_given_two_metric_months():
     sla_metrics = [
-        build_practice_metrics(
+        build_practice_metrics_deprecated(
             ods_code="A12345",
             name="A practice",
             metrics=[
