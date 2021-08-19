@@ -12,12 +12,14 @@ from prmcalculator.domain.ods_portal.organisation_metadata import (
 from prmcalculator.domain.practice.calculate_practice_metrics_data import (
     calculate_practice_metrics_data,
     PracticeMetricsPresentation,
-    PracticeSummary,
-    MonthlyMetricsPresentation,
-    RequesterMetrics,
+)
+from prmcalculator.domain.practice.construct_practice_summary import (
     IntegratedPracticeMetricsPresentation,
-    TransfersReceivedPresentation,
     AwaitingIntegration,
+    TransfersReceivedPresentation,
+    RequesterMetrics,
+    MonthlyMetricsPresentation,
+    PracticeSummary,
 )
 
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
