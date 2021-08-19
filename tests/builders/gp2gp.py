@@ -70,10 +70,14 @@ def a_supressed_transfer(**kwargs):
     )
 
 
-def a_transfer_integrated_within_3_days():
+def a_transfer_integrated_within_3_days(**kwargs):
     return build_transfer(
         outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
         sla_duration=timedelta(seconds=THREE_DAYS_IN_SECONDS),
+        requesting_practice=kwargs.get(
+            "requesting_practice", Practice(asid=a_string(12), supplier=a_string(12))
+        ),
+        date_requested=kwargs.get("date_requested", a_datetime(year=2019, month=12, day=4)),
     )
 
 
@@ -103,12 +107,18 @@ def a_transfer_with_a_final_error():
     )
 
 
-def a_transfer_that_was_never_integrated():
-    return build_transfer(
+def a_transfer_that_was_never_integrated(**kwargs):
+    return Transfer(
+        sla_duration=None,
         outcome=TransferOutcome(
             status=TransferStatus.PROCESS_FAILURE,
             failure_reason=TransferFailureReason.TRANSFERRED_NOT_INTEGRATED,
-        )
+        ),
+        conversation_id=kwargs.get("conversation_id", a_string(36)),
+        requesting_practice=kwargs.get(
+            "requesting_practice", Practice(asid=a_string(12), supplier=a_string(12))
+        ),
+        date_requested=kwargs.get("date_requested", a_datetime(year=2019, month=12, day=4)),
     )
 
 
