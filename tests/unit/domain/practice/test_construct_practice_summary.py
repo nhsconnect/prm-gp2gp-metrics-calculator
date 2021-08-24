@@ -11,6 +11,8 @@ from tests.builders.common import a_datetime, a_string
 from tests.builders.gp2gp import (
     build_transfer,
     a_transfer_integrated_within_3_days,
+    a_transfer_integrated_between_3_and_8_days,
+    a_transfer_integrated_beyond_8_days,
 )
 
 
@@ -120,7 +122,9 @@ def test_returns_requester_sla_metrics_for_two_metric_months_deprecated():
 
 def test_returns_requester_transfers_received():
     transfers = [
-        a_transfer_integrated_within_3_days(date_requested=a_datetime(year=2019, month=12))
+        a_transfer_integrated_within_3_days(),
+        a_transfer_integrated_between_3_and_8_days(),
+        a_transfer_integrated_beyond_8_days(),
     ]
     reporting_window = MonthlyReportingWindow.prior_to(
         date_anchor=a_datetime(year=2020, month=1), number_of_months=1
@@ -130,13 +134,13 @@ def test_returns_requester_transfers_received():
     )
 
     expected_requester_transfers_received = TransfersReceivedPresentation(
-        transfer_count=1,
+        transfer_count=3,
         awaiting_integration=AwaitingIntegration(percentage=0.0),
         integrated=IntegratedPracticeMetricsPresentation(
-            transfer_count=1,
-            within_3_days_percentage=100.0,
-            within_8_days_percentage=0.0,
-            beyond_8_days_percentage=0.0,
+            transfer_count=3,
+            within_3_days_percentage=33.3,
+            within_8_days_percentage=33.3,
+            beyond_8_days_percentage=33.3,
         ),
     )
 

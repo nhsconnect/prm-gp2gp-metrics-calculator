@@ -61,14 +61,17 @@ def _construct_monthly_metrics_presentation(
                 within_3_days_percentage=calculate_percentage(
                     portion=transfer_month_metrics.integrated_within_3_days(),
                     total=integrated_total,
+                    num_digits=1,
                 ),
                 within_8_days_percentage=calculate_percentage(
                     portion=transfer_month_metrics.integrated_within_8_days(),
                     total=integrated_total,
+                    num_digits=1,
                 ),
                 beyond_8_days_percentage=calculate_percentage(
                     portion=transfer_month_metrics.integrated_beyond_8_days(),
                     total=integrated_total,
+                    num_digits=1,
                 ),
             ),
             transfers_received=TransfersReceivedPresentation(
@@ -77,6 +80,7 @@ def _construct_monthly_metrics_presentation(
                     percentage=calculate_percentage(
                         portion=transfer_month_metrics.process_failure_not_integrated(),
                         total=received_by_practice_total,
+                        num_digits=1,
                     )
                 ),
                 integrated=IntegratedPracticeMetricsPresentation(
@@ -84,14 +88,17 @@ def _construct_monthly_metrics_presentation(
                     within_3_days_percentage=calculate_percentage(
                         portion=transfer_month_metrics.integrated_within_3_days(),
                         total=received_by_practice_total,
+                        num_digits=1,
                     ),
                     within_8_days_percentage=calculate_percentage(
                         portion=transfer_month_metrics.integrated_within_8_days(),
                         total=received_by_practice_total,
+                        num_digits=1,
                     ),
                     beyond_8_days_percentage=calculate_percentage(
                         portion=transfer_month_metrics.integrated_beyond_8_days(),
                         total=received_by_practice_total,
+                        num_digits=1,
                     ),
                 ),
             ),
