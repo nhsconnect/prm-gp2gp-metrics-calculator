@@ -78,6 +78,19 @@ To build your image locally:
 
 `docker build . -t <tag>`
 
+
+### Configuration
+
+Configuration is achieved via the following environment variables:
+
+
+| Environment variable         | Description                                              | 
+| ---------------------------- | -------------------------------------------------------- |
+| INPUT_TRANSFER_DATA_BUCKET   | Bucket to read transfer files from.                      |
+| ORGANISATION_METADATA_BUCKET | Bucket to read organisation metadata.                    |
+| OUTPUT_METRICS_BUCKET        | Bucket to write metrics.                                 |
+| NUMBER_OF_MONTHS             | Number of months to create metrics for (historical data).|
+
 ### Troubleshooting
 
 #### Checking dependencies fails locally due to pip
