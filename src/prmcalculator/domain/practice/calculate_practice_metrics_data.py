@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List
+from typing import List, Dict
 
 from dateutil.tz import tzutc
 
@@ -34,13 +34,7 @@ def calculate_practice_metrics_data(
     practice_transfers = create_practice_transfer_mapping(
         transfers=transfers, practice_lookup=practice_lookup
     )
-    practice_transfer_metrics = {}
-
-    for practice_ods_code in practice_transfers.keys():
-        transfers = practice_transfers[practice_ods_code]
-        practice_transfer_metrics[practice_ods_code] = PracticeTransferMetrics(
-            ods_code=practice_ods_code, transfers=transfers
-        )
+    practice_transfer_metrics = _create_practice_transfer_metrics_mapping(practice_transfers)
 
     return PracticeMetricsPresentation(
         generated_on=datetime.now(tzutc()),
@@ -53,3 +47,16 @@ def calculate_practice_metrics_data(
         ],
         ccgs=organisation_metadata.ccgs,
     )
+
+
+def _create_practice_transfer_metrics_mapping(
+    practice_transfers: Dict[str, List[Transfer]]
+) -> Dict[str, PracticeTransferMetrics]:
+    practice_transfer_metrics = {}
+
+    for practice_ods_code in practice_transfers.keys():
+        transfers = practice_transfers[practice_ods_code]
+        practice_transfer_metrics[practice_ods_code] = PracticeTransferMetrics(
+            ods_code=practice_ods_code, transfers=transfers
+        )
+    return practice_transfer_metrics
