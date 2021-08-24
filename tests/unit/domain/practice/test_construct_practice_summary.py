@@ -25,7 +25,7 @@ def test_returns_ods_code():
     )
 
     actual = construct_practice_summary(
-        transfer_metrics=practice_transfer_metrics, reporting_window=reporting_window
+        practice_metrics=practice_transfer_metrics, reporting_window=reporting_window
     )
 
     assert actual.ods_code == expected_ods_code
@@ -49,7 +49,7 @@ def test_returns_year_and_month_for_first_metric():
     )
 
     actual = construct_practice_summary(
-        transfer_metrics=practice_transfer_metrics, reporting_window=reporting_window
+        practice_metrics=practice_transfer_metrics, reporting_window=reporting_window
     )
 
     assert actual.metrics[0].year == expected_year
@@ -75,7 +75,7 @@ def test_returns_requester_sla_metrics_deprecated():
     )
 
     actual = construct_practice_summary(
-        transfer_metrics=practice_transfer_metrics, reporting_window=reporting_window
+        practice_metrics=practice_transfer_metrics, reporting_window=reporting_window
     )
     time_to_integrate_sla = actual.metrics[0].requester.integrated
 
@@ -102,7 +102,7 @@ def test_returns_requester_sla_metrics_for_two_metric_months_deprecated():
     )
 
     actual = construct_practice_summary(
-        transfer_metrics=practice_transfer_metrics, reporting_window=reporting_window
+        practice_metrics=practice_transfer_metrics, reporting_window=reporting_window
     )
 
     actual_december_metrics = actual.metrics[0]
@@ -138,7 +138,7 @@ def test_returns_requester_transfers_received():
     )
 
     actual = construct_practice_summary(
-        transfer_metrics=practice_transfer_metrics, reporting_window=reporting_window
+        practice_metrics=practice_transfer_metrics, reporting_window=reporting_window
     )
     actual_requester_transfers_received = actual.metrics[0].requester.transfers_received
 
@@ -168,7 +168,7 @@ def test_returns_requester_transfers_received_for_two_metric_months():
     )
 
     actual = construct_practice_summary(
-        transfer_metrics=practice_transfer_metrics, reporting_window=reporting_window
+        practice_metrics=practice_transfer_metrics, reporting_window=reporting_window
     )
     actual_december_metrics = actual.metrics[0]
     actual_november_metrics = actual.metrics[1]

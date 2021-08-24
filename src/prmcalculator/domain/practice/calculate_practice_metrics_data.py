@@ -46,7 +46,7 @@ def calculate_practice_metrics_data(
         generated_on=datetime.now(tzutc()),
         practices=[
             construct_practice_summary(
-                transfer_metrics=practice_transfer_metrics[ods_code],
+                practice_metrics=practice_transfer_metrics[ods_code],
                 reporting_window=reporting_window,
             )
             for ods_code in practice_lookup.all_ods_codes()
