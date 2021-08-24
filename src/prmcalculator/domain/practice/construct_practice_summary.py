@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
 from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
@@ -10,14 +10,14 @@ from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 @dataclass
 class IntegratedPracticeMetricsPresentation:
     transfer_count: int
-    within_3_days_percentage: float
-    within_8_days_percentage: float
-    beyond_8_days_percentage: float
+    within_3_days_percentage: Optional[float]
+    within_8_days_percentage: Optional[float]
+    beyond_8_days_percentage: Optional[float]
 
 
 @dataclass
 class AwaitingIntegration:
-    percentage: float
+    percentage: Optional[float]
 
 
 @dataclass

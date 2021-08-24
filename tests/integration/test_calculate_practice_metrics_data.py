@@ -111,3 +111,65 @@ def test_calculates_correct_practice_metrics_given_transfers():
     actual = calculate_practice_metrics_data(transfers, organisation_metadata, reporting_window)
 
     assert actual == expected
+
+
+@freeze_time(datetime(year=2020, month=1, day=15, hour=23, second=42), tz_offset=0)
+def test_returns_default_metric_values_for_practice_without_transfers():
+    metric_month_start = a_datetime(year=2019, month=12, day=1)
+
+    reporting_window = MonthlyReportingWindow(
+        date_anchor_month_start=a_datetime(year=2020, month=1, day=1),
+        metric_monthly_datetimes=[metric_month_start],
+    )
+
+    practice_list = [
+        PracticeDetails(
+            asids=["12431"],
+            ods_code="A98765",
+            name="GP Practice with no transfers",
+        )
+    ]
+
+    organisation_metadata = OrganisationMetadata(
+        generated_on=datetime(year=2020, month=1, day=15, hour=23, second=42, tzinfo=UTC),
+        practices=practice_list,
+        ccgs=[],
+    )
+
+    expected = PracticeMetricsPresentation(
+        generated_on=datetime(year=2020, month=1, day=15, hour=23, second=42, tzinfo=UTC),
+        practices=[
+            PracticeSummary(
+                ods_code="A98765",
+                metrics=[
+                    MonthlyMetricsPresentation(
+                        year=2019,
+                        month=12,
+                        requester=RequesterMetrics(
+                            integrated=IntegratedPracticeMetricsPresentation(
+                                transfer_count=0,
+                                within_3_days_percentage=None,
+                                within_8_days_percentage=None,
+                                beyond_8_days_percentage=None,
+                            ),
+                            transfers_received=TransfersReceivedPresentation(
+                                transfer_count=0,
+                                awaiting_integration=AwaitingIntegration(percentage=None),
+                                integrated=IntegratedPracticeMetricsPresentation(
+                                    transfer_count=0,
+                                    within_3_days_percentage=None,
+                                    within_8_days_percentage=None,
+                                    beyond_8_days_percentage=None,
+                                ),
+                            ),
+                        ),
+                    )
+                ],
+            )
+        ],
+        ccgs=[],
+    )
+
+    actual = calculate_practice_metrics_data([], organisation_metadata, reporting_window)
+
+    assert actual == expected

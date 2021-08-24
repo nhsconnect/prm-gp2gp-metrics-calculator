@@ -16,12 +16,13 @@ from tests.builders.gp2gp import (
 
 def test_returns_ods_code():
     expected_ods_code = "A12345"
+    reporting_window = MonthlyReportingWindow.prior_to(
+        date_anchor=a_datetime(year=2021, month=8), number_of_months=1
+    )
     practice_transfer_metrics = PracticeTransferMetrics(
         ods_code=expected_ods_code,
         transfers=[build_transfer(date_requested=a_datetime(year=2021, month=7, day=4))],
-    )
-    reporting_window = MonthlyReportingWindow.prior_to(
-        date_anchor=a_datetime(year=2021, month=8), number_of_months=1
+        reporting_window=reporting_window,
     )
 
     actual = construct_practice_summary(
@@ -32,10 +33,12 @@ def test_returns_ods_code():
 
 
 def test_returns_year_and_month_for_first_metric():
-
     expected_year = 2019
     expected_month = 8
 
+    reporting_window = MonthlyReportingWindow.prior_to(
+        date_anchor=a_datetime(year=expected_year, month=9), number_of_months=1
+    )
     practice_transfer_metrics = PracticeTransferMetrics(
         ods_code=a_string(),
         transfers=[
@@ -43,9 +46,7 @@ def test_returns_year_and_month_for_first_metric():
                 date_requested=a_datetime(year=expected_year, month=expected_month, day=4)
             )
         ],
-    )
-    reporting_window = MonthlyReportingWindow.prior_to(
-        date_anchor=a_datetime(year=expected_year, month=9), number_of_months=1
+        reporting_window=reporting_window,
     )
 
     actual = construct_practice_summary(
@@ -61,10 +62,11 @@ def test_returns_requester_sla_metrics_deprecated():
     transfers = [
         a_transfer_integrated_within_3_days(date_requested=a_datetime(year=2019, month=12))
     ]
-    practice_transfer_metrics = PracticeTransferMetrics(ods_code=a_string(), transfers=transfers)
-
     reporting_window = MonthlyReportingWindow.prior_to(
         date_anchor=a_datetime(year=2020, month=1), number_of_months=1
+    )
+    practice_transfer_metrics = PracticeTransferMetrics(
+        ods_code=a_string(), transfers=transfers, reporting_window=reporting_window
     )
 
     expected_requester_sla_metrics = IntegratedPracticeMetricsPresentation(
@@ -83,15 +85,15 @@ def test_returns_requester_sla_metrics_deprecated():
 
 
 def test_returns_requester_sla_metrics_for_two_metric_months_deprecated():
-
     transfers = [
         a_transfer_integrated_within_3_days(date_requested=a_datetime(year=2019, month=12)),
         a_transfer_integrated_within_3_days(date_requested=a_datetime(year=2019, month=11)),
     ]
-    practice_transfer_metrics = PracticeTransferMetrics(ods_code=a_string(), transfers=transfers)
-
     reporting_window = MonthlyReportingWindow.prior_to(
         date_anchor=a_datetime(year=2020, month=1), number_of_months=2
+    )
+    practice_transfer_metrics = PracticeTransferMetrics(
+        ods_code=a_string(), transfers=transfers, reporting_window=reporting_window
     )
 
     expected_requester_sla_metrics = IntegratedPracticeMetricsPresentation(
@@ -120,10 +122,11 @@ def test_returns_requester_transfers_received():
     transfers = [
         a_transfer_integrated_within_3_days(date_requested=a_datetime(year=2019, month=12))
     ]
-    practice_transfer_metrics = PracticeTransferMetrics(ods_code=a_string(), transfers=transfers)
-
     reporting_window = MonthlyReportingWindow.prior_to(
         date_anchor=a_datetime(year=2020, month=1), number_of_months=1
+    )
+    practice_transfer_metrics = PracticeTransferMetrics(
+        ods_code=a_string(), transfers=transfers, reporting_window=reporting_window
     )
 
     expected_requester_transfers_received = TransfersReceivedPresentation(
@@ -150,10 +153,11 @@ def test_returns_requester_transfers_received_for_two_metric_months():
         a_transfer_integrated_within_3_days(date_requested=a_datetime(year=2019, month=12)),
         a_transfer_integrated_within_3_days(date_requested=a_datetime(year=2019, month=11)),
     ]
-    practice_transfer_metrics = PracticeTransferMetrics(ods_code=a_string(), transfers=transfers)
-
     reporting_window = MonthlyReportingWindow.prior_to(
         date_anchor=a_datetime(year=2020, month=1), number_of_months=2
+    )
+    practice_transfer_metrics = PracticeTransferMetrics(
+        ods_code=a_string(), transfers=transfers, reporting_window=reporting_window
     )
 
     expected_requester_transfers_received = TransfersReceivedPresentation(
@@ -185,3 +189,33 @@ def test_returns_requester_transfers_received_for_two_metric_months():
     assert actual_december_metrics.month == 12
     assert actual_november_metrics.year == 2019
     assert actual_november_metrics.month == 11
+    assert len(actual.metrics) == 2
+
+
+def test_returns_default_requester_transfers_received_for_two_metric_months_with_no_transfers():
+    expected_ods_code = "A12345"
+    reporting_window = MonthlyReportingWindow.prior_to(
+        date_anchor=a_datetime(year=2021, month=8), number_of_months=2
+    )
+    practice_transfer_metrics = PracticeTransferMetrics(
+        ods_code=expected_ods_code, transfers=[], reporting_window=reporting_window
+    )
+
+    actual = construct_practice_summary(
+        practice_metrics=practice_transfer_metrics, reporting_window=reporting_window
+    )
+
+    expected_transfers_received = TransfersReceivedPresentation(
+        transfer_count=0,
+        awaiting_integration=AwaitingIntegration(percentage=None),
+        integrated=IntegratedPracticeMetricsPresentation(
+            transfer_count=0,
+            within_3_days_percentage=None,
+            within_8_days_percentage=None,
+            beyond_8_days_percentage=None,
+        ),
+    )
+
+    for month_metrics in actual.metrics:
+        actual_transfers_received = month_metrics.requester.transfers_received
+        assert actual_transfers_received == expected_transfers_received
