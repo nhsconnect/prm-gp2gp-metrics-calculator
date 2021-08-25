@@ -83,6 +83,7 @@ def test_calculates_correct_practice_metrics_given_transfers():
         generated_on=datetime(year=2020, month=1, day=15, hour=23, second=42, tzinfo=UTC),
         practices=[
             PracticeSummary(
+                name=requesting_practice_name,
                 ods_code=requesting_ods_code,
                 metrics=[
                     MonthlyMetricsPresentation(
@@ -122,11 +123,14 @@ def test_returns_default_metric_values_for_practice_without_transfers():
         metric_monthly_datetimes=[metric_month_start],
     )
 
+    requesting_practice_name = "Test GP practice with no transfers"
+    requesting_ods_code = "A4656"
+
     practice_list = [
         PracticeDetails(
             asids=["12431"],
-            ods_code="A98765",
-            name="GP Practice with no transfers",
+            ods_code=requesting_ods_code,
+            name=requesting_practice_name,
         )
     ]
 
@@ -140,7 +144,8 @@ def test_returns_default_metric_values_for_practice_without_transfers():
         generated_on=datetime(year=2020, month=1, day=15, hour=23, second=42, tzinfo=UTC),
         practices=[
             PracticeSummary(
-                ods_code="A98765",
+                name=requesting_practice_name,
+                ods_code=requesting_ods_code,
                 metrics=[
                     MonthlyMetricsPresentation(
                         year=2019,

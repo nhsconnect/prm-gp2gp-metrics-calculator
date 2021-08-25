@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Optional
 
+from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
 from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
 from prmcalculator.utils.calculate_percentage import calculate_percentage
@@ -42,6 +43,7 @@ class MonthlyMetricsPresentation:
 
 @dataclass
 class PracticeSummary:
+    name: str
     ods_code: str
     metrics: List[MonthlyMetricsPresentation]
 
@@ -107,10 +109,13 @@ def _construct_monthly_metrics_presentation(
 
 
 def construct_practice_summary(
-    practice_metrics: PracticeTransferMetrics, reporting_window: MonthlyReportingWindow
+    practice_details: PracticeDetails,
+    practice_metrics: PracticeTransferMetrics,
+    reporting_window: MonthlyReportingWindow,
 ) -> PracticeSummary:
     return PracticeSummary(
-        ods_code=practice_metrics.ods_code,
+        name=practice_details.name,
+        ods_code=practice_details.ods_code,
         metrics=[
             _construct_monthly_metrics_presentation(
                 transfer_month_metrics=practice_metrics.transfer_metrics[metric_month],

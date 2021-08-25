@@ -13,14 +13,18 @@ from tests.builders.gp2gp import (
     a_transfer_integrated_within_3_days,
     a_transfer_integrated_between_3_and_8_days,
     a_transfer_integrated_beyond_8_days,
+    build_practice_details,
 )
 
 
-def test_returns_ods_code():
+def test_returns_ods_code_and_name():
     expected_ods_code = "A12345"
+    expected_name = "Test GP Practice"
     reporting_window = MonthlyReportingWindow.prior_to(
         date_anchor=a_datetime(year=2021, month=8), number_of_months=1
     )
+    practice_details = build_practice_details(name=expected_name, ods_code=expected_ods_code)
+
     practice_transfer_metrics = PracticeTransferMetrics(
         ods_code=expected_ods_code,
         transfers=[build_transfer(date_requested=a_datetime(year=2021, month=7, day=4))],
@@ -28,15 +32,20 @@ def test_returns_ods_code():
     )
 
     actual = construct_practice_summary(
-        practice_metrics=practice_transfer_metrics, reporting_window=reporting_window
+        practice_details=practice_details,
+        practice_metrics=practice_transfer_metrics,
+        reporting_window=reporting_window,
     )
 
     assert actual.ods_code == expected_ods_code
+    assert actual.name == expected_name
 
 
 def test_returns_year_and_month_for_first_metric():
     expected_year = 2019
     expected_month = 8
+
+    practice_details = build_practice_details()
 
     reporting_window = MonthlyReportingWindow.prior_to(
         date_anchor=a_datetime(year=expected_year, month=9), number_of_months=1
@@ -52,7 +61,9 @@ def test_returns_year_and_month_for_first_metric():
     )
 
     actual = construct_practice_summary(
-        practice_metrics=practice_transfer_metrics, reporting_window=reporting_window
+        practice_details=practice_details,
+        practice_metrics=practice_transfer_metrics,
+        reporting_window=reporting_window,
     )
 
     assert actual.metrics[0].year == expected_year
@@ -70,7 +81,7 @@ def test_returns_requester_sla_metrics_deprecated():
     practice_transfer_metrics = PracticeTransferMetrics(
         ods_code=a_string(), transfers=transfers, reporting_window=reporting_window
     )
-
+    practice_details = build_practice_details()
     expected_requester_sla_metrics = IntegratedPracticeMetricsPresentation(
         transfer_count=1,
         within_3_days_percentage=100,
@@ -79,7 +90,9 @@ def test_returns_requester_sla_metrics_deprecated():
     )
 
     actual = construct_practice_summary(
-        practice_metrics=practice_transfer_metrics, reporting_window=reporting_window
+        practice_details=practice_details,
+        practice_metrics=practice_transfer_metrics,
+        reporting_window=reporting_window,
     )
     time_to_integrate_sla = actual.metrics[0].requester.integrated
 
@@ -97,6 +110,7 @@ def test_returns_requester_sla_metrics_for_two_metric_months_deprecated():
     practice_transfer_metrics = PracticeTransferMetrics(
         ods_code=a_string(), transfers=transfers, reporting_window=reporting_window
     )
+    practice_details = build_practice_details()
 
     expected_requester_sla_metrics = IntegratedPracticeMetricsPresentation(
         transfer_count=1,
@@ -106,7 +120,9 @@ def test_returns_requester_sla_metrics_for_two_metric_months_deprecated():
     )
 
     actual = construct_practice_summary(
-        practice_metrics=practice_transfer_metrics, reporting_window=reporting_window
+        practice_details=practice_details,
+        practice_metrics=practice_transfer_metrics,
+        reporting_window=reporting_window,
     )
 
     actual_december_metrics = actual.metrics[0]
@@ -132,7 +148,7 @@ def test_returns_requester_transfers_received():
     practice_transfer_metrics = PracticeTransferMetrics(
         ods_code=a_string(), transfers=transfers, reporting_window=reporting_window
     )
-
+    practice_details = build_practice_details()
     expected_requester_transfers_received = TransfersReceivedPresentation(
         transfer_count=3,
         awaiting_integration=AwaitingIntegration(percentage=0.0),
@@ -145,7 +161,9 @@ def test_returns_requester_transfers_received():
     )
 
     actual = construct_practice_summary(
-        practice_metrics=practice_transfer_metrics, reporting_window=reporting_window
+        practice_details=practice_details,
+        practice_metrics=practice_transfer_metrics,
+        reporting_window=reporting_window,
     )
     actual_requester_transfers_received = actual.metrics[0].requester.transfers_received
 
@@ -163,7 +181,7 @@ def test_returns_requester_transfers_received_for_two_metric_months():
     practice_transfer_metrics = PracticeTransferMetrics(
         ods_code=a_string(), transfers=transfers, reporting_window=reporting_window
     )
-
+    practice_details = build_practice_details()
     expected_requester_transfers_received = TransfersReceivedPresentation(
         transfer_count=1,
         awaiting_integration=AwaitingIntegration(percentage=0.0),
@@ -176,7 +194,9 @@ def test_returns_requester_transfers_received_for_two_metric_months():
     )
 
     actual = construct_practice_summary(
-        practice_metrics=practice_transfer_metrics, reporting_window=reporting_window
+        practice_details=practice_details,
+        practice_metrics=practice_transfer_metrics,
+        reporting_window=reporting_window,
     )
     actual_december_metrics = actual.metrics[0]
     actual_november_metrics = actual.metrics[1]
@@ -204,9 +224,12 @@ def test_returns_default_requester_transfers_received_for_two_metric_months_with
     practice_transfer_metrics = PracticeTransferMetrics(
         ods_code=expected_ods_code, transfers=[], reporting_window=reporting_window
     )
+    practice_details = build_practice_details()
 
     actual = construct_practice_summary(
-        practice_metrics=practice_transfer_metrics, reporting_window=reporting_window
+        practice_details=practice_details,
+        practice_metrics=practice_transfer_metrics,
+        reporting_window=reporting_window,
     )
 
     expected_transfers_received = TransfersReceivedPresentation(

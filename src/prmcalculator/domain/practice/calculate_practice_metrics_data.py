@@ -44,10 +44,11 @@ def calculate_practice_metrics_data(
         generated_on=datetime.now(tzutc()),
         practices=[
             construct_practice_summary(
-                practice_metrics=practice_transfer_metrics[ods_code],
+                practice_details=practice_details,
+                practice_metrics=practice_transfer_metrics[practice_details.ods_code],
                 reporting_window=reporting_window,
             )
-            for ods_code in practice_lookup.all_ods_codes()
+            for practice_details in practice_lookup.all_practices()
         ],
         ccgs=organisation_metadata.ccgs,
     )

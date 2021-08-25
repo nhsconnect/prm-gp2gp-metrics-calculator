@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
 from prmcalculator.domain.practice.deprecated.metrics_calculator_deprecated import (
     PracticeMetricsDeprecated,
     IntegratedPracticeMetricsDeprecated,
@@ -29,6 +30,14 @@ def build_transfer(**kwargs) -> Transfer:
             TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
         ),
         date_requested=kwargs.get("date_requested", a_datetime(year=2019, month=12, day=4)),
+    )
+
+
+def build_practice_details(**kwargs) -> PracticeDetails:
+    return PracticeDetails(
+        name=kwargs.get("name", a_string()),
+        ods_code=kwargs.get("ods_code", a_string()),
+        asids=kwargs.get("asids", []),
     )
 
 
