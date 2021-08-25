@@ -8,7 +8,46 @@ from tests.builders.common import a_string
 from tests.builders.gp2gp import build_transfer
 
 
-def test_returns_dict_that_maps_ods_code_to_transfers():
+def test_maps_an_empty_list_for_practice_with_no_transfers():
+    ods_code = "A1234"
+    lookup = PracticeLookup(
+        [
+            PracticeDetails(
+                asids=["121212121212", "343434343434"], ods_code=ods_code, name=a_string()
+            )
+        ]
+    )
+    transfers = [build_transfer()]
+
+    practice_transfers = create_practice_transfer_mapping(
+        transfers=transfers, practice_lookup=lookup
+    )
+
+    actual = practice_transfers[ods_code]
+
+    assert actual == []
+
+
+def test_maps_single_practice_to_transfers_with_matching_asid():
+    ods_code = "A1234"
+
+    lookup = PracticeLookup(
+        [PracticeDetails(asids=["121212121212"], ods_code=ods_code, name=a_string())]
+    )
+    transfers = [
+        build_transfer(requesting_practice=Practice(asid="121212121212", supplier=a_string(12))),
+        build_transfer(requesting_practice=Practice(asid="121212121212", supplier=a_string(12))),
+    ]
+
+    actual_practice_transfers = create_practice_transfer_mapping(
+        transfers=transfers, practice_lookup=lookup
+    )
+
+    assert actual_practice_transfers[ods_code] == transfers
+    assert len(actual_practice_transfers.keys()) == 1
+
+
+def test_maps_single_practice_to_transfers_with_matching_asids():
     ods_code = "A1234"
     lookup = PracticeLookup(
         [
@@ -34,27 +73,7 @@ def test_returns_dict_that_maps_ods_code_to_transfers():
     assert len(actual_practice_transfers.keys()) == 1
 
 
-def test_returns_an_empty_list_for_practice_with_no_transfers():
-    ods_code = "A1234"
-    lookup = PracticeLookup(
-        [
-            PracticeDetails(
-                asids=["121212121212", "343434343434"], ods_code=ods_code, name=a_string()
-            )
-        ]
-    )
-    transfers = [build_transfer()]
-
-    practice_transfers = create_practice_transfer_mapping(
-        transfers=transfers, practice_lookup=lookup
-    )
-
-    actual = practice_transfers[ods_code]
-
-    assert actual == []
-
-
-def test_returns_dict_that_maps_multiple_ods_code_to_transfers():
+def test_maps_two_practices_to_each_of_their_transfers():
     practice_a_ods_code = "A1234"
     practice_a_asid = "121212121212"
     practice_b_ods_code = "B4567"
