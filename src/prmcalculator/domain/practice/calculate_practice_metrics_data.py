@@ -64,6 +64,6 @@ def _create_practice_transfer_metrics_mapping(
     for practice_ods_code in practice_lookup.all_ods_codes():
         transfers = practice_transfers[practice_ods_code]
         practice_transfer_metrics[practice_ods_code] = PracticeTransferMetrics(
-            ods_code=practice_ods_code, transfers=transfers, reporting_window=reporting_window
+            transfers=transfers, reporting_window=reporting_window
         )
     return practice_transfer_metrics

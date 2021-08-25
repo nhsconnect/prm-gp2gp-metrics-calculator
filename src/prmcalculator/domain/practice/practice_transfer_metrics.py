@@ -7,10 +7,7 @@ from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 
 
 class PracticeTransferMetrics:
-    def __init__(
-        self, ods_code: str, reporting_window: MonthlyReportingWindow, transfers=Iterable[Transfer]
-    ):
-        self.ods_code = ods_code
+    def __init__(self, reporting_window: MonthlyReportingWindow, transfers=Iterable[Transfer]):
         self._transfers_by_month: Dict[Tuple[int, int], List[Transfer]] = defaultdict(list)
         self.transfer_metrics: Dict[Tuple[int, int], TransferMetrics] = {}
 
