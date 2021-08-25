@@ -10,6 +10,7 @@ from tests.builders.common import a_string
 from tests.builders.gp2gp import build_transfer
 
 
+@pytest.mark.filterwarnings("ignore:Unexpected ASID count:RuntimeWarning")
 def test_maps_an_empty_list_for_practice_with_no_transfers():
     ods_code = "A1234"
     lookup = PracticeLookup(
