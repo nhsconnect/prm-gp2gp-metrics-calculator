@@ -10,7 +10,7 @@ def test_returns_transfer_metrics():
     a_july_transfer = build_transfer(date_requested=a_datetime(year=2021, month=7))
     transfers = [an_aug_transfer, an_aug_transfer, a_july_transfer]
     reporting_window = MonthlyReportingWindow.prior_to(
-        date_anchor=a_datetime(year=2020, month=9), number_of_months=1
+        date_anchor=a_datetime(year=2021, month=9), number_of_months=2
     )
 
     practice_transfers = PracticeTransferMetrics(
