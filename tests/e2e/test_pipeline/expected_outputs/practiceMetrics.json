@@ -14,6 +14,18 @@
               "within3DaysPercentage": 33.3,
               "within8DaysPercentage": 33.3,
               "beyond8DaysPercentage": 33.3
+            },
+            "transfersReceived": {
+              "transferCount": 4,
+              "awaitingIntegration": {
+                "percentage": 25.0
+              },
+              "integrated": {
+                "transferCount": 3,
+                "within3DaysPercentage": 25.0,
+                "within8DaysPercentage": 25.0,
+                "beyond8DaysPercentage": 25.0
+              }
             }
           }
         },
@@ -26,6 +38,18 @@
               "within3DaysPercentage": 0.0,
               "within8DaysPercentage": 100.0,
               "beyond8DaysPercentage": 0.0
+            },
+            "transfersReceived": {
+              "transferCount": 1,
+              "awaitingIntegration": {
+                "percentage": 0.0
+              },
+              "integrated": {
+                "transferCount": 1,
+                "within3DaysPercentage": 0.0,
+                "within8DaysPercentage": 100.0,
+                "beyond8DaysPercentage": 0.0
+              }
             }
           }
         }
@@ -44,6 +68,18 @@
               "within3DaysPercentage": null,
               "within8DaysPercentage": null,
               "beyond8DaysPercentage": null
+            },
+            "transfersReceived": {
+              "transferCount": 0,
+              "awaitingIntegration": {
+                "percentage": null
+              },
+              "integrated": {
+                "transferCount": 0,
+                "within3DaysPercentage": null,
+                "within8DaysPercentage": null,
+                "beyond8DaysPercentage": null
+              }
             }
           }
         },
@@ -56,6 +92,18 @@
               "within3DaysPercentage": null,
               "within8DaysPercentage": null,
               "beyond8DaysPercentage": null
+            },
+            "transfersReceived": {
+              "transferCount": 0,
+              "awaitingIntegration": {
+                "percentage": null
+              },
+              "integrated": {
+                "transferCount": 0,
+                "within3DaysPercentage": null,
+                "within8DaysPercentage": null,
+                "beyond8DaysPercentage": null
+              }
             }
           }
         }
@@ -74,6 +122,18 @@
               "within3DaysPercentage": 50.0,
               "within8DaysPercentage": 50.0,
               "beyond8DaysPercentage": 0.0
+            },
+            "transfersReceived": {
+              "transferCount": 2,
+              "awaitingIntegration": {
+                "percentage": 0.0
+              },
+              "integrated": {
+                "transferCount": 2,
+                "within3DaysPercentage": 50.0,
+                "within8DaysPercentage": 50.0,
+                "beyond8DaysPercentage": 0.0
+              }
             }
           }
         },
@@ -86,6 +146,18 @@
               "within3DaysPercentage": null,
               "within8DaysPercentage": null,
               "beyond8DaysPercentage": null
+            },
+            "transfersReceived": {
+              "transferCount": 0,
+              "awaitingIntegration": {
+                "percentage": null
+              },
+              "integrated": {
+                "transferCount": 0,
+                "within3DaysPercentage": null,
+                "within8DaysPercentage": null,
+                "beyond8DaysPercentage": null
+              }
             }
           }
         }

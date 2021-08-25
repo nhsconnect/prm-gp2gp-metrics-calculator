@@ -2,13 +2,18 @@ from datetime import datetime
 from unittest import mock
 from unittest.mock import Mock
 
-from prmcalculator.domain.practice.deprecated.metrics_presentation_deprecated import (
-    PracticeMetricsPresentationDeprecated,
-    PracticeSummaryDeprecated,
-    MonthlyMetricsPresentationDeprecated,
-    RequesterMetricsDeprecated,
-    IntegratedPracticeMetricsPresentationDeprecated,
+from prmcalculator.domain.practice.calculate_practice_metrics_data import (
+    PracticeMetricsPresentation,
 )
+from prmcalculator.domain.practice.construct_practice_summary import (
+    PracticeSummary,
+    MonthlyMetricsPresentation,
+    RequesterMetrics,
+    IntegratedPracticeMetricsPresentation,
+    TransfersReceivedPresentation,
+    AwaitingIntegration,
+)
+
 from prmcalculator.domain.ods_portal.organisation_metadata import CcgDetails
 from prmcalculator.pipeline.io import PlatformMetricsIO, logger
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
@@ -19,22 +24,32 @@ _DATE_ANCHOR_YEAR = 2021
 _METRIC_MONTH = 12
 _METRIC_YEAR = 2020
 
-_PRACTICE_METRICS_OBJECT = PracticeMetricsPresentationDeprecated(
+_PRACTICE_METRICS_OBJECT = PracticeMetricsPresentation(
     generated_on=datetime(_DATE_ANCHOR_YEAR, _DATE_ANCHOR_MONTH, 1),
     practices=[
-        PracticeSummaryDeprecated(
+        PracticeSummary(
             ods_code="A12345",
             name="A test GP practice",
             metrics=[
-                MonthlyMetricsPresentationDeprecated(
+                MonthlyMetricsPresentation(
                     year=2021,
                     month=1,
-                    requester=RequesterMetricsDeprecated(
-                        integrated=IntegratedPracticeMetricsPresentationDeprecated(
+                    requester=RequesterMetrics(
+                        integrated=IntegratedPracticeMetricsPresentation(
                             transfer_count=1,
                             within_3_days_percentage=100.0,
                             within_8_days_percentage=0.0,
                             beyond_8_days_percentage=0.0,
+                        ),
+                        transfers_received=TransfersReceivedPresentation(
+                            transfer_count=2,
+                            awaiting_integration=AwaitingIntegration(percentage=50.0),
+                            integrated=IntegratedPracticeMetricsPresentation(
+                                transfer_count=1,
+                                within_3_days_percentage=50.0,
+                                within_8_days_percentage=0.0,
+                                beyond_8_days_percentage=0.0,
+                            ),
                         ),
                     ),
                 )
@@ -60,7 +75,17 @@ _PRACTICE_METRICS_DICT = {
                             "within3DaysPercentage": 100.0,
                             "within8DaysPercentage": 0.0,
                             "beyond8DaysPercentage": 0.0,
-                        }
+                        },
+                        "transfersReceived": {
+                            "transferCount": 2,
+                            "awaitingIntegration": {"percentage": 50.0},
+                            "integrated": {
+                                "transferCount": 1,
+                                "within3DaysPercentage": 50.0,
+                                "within8DaysPercentage": 0.0,
+                                "beyond8DaysPercentage": 0.0,
+                            },
+                        },
                     },
                 }
             ],
