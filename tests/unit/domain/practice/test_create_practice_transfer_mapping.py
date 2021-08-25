@@ -1,3 +1,5 @@
+import pytest
+
 from prmcalculator.domain.gp2gp.transfer import Practice
 from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
 from prmcalculator.domain.practice.create_practice_transfer_mapping import (
@@ -100,3 +102,13 @@ def test_maps_two_practices_to_each_of_their_transfers():
     assert actual[practice_a_ods_code] == [practice_a_transfer]
     assert actual[practice_b_ods_code] == [practice_b_transfer]
     assert len(actual.keys()) == 2
+
+
+def test_warns_about_transfer_with_unexpected_asid():
+    lookup = PracticeLookup([])
+    transfers = [
+        build_transfer(requesting_practice=Practice(asid="121212121212", supplier=a_string(12)))
+    ]
+
+    with pytest.warns(RuntimeWarning):
+        create_practice_transfer_mapping(transfers=transfers, practice_lookup=lookup)
