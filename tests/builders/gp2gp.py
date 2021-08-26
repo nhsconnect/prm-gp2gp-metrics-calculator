@@ -1,11 +1,6 @@
 from datetime import timedelta
 
 from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
-from prmcalculator.domain.practice.deprecated.metrics_calculator_deprecated import (
-    PracticeMetricsDeprecated,
-    IntegratedPracticeMetricsDeprecated,
-    MonthlyMetricsDeprecated,
-)
 
 from prmcalculator.domain.gp2gp.sla import EIGHT_DAYS_IN_SECONDS, THREE_DAYS_IN_SECONDS
 from prmcalculator.domain.gp2gp.transfer import (
@@ -15,7 +10,15 @@ from prmcalculator.domain.gp2gp.transfer import (
     TransferFailureReason,
     Practice,
 )
-from tests.builders.common import a_string, a_duration, an_integer, a_datetime
+from tests.builders.common import a_string, a_duration, a_datetime
+
+
+def build_practice_details(**kwargs) -> PracticeDetails:
+    return PracticeDetails(
+        name=kwargs.get("name", a_string()),
+        ods_code=kwargs.get("ods_code", a_string()),
+        asids=kwargs.get("asids", []),
+    )
 
 
 def build_transfer(**kwargs) -> Transfer:
@@ -30,34 +33,6 @@ def build_transfer(**kwargs) -> Transfer:
             TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
         ),
         date_requested=kwargs.get("date_requested", a_datetime(year=2019, month=12, day=4)),
-    )
-
-
-def build_practice_details(**kwargs) -> PracticeDetails:
-    return PracticeDetails(
-        name=kwargs.get("name", a_string()),
-        ods_code=kwargs.get("ods_code", a_string()),
-        asids=kwargs.get("asids", []),
-    )
-
-
-def build_practice_metrics_deprecated(**kwargs) -> PracticeMetricsDeprecated:
-    metrics = [
-        MonthlyMetricsDeprecated(
-            year=kwargs.get("year", 2019),
-            month=kwargs.get("month", 12),
-            integrated=IntegratedPracticeMetricsDeprecated(
-                transfer_count=kwargs.get("transfer_count", an_integer()),
-                within_3_days=kwargs.get("within_3_days", an_integer()),
-                within_8_days=kwargs.get("within_8_days", an_integer()),
-                beyond_8_days=kwargs.get("beyond_8_days", an_integer()),
-            ),
-        )
-    ]
-    return PracticeMetricsDeprecated(
-        ods_code=kwargs.get("ods_code", a_string(6)),
-        name=kwargs.get("name", a_string()),
-        metrics=kwargs.get("metrics", metrics),
     )
 
 
