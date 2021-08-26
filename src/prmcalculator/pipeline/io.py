@@ -1,14 +1,11 @@
 from dataclasses import asdict
-from typing import List, Union
+from typing import List
 import logging
 import pyarrow as pa
 
 from prmcalculator.domain.gp2gp.transfer import Transfer, convert_table_to_transfers
 from prmcalculator.domain.national.construct_national_metrics_presentation import (
     NationalMetricsPresentation,
-)
-from prmcalculator.domain.national.deprecated.metrics_presentation_deprecated import (
-    NationalMetricsPresentationDeprecated,
 )
 from prmcalculator.domain.practice.calculate_practice_metrics_data import (
     PracticeMetricsPresentation,
@@ -91,10 +88,7 @@ class PlatformMetricsIO:
         return OrganisationMetadata.from_dict(ods_metadata_dict)
 
     def write_national_metrics(
-        self,
-        national_metrics_presentation_data: Union[
-            NationalMetricsPresentation, NationalMetricsPresentationDeprecated
-        ],
+        self, national_metrics_presentation_data: NationalMetricsPresentation
     ):
         national_metrics_path = self._data_platform_metrics_bucket_s3_path(
             self._NATIONAL_METRICS_FILE_NAME

@@ -4,13 +4,12 @@ from unittest.mock import Mock
 
 from dateutil.tz import UTC
 
-from prmcalculator.domain.national.deprecated.metrics_presentation_deprecated import (
-    NationalMetricsPresentationDeprecated,
-    MonthlyNationalMetricsDeprecated,
-    FailedMetricsDeprecated,
-    PendingMetricsDeprecated,
-    PaperFallbackMetricsDeprecated,
-    IntegratedMetricsPresentationDeprecated,
+from prmcalculator.domain.national.construct_national_metrics_presentation import (
+    NationalMetricsPresentation,
+    NationalMetricMonthPresentation,
+    OutcomeMetricsPresentation,
+    PaperFallbackMetricsPresentation,
+    ProcessFailureMetricsPresentation,
 )
 from prmcalculator.pipeline.io import PlatformMetricsIO, logger
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
@@ -21,25 +20,35 @@ _DATE_ANCHOR_YEAR = 2021
 _METRIC_MONTH = 12
 _METRIC_YEAR = 2020
 
-_NATIONAL_METRICS_OBJECT = NationalMetricsPresentationDeprecated(
+_NATIONAL_METRICS_OBJECT = NationalMetricsPresentation(
     generated_on=datetime(_DATE_ANCHOR_YEAR, _DATE_ANCHOR_MONTH, 1, tzinfo=UTC),
     metrics=[
-        MonthlyNationalMetricsDeprecated(
-            transfer_count=6,
-            integrated=IntegratedMetricsPresentationDeprecated(
-                transfer_percentage=83.33,
-                transfer_count=5,
-                within_3_days=2,
-                within_8_days=2,
-                beyond_8_days=1,
-            ),
-            failed=FailedMetricsDeprecated(transfer_count=1, transfer_percentage=16.67),
-            pending=PendingMetricsDeprecated(transfer_count=0, transfer_percentage=0.0),
-            paper_fallback=PaperFallbackMetricsDeprecated(
-                transfer_count=2, transfer_percentage=33.33
-            ),
+        NationalMetricMonthPresentation(
             year=2019,
             month=12,
+            transfer_count=6,
+            integrated_on_time=OutcomeMetricsPresentation(
+                transfer_count=4,
+                transfer_percentage=44.44,
+            ),
+            paper_fallback=PaperFallbackMetricsPresentation(
+                transfer_count=5,
+                transfer_percentage=55.56,
+                process_failure=ProcessFailureMetricsPresentation(
+                    integrated_late=OutcomeMetricsPresentation(
+                        transfer_count=1, transfer_percentage=11.11
+                    ),
+                    transferred_not_integrated=OutcomeMetricsPresentation(
+                        transfer_count=1, transfer_percentage=11.11
+                    ),
+                ),
+                technical_failure=OutcomeMetricsPresentation(
+                    transfer_count=2, transfer_percentage=22.22
+                ),
+                unclassified_failure=OutcomeMetricsPresentation(
+                    transfer_count=1, transfer_percentage=11.11
+                ),
+            ),
         )
     ],
 )
@@ -48,19 +57,20 @@ _NATIONAL_METRICS_DICT = {
     "generatedOn": datetime(_DATE_ANCHOR_YEAR, _DATE_ANCHOR_MONTH, 1, tzinfo=UTC),
     "metrics": [
         {
-            "transferCount": 6,
-            "integrated": {
-                "transferPercentage": 83.33,
-                "transferCount": 5,
-                "within3Days": 2,
-                "within8Days": 2,
-                "beyond8Days": 1,
-            },
-            "failed": {"transferCount": 1, "transferPercentage": 16.67},
-            "pending": {"transferCount": 0, "transferPercentage": 0.0},
-            "paperFallback": {"transferCount": 2, "transferPercentage": 33.33},
             "year": 2019,
             "month": 12,
+            "transferCount": 6,
+            "integratedOnTime": {"transferCount": 4, "transferPercentage": 44.44},
+            "paperFallback": {
+                "transferCount": 5,
+                "transferPercentage": 55.56,
+                "processFailure": {
+                    "integratedLate": {"transferCount": 1, "transferPercentage": 11.11},
+                    "transferredNotIntegrated": {"transferCount": 1, "transferPercentage": 11.11},
+                },
+                "technicalFailure": {"transferCount": 2, "transferPercentage": 22.22},
+                "unclassifiedFailure": {"transferCount": 1, "transferPercentage": 11.11},
+            },
         }
     ],
 }
