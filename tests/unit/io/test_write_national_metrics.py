@@ -94,7 +94,7 @@ def test_given_national_metrics_object_will_generate_json():
     metrics_io.write_national_metrics(_NATIONAL_METRICS_OBJECT)
 
     expected_national_metrics_dict = _NATIONAL_METRICS_DICT
-    expected_s3_path_fragment = f"{data_platform_metrics_bucket}/v4/{_METRIC_YEAR}/{_METRIC_MONTH}"
+    expected_s3_path_fragment = f"{data_platform_metrics_bucket}/v5/{_METRIC_YEAR}/{_METRIC_MONTH}"
     expected_s3_path = f"s3://{expected_s3_path_fragment}/nationalMetrics.json"
 
     s3_manager.write_json.assert_called_once_with(expected_s3_path, expected_national_metrics_dict)
@@ -118,7 +118,7 @@ def test_will_log_successful_upload_message():
 
         metrics_io.write_national_metrics(_NATIONAL_METRICS_OBJECT)
 
-        expected_s3_path = f"{data_platform_metrics_bucket}/v4/2020/12/nationalMetrics.json"
+        expected_s3_path = f"{data_platform_metrics_bucket}/v5/2020/12/nationalMetrics.json"
         mock_log_info.assert_called_once_with(
             f"Successfully calculated national metrics and uploaded to s3://{expected_s3_path}"
         )

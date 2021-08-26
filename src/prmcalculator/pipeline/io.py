@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 class PlatformMetricsIO:
     _ORG_METADATA_VERSION = "v2"
     _ORG_METADATA_FILE_NAME = "organisationMetadata.json"
-    _DATA_PLATFORM_METRICS_VERSION = "v4"
+    _DATA_PLATFORM_METRICS_VERSION = "v5"
     _PRACTICE_METRICS_FILE_NAME = "practiceMetrics.json"
     _NATIONAL_METRICS_FILE_NAME = "nationalMetrics.json"
     _TRANSFER_DATA_FILE_NAME = "transfers.parquet"

@@ -125,16 +125,16 @@ def test_end_to_end_with_fake_s3(datadir):
     expected_practice_metrics = _read_json(datadir / "expected_outputs" / "practiceMetrics.json")
     expected_national_metrics = _read_json(datadir / "expected_outputs" / "nationalMetrics.json")
 
-    s3_output_path = "v4/2019/12/"
+    s3_metrics_output_path = "v5/2019/12/"
 
     try:
         main()
         actual_practice_metrics = _read_s3_json(
-            output_metrics_bucket, f"{s3_output_path}{expected_practice_metrics_output_key}"
+            output_metrics_bucket, f"{s3_metrics_output_path}{expected_practice_metrics_output_key}"
         )
 
         actual_national_metrics = _read_s3_json(
-            output_metrics_bucket, f"{s3_output_path}{expected_national_metrics_output_key}"
+            output_metrics_bucket, f"{s3_metrics_output_path}{expected_national_metrics_output_key}"
         )
 
         assert actual_practice_metrics["practices"] == expected_practice_metrics["practices"]
