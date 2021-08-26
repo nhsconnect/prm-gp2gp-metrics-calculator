@@ -13,8 +13,8 @@ from tests.builders.gp2gp import (
     a_transfer_integrated_within_3_days,
     a_transfer_integrated_between_3_and_8_days,
     a_transfer_integrated_beyond_8_days,
-    build_practice_details,
 )
+from tests.builders.ods_portal import build_practice_details
 
 
 def test_returns_ods_code_and_name():

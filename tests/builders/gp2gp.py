@@ -1,7 +1,5 @@
 from datetime import timedelta
 
-from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
-
 from prmcalculator.domain.gp2gp.sla import EIGHT_DAYS_IN_SECONDS, THREE_DAYS_IN_SECONDS
 from prmcalculator.domain.gp2gp.transfer import (
     Transfer,
@@ -11,14 +9,6 @@ from prmcalculator.domain.gp2gp.transfer import (
     Practice,
 )
 from tests.builders.common import a_string, a_duration, a_datetime
-
-
-def build_practice_details(**kwargs) -> PracticeDetails:
-    return PracticeDetails(
-        name=kwargs.get("name", a_string()),
-        ods_code=kwargs.get("ods_code", a_string()),
-        asids=kwargs.get("asids", []),
-    )
 
 
 def build_transfer(**kwargs) -> Transfer:
