@@ -10,7 +10,6 @@ from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 
 @dataclass
 class IntegratedPracticeMetricsPresentation:
-    transfer_count: int
     within_3_days_percentage: Optional[float]
     within_8_days_percentage: Optional[float]
     beyond_8_days_percentage: Optional[float]
@@ -30,7 +29,6 @@ class TransfersReceivedPresentation:
 
 @dataclass
 class RequesterMetrics:
-    integrated: IntegratedPracticeMetricsPresentation
     transfers_received: TransfersReceivedPresentation
 
 
@@ -51,31 +49,12 @@ class PracticeSummary:
 def _construct_monthly_metrics_presentation(
     transfer_month_metrics: TransferMetrics, year: int, month: int
 ) -> MonthlyMetricsPresentation:
-    integrated_total = transfer_month_metrics.integrated_total()
     received_by_practice_total = transfer_month_metrics.received_by_practice_total()
 
     return MonthlyMetricsPresentation(
         year=year,
         month=month,
         requester=RequesterMetrics(
-            integrated=IntegratedPracticeMetricsPresentation(
-                transfer_count=integrated_total,
-                within_3_days_percentage=calculate_percentage(
-                    portion=transfer_month_metrics.integrated_within_3_days(),
-                    total=integrated_total,
-                    num_digits=1,
-                ),
-                within_8_days_percentage=calculate_percentage(
-                    portion=transfer_month_metrics.integrated_within_8_days(),
-                    total=integrated_total,
-                    num_digits=1,
-                ),
-                beyond_8_days_percentage=calculate_percentage(
-                    portion=transfer_month_metrics.integrated_beyond_8_days(),
-                    total=integrated_total,
-                    num_digits=1,
-                ),
-            ),
             transfers_received=TransfersReceivedPresentation(
                 transfer_count=transfer_month_metrics.received_by_practice_total(),
                 awaiting_integration=AwaitingIntegration(
@@ -86,7 +65,6 @@ def _construct_monthly_metrics_presentation(
                     )
                 ),
                 integrated=IntegratedPracticeMetricsPresentation(
-                    transfer_count=integrated_total,
                     within_3_days_percentage=calculate_percentage(
                         portion=transfer_month_metrics.integrated_within_3_days(),
                         total=received_by_practice_total,

@@ -68,72 +68,6 @@ def test_returns_year_and_month_for_first_metric():
     assert actual.metrics[0].month == expected_month
 
 
-def test_returns_requester_sla_metrics_deprecated():
-
-    transfers = [
-        a_transfer_integrated_within_3_days(date_requested=a_datetime(year=2019, month=12))
-    ]
-    reporting_window = MonthlyReportingWindow.prior_to(
-        date_anchor=a_datetime(year=2020, month=1), number_of_months=1
-    )
-    practice_transfer_metrics = PracticeTransferMetrics(
-        transfers=transfers, reporting_window=reporting_window
-    )
-    practice_details = build_practice_details()
-    expected_requester_sla_metrics = IntegratedPracticeMetricsPresentation(
-        transfer_count=1,
-        within_3_days_percentage=100,
-        within_8_days_percentage=0,
-        beyond_8_days_percentage=0,
-    )
-
-    actual = construct_practice_summary(
-        practice_details=practice_details,
-        practice_metrics=practice_transfer_metrics,
-        reporting_window=reporting_window,
-    )
-    time_to_integrate_sla = actual.metrics[0].requester.integrated
-
-    assert time_to_integrate_sla == expected_requester_sla_metrics
-
-
-def test_returns_requester_sla_metrics_for_two_metric_months_deprecated():
-    transfers = [
-        a_transfer_integrated_within_3_days(date_requested=a_datetime(year=2019, month=12)),
-        a_transfer_integrated_within_3_days(date_requested=a_datetime(year=2019, month=11)),
-    ]
-    reporting_window = MonthlyReportingWindow.prior_to(
-        date_anchor=a_datetime(year=2020, month=1), number_of_months=2
-    )
-    practice_transfer_metrics = PracticeTransferMetrics(
-        transfers=transfers, reporting_window=reporting_window
-    )
-    practice_details = build_practice_details()
-
-    expected_requester_sla_metrics = IntegratedPracticeMetricsPresentation(
-        transfer_count=1,
-        within_3_days_percentage=100,
-        within_8_days_percentage=0,
-        beyond_8_days_percentage=0,
-    )
-
-    actual = construct_practice_summary(
-        practice_details=practice_details,
-        practice_metrics=practice_transfer_metrics,
-        reporting_window=reporting_window,
-    )
-
-    actual_december_metrics = actual.metrics[0]
-    actual_november_metrics = actual.metrics[1]
-
-    assert actual_november_metrics.requester.integrated == expected_requester_sla_metrics
-    assert actual_december_metrics.requester.integrated == expected_requester_sla_metrics
-    assert actual_december_metrics.year == 2019
-    assert actual_december_metrics.month == 12
-    assert actual_november_metrics.year == 2019
-    assert actual_november_metrics.month == 11
-
-
 def test_returns_requester_transfers_received():
     transfers = [
         a_transfer_integrated_within_3_days(),
@@ -151,7 +85,6 @@ def test_returns_requester_transfers_received():
         transfer_count=3,
         awaiting_integration=AwaitingIntegration(percentage=0.0),
         integrated=IntegratedPracticeMetricsPresentation(
-            transfer_count=3,
             within_3_days_percentage=33.3,
             within_8_days_percentage=33.3,
             beyond_8_days_percentage=33.3,
@@ -184,7 +117,6 @@ def test_returns_requester_transfers_received_for_two_metric_months():
         transfer_count=1,
         awaiting_integration=AwaitingIntegration(percentage=0.0),
         integrated=IntegratedPracticeMetricsPresentation(
-            transfer_count=1,
             within_3_days_percentage=100.0,
             within_8_days_percentage=0.0,
             beyond_8_days_percentage=0.0,
@@ -233,7 +165,6 @@ def test_returns_default_requester_transfers_received_for_two_metric_months_with
         transfer_count=0,
         awaiting_integration=AwaitingIntegration(percentage=None),
         integrated=IntegratedPracticeMetricsPresentation(
-            transfer_count=0,
             within_3_days_percentage=None,
             within_8_days_percentage=None,
             beyond_8_days_percentage=None,

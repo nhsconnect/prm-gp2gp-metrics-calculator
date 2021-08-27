@@ -72,13 +72,6 @@ def test_calculates_correct_practice_metrics_given_transfers():
         ccgs=ccg_list,
     )
 
-    expected_integrated_metrics_deprecated = IntegratedPracticeMetricsPresentation(
-        transfer_count=1,
-        within_3_days_percentage=100.0,
-        within_8_days_percentage=0.0,
-        beyond_8_days_percentage=0.0,
-    )
-
     expected = PracticeMetricsPresentation(
         generated_on=datetime(year=2020, month=1, day=15, hour=23, second=42, tzinfo=UTC),
         practices=[
@@ -90,12 +83,10 @@ def test_calculates_correct_practice_metrics_given_transfers():
                         year=2019,
                         month=12,
                         requester=RequesterMetrics(
-                            integrated=expected_integrated_metrics_deprecated,
                             transfers_received=TransfersReceivedPresentation(
                                 transfer_count=2,
                                 awaiting_integration=AwaitingIntegration(percentage=50.0),
                                 integrated=IntegratedPracticeMetricsPresentation(
-                                    transfer_count=1,
                                     within_3_days_percentage=50.0,
                                     within_8_days_percentage=0.0,
                                     beyond_8_days_percentage=0.0,
@@ -151,17 +142,10 @@ def test_returns_default_metric_values_for_practice_without_transfers():
                         year=2019,
                         month=12,
                         requester=RequesterMetrics(
-                            integrated=IntegratedPracticeMetricsPresentation(
-                                transfer_count=0,
-                                within_3_days_percentage=None,
-                                within_8_days_percentage=None,
-                                beyond_8_days_percentage=None,
-                            ),
                             transfers_received=TransfersReceivedPresentation(
                                 transfer_count=0,
                                 awaiting_integration=AwaitingIntegration(percentage=None),
                                 integrated=IntegratedPracticeMetricsPresentation(
-                                    transfer_count=0,
                                     within_3_days_percentage=None,
                                     within_8_days_percentage=None,
                                     beyond_8_days_percentage=None,

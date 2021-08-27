@@ -35,17 +35,10 @@ _PRACTICE_METRICS_OBJECT = PracticeMetricsPresentation(
                     year=2021,
                     month=1,
                     requester=RequesterMetrics(
-                        integrated=IntegratedPracticeMetricsPresentation(
-                            transfer_count=1,
-                            within_3_days_percentage=100.0,
-                            within_8_days_percentage=0.0,
-                            beyond_8_days_percentage=0.0,
-                        ),
                         transfers_received=TransfersReceivedPresentation(
                             transfer_count=2,
                             awaiting_integration=AwaitingIntegration(percentage=50.0),
                             integrated=IntegratedPracticeMetricsPresentation(
-                                transfer_count=1,
                                 within_3_days_percentage=50.0,
                                 within_8_days_percentage=0.0,
                                 beyond_8_days_percentage=0.0,
@@ -70,17 +63,10 @@ _PRACTICE_METRICS_DICT = {
                     "year": 2021,
                     "month": 1,
                     "requester": {
-                        "integrated": {
-                            "transferCount": 1,
-                            "within3DaysPercentage": 100.0,
-                            "within8DaysPercentage": 0.0,
-                            "beyond8DaysPercentage": 0.0,
-                        },
                         "transfersReceived": {
                             "transferCount": 2,
                             "awaitingIntegration": {"percentage": 50.0},
                             "integrated": {
-                                "transferCount": 1,
                                 "within3DaysPercentage": 50.0,
                                 "within8DaysPercentage": 0.0,
                                 "beyond8DaysPercentage": 0.0,
