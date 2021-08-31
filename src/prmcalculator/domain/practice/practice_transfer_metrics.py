@@ -6,13 +6,12 @@ from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
 
 YearNumber = int
 MonthNumber = int
+YearMonth = Tuple[YearNumber, MonthNumber]
 
 
 class PracticeTransferMetrics:
     def __init__(self, transfers=Iterable[Transfer]):
-        self._transfers_by_month: Dict[
-            Tuple[YearNumber, MonthNumber], List[Transfer]
-        ] = defaultdict(list)
+        self._transfers_by_month: Dict[YearMonth, List[Transfer]] = defaultdict(list)
 
         for transfer in transfers:
             date_requested_tuple = (transfer.date_requested.year, transfer.date_requested.month)
