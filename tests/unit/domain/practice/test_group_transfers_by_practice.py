@@ -11,7 +11,7 @@ from tests.builders.gp2gp import build_transfer
 
 
 @pytest.mark.filterwarnings("ignore:Unexpected ASID count:RuntimeWarning")
-def test_maps_an_empty_list_for_practice_with_no_transfers():
+def test_produces_an_empty_list_given_practice_with_no_transfers():
     ods_code = "A1234"
     lookup = PracticeLookup(
         [
@@ -29,7 +29,7 @@ def test_maps_an_empty_list_for_practice_with_no_transfers():
     assert actual == []
 
 
-def test_maps_single_practice_to_transfers_with_matching_asid():
+def test_produces_a_group_given_single_practice_with_transfers_matching_asid():
     ods_code = "A1234"
 
     lookup = PracticeLookup(
@@ -48,7 +48,7 @@ def test_maps_single_practice_to_transfers_with_matching_asid():
     assert len(actual_practice_transfers.keys()) == 1
 
 
-def test_maps_single_practice_to_transfers_with_matching_asids():
+def test_produces_a_group_given_single_practice_with_transfers_matching_asids():
     ods_code = "A1234"
     lookup = PracticeLookup(
         [
@@ -74,7 +74,7 @@ def test_maps_single_practice_to_transfers_with_matching_asids():
     assert len(actual_practice_transfers.keys()) == 1
 
 
-def test_maps_two_practices_to_each_of_their_transfers():
+def test_produces_correct_groups_given_two_practices_each_with_transfers():
     practice_a_ods_code = "A1234"
     practice_a_asid = "121212121212"
     practice_b_ods_code = "B4567"
