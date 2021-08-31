@@ -96,10 +96,10 @@ def construct_practice_summary(
         ods_code=practice_details.ods_code,
         metrics=[
             _construct_monthly_metrics_presentation(
-                transfer_month_metrics=practice_metrics.transfer_metrics[metric_month],
-                year=metric_month[0],
-                month=metric_month[1],
+                transfer_month_metrics=practice_metrics.monthly_metrics(year, month),
+                year=year,
+                month=month,
             )
-            for metric_month in reporting_window.metric_months
+            for (year, month) in reporting_window.metric_months
         ],
     )

@@ -27,7 +27,6 @@ def test_returns_ods_code_and_name():
 
     practice_transfer_metrics = PracticeTransferMetrics(
         transfers=[build_transfer(date_requested=a_datetime(year=2021, month=7, day=4))],
-        reporting_window=reporting_window,
     )
 
     actual = construct_practice_summary(
@@ -55,7 +54,6 @@ def test_returns_year_and_month_for_first_metric():
                 date_requested=a_datetime(year=expected_year, month=expected_month, day=4)
             )
         ],
-        reporting_window=reporting_window,
     )
 
     actual = construct_practice_summary(
@@ -77,9 +75,8 @@ def test_returns_requester_transfers_received():
     reporting_window = MonthlyReportingWindow.prior_to(
         date_anchor=a_datetime(year=2020, month=1), number_of_months=1
     )
-    practice_transfer_metrics = PracticeTransferMetrics(
-        transfers=transfers, reporting_window=reporting_window
-    )
+    practice_transfer_metrics = PracticeTransferMetrics(transfers)
+
     practice_details = build_practice_details()
     expected_requester_transfers_received = TransfersReceivedPresentation(
         transfer_count=3,
@@ -110,7 +107,7 @@ def test_returns_requester_transfers_received_for_two_metric_months():
         date_anchor=a_datetime(year=2020, month=1), number_of_months=2
     )
     practice_transfer_metrics = PracticeTransferMetrics(
-        transfers=transfers, reporting_window=reporting_window
+        transfers=transfers,
     )
     practice_details = build_practice_details()
     expected_requester_transfers_received = TransfersReceivedPresentation(
@@ -151,7 +148,7 @@ def test_returns_default_requester_transfers_received_for_two_metric_months_with
         date_anchor=a_datetime(year=2021, month=8), number_of_months=2
     )
     practice_transfer_metrics = PracticeTransferMetrics(
-        transfers=[], reporting_window=reporting_window
+        transfers=[],
     )
     practice_details = build_practice_details()
 

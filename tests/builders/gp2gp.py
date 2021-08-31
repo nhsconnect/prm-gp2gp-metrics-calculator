@@ -62,13 +62,14 @@ def a_transfer_integrated_between_3_and_8_days():
     )
 
 
-def a_transfer_integrated_beyond_8_days():
+def a_transfer_integrated_beyond_8_days(**kwargs):
     return build_transfer(
         outcome=TransferOutcome(
             status=TransferStatus.PROCESS_FAILURE,
             failure_reason=TransferFailureReason.INTEGRATED_LATE,
         ),
         sla_duration=timedelta(seconds=EIGHT_DAYS_IN_SECONDS + 1),
+        date_requested=kwargs.get("date_requested", a_datetime(year=2019, month=12, day=4)),
     )
 
 

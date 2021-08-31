@@ -37,7 +37,6 @@ def calculate_practice_metrics_data(
     practice_transfer_metrics = _create_practice_transfer_metrics_mapping(
         practice_transfers=practice_transfers,
         practice_lookup=practice_lookup,
-        reporting_window=reporting_window,
     )
 
     return PracticeMetricsPresentation(
@@ -57,13 +56,11 @@ def calculate_practice_metrics_data(
 def _create_practice_transfer_metrics_mapping(
     practice_transfers: Dict[str, List[Transfer]],
     practice_lookup: PracticeLookup,
-    reporting_window: MonthlyReportingWindow,
 ) -> Dict[str, PracticeTransferMetrics]:
     practice_transfer_metrics = {}
 
     for practice_ods_code in practice_lookup.all_ods_codes():
         transfers = practice_transfers[practice_ods_code]
-        practice_transfer_metrics[practice_ods_code] = PracticeTransferMetrics(
-            transfers=transfers, reporting_window=reporting_window
-        )
+        practice_transfer_metrics[practice_ods_code] = PracticeTransferMetrics(transfers)
+
     return practice_transfer_metrics
