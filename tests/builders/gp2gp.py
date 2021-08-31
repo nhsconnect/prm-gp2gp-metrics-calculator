@@ -22,7 +22,7 @@ def build_transfer(**kwargs) -> Transfer:
             "outcome",
             TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
         ),
-        date_requested=kwargs.get("date_requested", a_datetime(year=2019, month=12, day=4)),
+        date_requested=kwargs.get("date_requested", a_datetime()),
     )
 
 
@@ -51,14 +51,15 @@ def a_transfer_integrated_within_3_days(**kwargs):
         requesting_practice=kwargs.get(
             "requesting_practice", Practice(asid=a_string(12), supplier=a_string(12))
         ),
-        date_requested=kwargs.get("date_requested", a_datetime(year=2019, month=12, day=4)),
+        date_requested=kwargs.get("date_requested", a_datetime()),
     )
 
 
-def a_transfer_integrated_between_3_and_8_days():
+def a_transfer_integrated_between_3_and_8_days(**kwargs):
     return build_transfer(
         outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
         sla_duration=timedelta(seconds=THREE_DAYS_IN_SECONDS + 1),
+        date_requested=kwargs.get("date_requested", a_datetime()),
     )
 
 
@@ -69,16 +70,17 @@ def a_transfer_integrated_beyond_8_days(**kwargs):
             failure_reason=TransferFailureReason.INTEGRATED_LATE,
         ),
         sla_duration=timedelta(seconds=EIGHT_DAYS_IN_SECONDS + 1),
-        date_requested=kwargs.get("date_requested", a_datetime(year=2019, month=12, day=4)),
+        date_requested=kwargs.get("date_requested", a_datetime()),
     )
 
 
-def a_transfer_with_a_final_error():
+def a_transfer_with_a_final_error(**kwargs):
     return build_transfer(
         outcome=TransferOutcome(
             status=TransferStatus.TECHNICAL_FAILURE,
             failure_reason=TransferFailureReason.FINAL_ERROR,
-        )
+        ),
+        date_requested=kwargs.get("date_requested", a_datetime()),
     )
 
 
@@ -93,68 +95,75 @@ def a_transfer_that_was_never_integrated(**kwargs):
         requesting_practice=kwargs.get(
             "requesting_practice", Practice(asid=a_string(12), supplier=a_string(12))
         ),
-        date_requested=kwargs.get("date_requested", a_datetime(year=2019, month=12, day=4)),
+        date_requested=kwargs.get("date_requested", a_datetime()),
     )
 
 
-def a_transfer_where_the_request_was_never_acknowledged():
+def a_transfer_where_the_request_was_never_acknowledged(**kwargs):
     return build_transfer(
         outcome=TransferOutcome(
             status=TransferStatus.TECHNICAL_FAILURE,
             failure_reason=TransferFailureReason.REQUEST_NOT_ACKNOWLEDGED,
-        )
+        ),
+        date_requested=kwargs.get("date_requested", a_datetime()),
     )
 
 
-def a_transfer_where_no_core_ehr_was_sent():
+def a_transfer_where_no_core_ehr_was_sent(**kwargs):
     return build_transfer(
         outcome=TransferOutcome(
             status=TransferStatus.TECHNICAL_FAILURE,
             failure_reason=TransferFailureReason.CORE_EHR_NOT_SENT,
-        )
+        ),
+        date_requested=kwargs.get("date_requested", a_datetime()),
     )
 
 
-def a_transfer_where_no_copc_continue_was_sent():
+def a_transfer_where_no_copc_continue_was_sent(**kwargs):
     return build_transfer(
         outcome=TransferOutcome(
             status=TransferStatus.TECHNICAL_FAILURE,
             failure_reason=TransferFailureReason.COPC_NOT_SENT,
-        )
+        ),
+        date_requested=kwargs.get("date_requested", a_datetime()),
     )
 
 
-def a_transfer_where_copc_fragments_were_required_but_not_sent():
+def a_transfer_where_copc_fragments_were_required_but_not_sent(**kwargs):
     return build_transfer(
         outcome=TransferOutcome(
             status=TransferStatus.TECHNICAL_FAILURE,
             failure_reason=TransferFailureReason.COPC_NOT_SENT,
-        )
+        ),
+        date_requested=kwargs.get("date_requested", a_datetime()),
     )
 
 
-def a_transfer_where_copc_fragments_remained_unacknowledged():
+def a_transfer_where_copc_fragments_remained_unacknowledged(**kwargs):
     return build_transfer(
         outcome=TransferOutcome(
             status=TransferStatus.TECHNICAL_FAILURE,
             failure_reason=TransferFailureReason.COPC_NOT_ACKNOWLEDGED,
-        )
+        ),
+        date_requested=kwargs.get("date_requested", a_datetime()),
     )
 
 
-def a_transfer_where_the_sender_reported_an_unrecoverable_error():
+def a_transfer_where_the_sender_reported_an_unrecoverable_error(**kwargs):
     return build_transfer(
         outcome=TransferOutcome(
             status=TransferStatus.TECHNICAL_FAILURE,
             failure_reason=TransferFailureReason.FATAL_SENDER_ERROR,
-        )
+        ),
+        date_requested=kwargs.get("date_requested", a_datetime()),
     )
 
 
-def a_transfer_where_a_copc_triggered_an_error():
+def a_transfer_where_a_copc_triggered_an_error(**kwargs):
     return build_transfer(
         outcome=TransferOutcome(
             status=TransferStatus.UNCLASSIFIED_FAILURE,
             failure_reason=TransferFailureReason.TRANSFERRED_NOT_INTEGRATED_WITH_ERROR,
-        )
+        ),
+        date_requested=kwargs.get("date_requested", a_datetime()),
     )

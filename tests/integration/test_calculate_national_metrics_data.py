@@ -14,7 +14,7 @@ from prmcalculator.domain.national.construct_national_metrics_presentation impor
     PaperFallbackMetricsPresentation,
 )
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
-from tests.builders.common import a_duration, a_datetime
+from tests.builders.common import a_duration, a_datetime, a_date_in
 from tests.builders.gp2gp import (
     a_transfer_integrated_beyond_8_days,
     a_transfer_integrated_within_3_days,
@@ -34,30 +34,34 @@ from tests.builders.gp2gp import (
 
 @freeze_time(datetime(year=2020, month=1, day=17, hour=21, second=32), tz_offset=0)
 def test_calculates_correct_national_metrics_given_series_of_transfers():
-    metric_month_start = a_datetime(year=2019, month=12, day=1)
+    a_date_in_2019_12 = a_date_in(year=2019, month=12)
     transfers_integrated_on_time = [
-        a_transfer_integrated_within_3_days(),
-        a_transfer_integrated_between_3_and_8_days(),
-        a_transfer_integrated_between_3_and_8_days(),
+        a_transfer_integrated_within_3_days(date_requested=a_date_in_2019_12()),
+        a_transfer_integrated_between_3_and_8_days(date_requested=a_date_in_2019_12()),
+        a_transfer_integrated_between_3_and_8_days(date_requested=a_date_in_2019_12()),
     ]
     transfers_unclassified_error = [
-        a_transfer_where_a_copc_triggered_an_error(),
+        a_transfer_where_a_copc_triggered_an_error(date_requested=a_date_in_2019_12()),
     ]
     transfers_technical_failure = [
-        a_transfer_where_the_request_was_never_acknowledged(),
-        a_transfer_where_no_core_ehr_was_sent(),
-        a_transfer_where_no_copc_continue_was_sent(),
-        a_transfer_where_copc_fragments_were_required_but_not_sent(),
-        a_transfer_where_copc_fragments_remained_unacknowledged(),
-        a_transfer_where_the_sender_reported_an_unrecoverable_error(),
-        a_transfer_with_a_final_error(),
+        a_transfer_where_the_request_was_never_acknowledged(date_requested=a_date_in_2019_12()),
+        a_transfer_where_no_core_ehr_was_sent(date_requested=a_date_in_2019_12()),
+        a_transfer_where_no_copc_continue_was_sent(date_requested=a_date_in_2019_12()),
+        a_transfer_where_copc_fragments_were_required_but_not_sent(
+            date_requested=a_date_in_2019_12()
+        ),
+        a_transfer_where_copc_fragments_remained_unacknowledged(date_requested=a_date_in_2019_12()),
+        a_transfer_where_the_sender_reported_an_unrecoverable_error(
+            date_requested=a_date_in_2019_12()
+        ),
+        a_transfer_with_a_final_error(date_requested=a_date_in_2019_12()),
     ]
 
     transfers_process_failure = [
-        a_transfer_integrated_beyond_8_days(),
-        a_transfer_integrated_beyond_8_days(),
-        a_transfer_integrated_beyond_8_days(),
-        a_transfer_that_was_never_integrated(),
+        a_transfer_integrated_beyond_8_days(date_requested=a_date_in_2019_12()),
+        a_transfer_integrated_beyond_8_days(date_requested=a_date_in_2019_12()),
+        a_transfer_integrated_beyond_8_days(date_requested=a_date_in_2019_12()),
+        a_transfer_that_was_never_integrated(date_requested=a_date_in_2019_12()),
     ]
     transfers = (
         transfers_process_failure
@@ -66,6 +70,7 @@ def test_calculates_correct_national_metrics_given_series_of_transfers():
         + transfers_unclassified_error
     )
 
+    metric_month_start = datetime(year=2019, month=12, day=1, tzinfo=tzutc())
     reporting_window = MonthlyReportingWindow(
         date_anchor_month_start=a_datetime(year=2020, month=1, day=1),
         metric_monthly_datetimes=[metric_month_start],

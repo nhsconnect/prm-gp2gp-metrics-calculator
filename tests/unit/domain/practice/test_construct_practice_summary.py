@@ -7,7 +7,7 @@ from prmcalculator.domain.practice.construct_practice_summary import (
 
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
-from tests.builders.common import a_datetime
+from tests.builders.common import a_datetime, a_date_in
 from tests.builders.gp2gp import (
     build_transfer,
     a_transfer_integrated_within_3_days,
@@ -67,10 +67,12 @@ def test_returns_year_and_month_for_first_metric():
 
 
 def test_returns_requester_transfers_received():
+    a_date_in_2019_12 = a_date_in(year=2019, month=12)
+
     transfers = [
-        a_transfer_integrated_within_3_days(),
-        a_transfer_integrated_between_3_and_8_days(),
-        a_transfer_integrated_beyond_8_days(),
+        a_transfer_integrated_within_3_days(date_requested=a_date_in_2019_12()),
+        a_transfer_integrated_between_3_and_8_days(date_requested=a_date_in_2019_12()),
+        a_transfer_integrated_beyond_8_days(date_requested=a_date_in_2019_12()),
     ]
     reporting_window = MonthlyReportingWindow.prior_to(
         date_anchor=a_datetime(year=2020, month=1), number_of_months=1

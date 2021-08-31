@@ -26,5 +26,9 @@ def a_datetime(**kwargs):
     )
 
 
+def a_date_in(year, month):
+    return lambda: a_datetime(year=year, month=month)
+
+
 def a_duration(max_length=1000000):
     return timedelta(seconds=an_integer(10, max_length))
