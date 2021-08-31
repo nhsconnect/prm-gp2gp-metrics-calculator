@@ -11,7 +11,7 @@ from tests.builders.gp2gp import build_transfer
 
 
 @pytest.mark.filterwarnings("ignore:Unexpected ASID count:RuntimeWarning")
-def test_produces_an_empty_list_given_practice_with_no_transfers():
+def test_produces_an_empty_list_given_practice_with_no_matching_transfers():
     ods_code = "A1234"
     lookup = PracticeLookup(
         [
@@ -20,7 +20,9 @@ def test_produces_an_empty_list_given_practice_with_no_transfers():
             )
         ]
     )
-    transfers = [build_transfer()]
+    transfers = [
+        build_transfer(requesting_practice=Practice(asid="565656565656", supplier=a_string(12)))
+    ]
 
     practice_transfers = group_transfers_by_practice(transfers=transfers, practice_lookup=lookup)
 
