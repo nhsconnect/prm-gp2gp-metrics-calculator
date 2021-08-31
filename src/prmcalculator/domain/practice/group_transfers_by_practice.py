@@ -6,7 +6,7 @@ from prmcalculator.domain.gp2gp.transfer import Transfer
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 
 
-def create_practice_transfer_mapping(
+def group_transfers_by_practice(
     transfers: List[Transfer], practice_lookup: PracticeLookup
 ) -> Dict[str, List[Transfer]]:
     practice_transfers = defaultdict(list)

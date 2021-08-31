@@ -2,8 +2,8 @@ import pytest
 
 from prmcalculator.domain.gp2gp.transfer import Practice
 from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
-from prmcalculator.domain.practice.create_practice_transfer_mapping import (
-    create_practice_transfer_mapping,
+from prmcalculator.domain.practice.group_transfers_by_practice import (
+    group_transfers_by_practice,
 )
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 from tests.builders.common import a_string
@@ -22,9 +22,7 @@ def test_maps_an_empty_list_for_practice_with_no_transfers():
     )
     transfers = [build_transfer()]
 
-    practice_transfers = create_practice_transfer_mapping(
-        transfers=transfers, practice_lookup=lookup
-    )
+    practice_transfers = group_transfers_by_practice(transfers=transfers, practice_lookup=lookup)
 
     actual = practice_transfers[ods_code]
 
@@ -42,7 +40,7 @@ def test_maps_single_practice_to_transfers_with_matching_asid():
         build_transfer(requesting_practice=Practice(asid="121212121212", supplier=a_string(12))),
     ]
 
-    actual_practice_transfers = create_practice_transfer_mapping(
+    actual_practice_transfers = group_transfers_by_practice(
         transfers=transfers, practice_lookup=lookup
     )
 
@@ -68,7 +66,7 @@ def test_maps_single_practice_to_transfers_with_matching_asids():
         ),
     ]
 
-    actual_practice_transfers = create_practice_transfer_mapping(
+    actual_practice_transfers = group_transfers_by_practice(
         transfers=transfers, practice_lookup=lookup
     )
 
@@ -94,7 +92,7 @@ def test_maps_two_practices_to_each_of_their_transfers():
         requesting_practice=Practice(asid=practice_b_asid, supplier=a_string(12)),
     )
 
-    practice_transfers = create_practice_transfer_mapping(
+    practice_transfers = group_transfers_by_practice(
         transfers=[practice_a_transfer, practice_b_transfer], practice_lookup=lookup
     )
 
@@ -112,4 +110,4 @@ def test_warns_about_transfer_with_unexpected_asid():
     ]
 
     with pytest.warns(RuntimeWarning):
-        create_practice_transfer_mapping(transfers=transfers, practice_lookup=lookup)
+        group_transfers_by_practice(transfers=transfers, practice_lookup=lookup)

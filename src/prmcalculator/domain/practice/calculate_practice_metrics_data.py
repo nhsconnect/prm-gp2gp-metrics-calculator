@@ -10,8 +10,8 @@ from prmcalculator.domain.practice.construct_practice_summary import (
     construct_practice_summary,
     PracticeSummary,
 )
-from prmcalculator.domain.practice.create_practice_transfer_mapping import (
-    create_practice_transfer_mapping,
+from prmcalculator.domain.practice.group_transfers_by_practice import (
+    group_transfers_by_practice,
 )
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
@@ -31,7 +31,7 @@ def calculate_practice_metrics_data(
     reporting_window: MonthlyReportingWindow,
 ) -> PracticeMetricsPresentation:
     practice_lookup = PracticeLookup(organisation_metadata.practices)
-    practice_transfers = create_practice_transfer_mapping(
+    practice_transfers = group_transfers_by_practice(
         transfers=transfers, practice_lookup=practice_lookup
     )
     practice_transfer_metrics = _create_practice_transfer_metrics_mapping(
