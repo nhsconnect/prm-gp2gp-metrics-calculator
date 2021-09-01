@@ -34,10 +34,7 @@ def calculate_practice_metrics_data(
     practice_transfers = group_transfers_by_practice(
         transfers=transfers, practice_lookup=practice_lookup
     )
-    practice_transfer_metrics = _create_practice_transfer_metrics_mapping(
-        practice_transfers=practice_transfers,
-        practice_lookup=practice_lookup,
-    )
+    practice_transfer_metrics = _create_practice_transfer_metrics_mapping(practice_transfers)
 
     return PracticeMetricsPresentation(
         generated_on=datetime.now(tzutc()),
@@ -55,12 +52,8 @@ def calculate_practice_metrics_data(
 
 def _create_practice_transfer_metrics_mapping(
     practice_transfers: Dict[str, List[Transfer]],
-    practice_lookup: PracticeLookup,
 ) -> Dict[str, PracticeTransferMetrics]:
-    practice_transfer_metrics = {}
-
-    for practice_ods_code in practice_lookup.all_ods_codes():
-        transfers = practice_transfers[practice_ods_code]
-        practice_transfer_metrics[practice_ods_code] = PracticeTransferMetrics(transfers)
-
-    return practice_transfer_metrics
+    return {
+        ods_code: PracticeTransferMetrics(transfers)
+        for (ods_code, transfers) in practice_transfers.items()
+    }
