@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import timedelta, datetime
 from enum import Enum
-from typing import NamedTuple, Optional, List, Iterator
+from typing import NamedTuple, Optional, List
 
 import pyarrow as pa
 from dateutil.tz import UTC
@@ -51,21 +51,6 @@ class Transfer(NamedTuple):
     requesting_practice: Practice
     outcome: TransferOutcome
     date_requested: datetime
-
-
-def filter_for_successful_transfers(transfers: List[Transfer]) -> Iterator[Transfer]:
-    return (
-        transfer
-        for transfer in transfers
-        if (
-            transfer.outcome.status == TransferStatus.INTEGRATED_ON_TIME
-            and transfer.sla_duration is not None
-        )
-        or (
-            transfer.outcome.status == TransferStatus.PROCESS_FAILURE
-            and transfer.outcome.failure_reason == TransferFailureReason.INTEGRATED_LATE
-        )
-    )
 
 
 def filter_transfers_by_date_requested(
