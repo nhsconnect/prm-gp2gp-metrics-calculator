@@ -15,7 +15,7 @@ from prmcalculator.domain.practice.construct_practice_summary import (
 )
 
 from prmcalculator.domain.ods_portal.organisation_metadata import CcgDetails
-from prmcalculator.pipeline.io.io import PlatformMetricsIO, logger
+from prmcalculator.pipeline.io import PlatformMetricsIO, logger
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 from tests.builders.common import a_datetime, a_string
 

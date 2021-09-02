@@ -11,7 +11,7 @@ from prmcalculator.domain.national.construct_national_metrics_presentation impor
     PaperFallbackMetricsPresentation,
     ProcessFailureMetricsPresentation,
 )
-from prmcalculator.pipeline.io.io import PlatformMetricsIO, logger
+from prmcalculator.pipeline.io import PlatformMetricsIO, logger
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 from tests.builders.common import a_datetime, a_string
 
