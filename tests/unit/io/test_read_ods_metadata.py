@@ -8,7 +8,7 @@ from prmcalculator.domain.ods_portal.organisation_metadata import (
     PracticeDetails,
     CcgDetails,
 )
-from prmcalculator.pipeline.io import PlatformMetricsIO
+from prmcalculator.pipeline.io.io import PlatformMetricsIO
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 from tests.builders.common import a_datetime, a_string
 

@@ -10,7 +10,7 @@ from prmcalculator.domain.practice.calculate_practice_metrics_data import (
 )
 from prmcalculator.pipeline.config import PipelineConfig
 
-from prmcalculator.pipeline.io import PlatformMetricsIO
+from prmcalculator.pipeline.io.io import PlatformMetricsIO
 from prmcalculator.utils.io.s3 import S3DataManager
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 
