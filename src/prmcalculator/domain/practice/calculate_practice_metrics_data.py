@@ -47,7 +47,9 @@ def calculate_practice_metrics_data(
     transfers: List[Transfer],
     organisation_metadata: OrganisationMetadata,
     reporting_window: MonthlyReportingWindow,
+    observability_probe: PracticeMetricsObservabilityProbe,
 ) -> PracticeMetricsPresentation:
+    observability_probe.record_calculating_practice_metrics(reporting_window)
     practice_lookup = PracticeLookup(organisation_metadata.practices)
     practice_transfers = group_transfers_by_practice(
         transfers=transfers, practice_lookup=practice_lookup

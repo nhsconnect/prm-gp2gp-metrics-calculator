@@ -7,6 +7,7 @@ from prmcalculator.domain.national.calculate_national_metrics_data import (
 )
 from prmcalculator.domain.practice.calculate_practice_metrics_data import (
     calculate_practice_metrics_data,
+    PracticeMetricsObservabilityProbe,
 )
 from prmcalculator.pipeline.config import PipelineConfig
 
@@ -49,8 +50,12 @@ def main():
     transfers = metrics_io.read_transfer_data()
 
     logger.info("Calculating practice metrics")
+    practice_metrics_observability_probe = PracticeMetricsObservabilityProbe()
     practice_metrics_data = calculate_practice_metrics_data(
-        transfers, organisation_metadata, reporting_window
+        transfers=transfers,
+        organisation_metadata=organisation_metadata,
+        reporting_window=reporting_window,
+        observability_probe=practice_metrics_observability_probe,
     )
 
     logger.info("Calculating national metrics")

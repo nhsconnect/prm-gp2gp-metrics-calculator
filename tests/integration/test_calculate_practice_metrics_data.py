@@ -1,4 +1,5 @@
 from datetime import datetime
+from unittest.mock import Mock
 
 from dateutil.tz import UTC
 from freezegun import freeze_time
@@ -32,6 +33,7 @@ from tests.builders.gp2gp import (
 
 @freeze_time(datetime(year=2020, month=1, day=15, hour=23, second=42), tz_offset=0)
 def test_calculates_correct_practice_metrics_given_transfers():
+    mock_probe = Mock()
     metric_month_start = a_datetime(year=2019, month=12, day=1)
 
     reporting_window = MonthlyReportingWindow(
@@ -100,13 +102,19 @@ def test_calculates_correct_practice_metrics_given_transfers():
         ccgs=ccg_list,
     )
 
-    actual = calculate_practice_metrics_data(transfers, organisation_metadata, reporting_window)
+    actual = calculate_practice_metrics_data(
+        transfers=transfers,
+        organisation_metadata=organisation_metadata,
+        reporting_window=reporting_window,
+        observability_probe=mock_probe,
+    )
 
     assert actual == expected
 
 
 @freeze_time(datetime(year=2020, month=1, day=15, hour=23, second=42), tz_offset=0)
 def test_returns_default_metric_values_for_practice_without_transfers():
+    mock_probe = Mock()
     metric_month_start = a_datetime(year=2019, month=12, day=1)
 
     reporting_window = MonthlyReportingWindow(
@@ -159,6 +167,35 @@ def test_returns_default_metric_values_for_practice_without_transfers():
         ccgs=[],
     )
 
-    actual = calculate_practice_metrics_data([], organisation_metadata, reporting_window)
+    actual = calculate_practice_metrics_data(
+        transfers=[],
+        organisation_metadata=organisation_metadata,
+        reporting_window=reporting_window,
+        observability_probe=mock_probe,
+    )
 
     assert actual == expected
+
+
+def test_calls_observability_probe_calculating_practice_metrics():
+    mock_probe = Mock()
+
+    reporting_window = MonthlyReportingWindow(
+        date_anchor_month_start=a_datetime(),
+        metric_monthly_datetimes=[a_datetime()],
+    )
+
+    organisation_metadata = OrganisationMetadata(
+        generated_on=a_datetime(),
+        practices=[],
+        ccgs=[],
+    )
+
+    calculate_practice_metrics_data(
+        transfers=[],
+        organisation_metadata=organisation_metadata,
+        reporting_window=reporting_window,
+        observability_probe=mock_probe,
+    )
+
+    mock_probe.record_calculating_practice_metrics.assert_called_once_with(reporting_window)
