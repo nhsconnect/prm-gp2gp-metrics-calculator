@@ -46,10 +46,11 @@ def test_will_log_reading_file_event():
     s3_object.put(Body=body)
 
     s3_manager = S3DataManager(conn)
-    s3_file_path = f"s3://{bucket_name}/fruits.parquet"
+    object_uri = f"s3://{bucket_name}/fruits.parquet"
 
     with mock.patch.object(logger, "info") as mock_log_info:
-        s3_manager.read_parquet(s3_file_path)
+        s3_manager.read_parquet(object_uri)
         mock_log_info.assert_called_once_with(
-            f"Reading file from: {s3_file_path}", extra={"event": "READING_FILE_FROM_S3"}
+            f"Reading file from: {object_uri}",
+            extra={"event": "READING_FILE_FROM_S3", "object_uri": object_uri},
         )

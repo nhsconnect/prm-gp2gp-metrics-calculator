@@ -28,7 +28,7 @@ class S3DataManager:
     def read_json(self, object_uri: str):
         logger.info(
             "Reading file from: " + object_uri,
-            extra={"event": "READING_FILE_FROM_S3"},
+            extra={"event": "READING_FILE_FROM_S3", "object_uri": object_uri},
         )
         s3_object = self._object_from_uri(object_uri)
         response = s3_object.get()
@@ -38,20 +38,20 @@ class S3DataManager:
     def write_json(self, object_uri: str, data: dict):
         logger.info(
             "Attempting to upload: " + object_uri,
-            extra={"event": "ATTEMPTING_UPLOAD_JSON_TO_S3"},
+            extra={"event": "ATTEMPTING_UPLOAD_JSON_TO_S3", "object_uri": object_uri},
         )
         s3_object = self._object_from_uri(object_uri)
         body = json.dumps(data, default=_serialize_datetime).encode("utf8")
         s3_object.put(Body=body, ContentType="application/json")
         logger.info(
             "Successfully uploaded to: " + object_uri,
-            extra={"event": "UPLOADED_JSON_TO_S3"},
+            extra={"event": "UPLOADED_JSON_TO_S3", "object_uri": object_uri},
         )
 
     def read_parquet(self, object_uri: str) -> Table:
         logger.info(
             "Reading file from: " + object_uri,
-            extra={"event": "READING_FILE_FROM_S3"},
+            extra={"event": "READING_FILE_FROM_S3", "object_uri": object_uri},
         )
         s3_object = self._object_from_uri(object_uri)
         response = s3_object.get()

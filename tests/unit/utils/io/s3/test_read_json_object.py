@@ -31,10 +31,11 @@ def test_will_log_reading_file_event():
     s3_object.put(Body=b'{"fruit": "mango"}')
 
     s3_manager = S3DataManager(conn)
-    s3_file_path = "s3://test_bucket/test_object.json"
+    object_uri = "s3://test_bucket/test_object.json"
 
     with mock.patch.object(logger, "info") as mock_log_info:
-        s3_manager.read_json(s3_file_path)
+        s3_manager.read_json(object_uri)
         mock_log_info.assert_called_once_with(
-            f"Reading file from: {s3_file_path}", extra={"event": "READING_FILE_FROM_S3"}
+            f"Reading file from: {object_uri}",
+            extra={"event": "READING_FILE_FROM_S3", "object_uri": object_uri},
         )
