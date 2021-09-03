@@ -1,4 +1,5 @@
 from datetime import datetime
+from unittest.mock import Mock
 
 from dateutil.tz import tzutc
 from freezegun import freeze_time
@@ -34,6 +35,7 @@ from tests.builders.gp2gp import (
 
 @freeze_time(datetime(year=2020, month=1, day=17, hour=21, second=32), tz_offset=0)
 def test_calculates_correct_national_metrics_given_series_of_transfers():
+    mock_probe = Mock()
     a_date_in_2019_12 = a_date_in(year=2019, month=12)
     transfers_integrated_on_time = [
         a_transfer_integrated_within_3_days(date_requested=a_date_in_2019_12()),
@@ -113,13 +115,16 @@ def test_calculates_correct_national_metrics_given_series_of_transfers():
         generated_on=current_datetime, metrics=[expected_national_metrics_month_presentation]
     )
 
-    actual = calculate_national_metrics_data(transfers=transfers, reporting_window=reporting_window)
+    actual = calculate_national_metrics_data(
+        transfers=transfers, reporting_window=reporting_window, observability_probe=mock_probe
+    )
 
     assert actual == expected_national_metrics
 
 
 @freeze_time(datetime(year=2020, month=1, day=17, hour=21, second=32), tz_offset=0)
 def test_calculates_correct_national_metrics_for_transfers_within_reporting_window():
+    mock_probe = Mock()
     metric_month_start = a_datetime(year=2019, month=12, day=1)
 
     transfer_within_reporting_window = build_transfer(
@@ -180,6 +185,22 @@ def test_calculates_correct_national_metrics_for_transfers_within_reporting_wind
         generated_on=current_datetime, metrics=[expected_national_metrics_month_presentation]
     )
 
-    actual = calculate_national_metrics_data(transfers=transfers, reporting_window=reporting_window)
+    actual = calculate_national_metrics_data(
+        transfers=transfers, reporting_window=reporting_window, observability_probe=mock_probe
+    )
 
     assert actual == expected_national_metrics
+
+
+def test_calls_observability_probe_calculating_national_metrics():
+    mock_probe = Mock()
+    reporting_window = MonthlyReportingWindow(
+        date_anchor_month_start=a_datetime(),
+        metric_monthly_datetimes=[a_datetime()],
+    )
+
+    calculate_national_metrics_data(
+        transfers=[], reporting_window=reporting_window, observability_probe=mock_probe
+    )
+
+    mock_probe.record_calculating_national_metrics.assert_called_once_with(reporting_window)

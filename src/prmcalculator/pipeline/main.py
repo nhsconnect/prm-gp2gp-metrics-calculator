@@ -4,6 +4,7 @@ import logging
 
 from prmcalculator.domain.national.calculate_national_metrics_data import (
     calculate_national_metrics_data,
+    NationalMetricsObservabilityProbe,
 )
 from prmcalculator.domain.practice.calculate_practice_metrics_data import (
     calculate_practice_metrics_data,
@@ -49,7 +50,6 @@ def main():
 
     transfers = metrics_io.read_transfer_data()
 
-    logger.info("Calculating practice metrics")
     practice_metrics_observability_probe = PracticeMetricsObservabilityProbe()
     practice_metrics_data = calculate_practice_metrics_data(
         transfers=transfers,
@@ -58,9 +58,11 @@ def main():
         observability_probe=practice_metrics_observability_probe,
     )
 
-    logger.info("Calculating national metrics")
+    national_metrics_observability_probe = NationalMetricsObservabilityProbe()
     national_metrics_data = calculate_national_metrics_data(
-        transfers=transfers, reporting_window=reporting_window
+        transfers=transfers,
+        reporting_window=reporting_window,
+        observability_probe=national_metrics_observability_probe,
     )
 
     metrics_io.write_practice_metrics(practice_metrics_data)

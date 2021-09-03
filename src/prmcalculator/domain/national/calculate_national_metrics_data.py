@@ -27,8 +27,11 @@ class NationalMetricsObservabilityProbe:
 
 
 def calculate_national_metrics_data(
-    transfers: List[Transfer], reporting_window: MonthlyReportingWindow
+    transfers: List[Transfer],
+    reporting_window: MonthlyReportingWindow,
+    observability_probe: NationalMetricsObservabilityProbe,
 ) -> NationalMetricsPresentation:
+    observability_probe.record_calculating_national_metrics(reporting_window)
     metric_month_transfers = filter_transfers_by_date_requested(transfers, reporting_window)
     national_metrics = NationalMetricsMonth(
         transfers=metric_month_transfers,
