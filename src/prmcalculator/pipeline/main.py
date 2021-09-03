@@ -11,15 +11,23 @@ from prmcalculator.domain.practice.calculate_practice_metrics_data import (
 from prmcalculator.pipeline.config import PipelineConfig
 
 from prmcalculator.pipeline.io import PlatformMetricsIO
+from prmcalculator.utils.io.json_formatter import JsonFormatter
 from prmcalculator.utils.io.s3 import S3DataManager
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("prmcalculator")
+
+
+def _setup_logger():
+    logger.setLevel(logging.INFO)
+    formatter = JsonFormatter()
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
 
 
 def main():
-    logging.basicConfig(level=logging.INFO)
-    logger.info("Start to read environment variables from config")
+    _setup_logger()
 
     config = PipelineConfig.from_environment_variables(environ)
 
