@@ -115,17 +115,20 @@ def test_produces_correct_groups_given_two_practices_each_with_transfers():
     assert len(actual.keys()) == 2
 
 
-def test_calls_observability_probe_when_unexpected_asid_count():
+def test_calls_observability_probe_when_multiple_unknown_practices_for_transfers():
     mock_probe = Mock()
-    unexpected_asids = {"121212121212", "343434343434"}
-    lookup = PracticeLookup([])
-    transfers = [
-        build_transfer(requesting_practice=Practice(asid="121212121212", supplier=a_string(12))),
-        build_transfer(requesting_practice=Practice(asid="343434343434", supplier=a_string(12))),
-    ]
 
-    group_transfers_by_practice(
-        transfers=transfers, practice_lookup=lookup, observability_probe=mock_probe
+    lookup = PracticeLookup([])
+    unknown_practice_transfer = build_transfer(
+        requesting_practice=Practice(asid="121212121212", supplier=a_string(12))
     )
 
-    mock_probe.unexpected_asid_count.assert_called_once_with(unexpected_asids)
+    group_transfers_by_practice(
+        transfers=[unknown_practice_transfer],
+        practice_lookup=lookup,
+        observability_probe=mock_probe,
+    )
+
+    mock_probe.record_unknown_practice_for_transfer.assert_called_once_with(
+        unknown_practice_transfer
+    )

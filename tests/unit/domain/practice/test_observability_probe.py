@@ -1,10 +1,12 @@
 from unittest.mock import Mock
 
+from prmcalculator.domain.gp2gp.transfer import Practice
 from prmcalculator.domain.practice.calculate_practice_metrics_data import (
     PracticeMetricsObservabilityProbe,
 )
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 from tests.builders.common import a_datetime, a_string
+from tests.builders.gp2gp import build_transfer
 
 
 def test_probe_should_log_event_when_calculating_practice_metrics():
@@ -25,14 +27,24 @@ def test_probe_should_log_event_when_calculating_practice_metrics():
     )
 
 
-def test_probe_should_warn_given_unexpected_asid_length():
+def test_probe_should_warn_given_a_transfer_with_unknown_practice():
     mock_logger = Mock()
     probe = PracticeMetricsObservabilityProbe(mock_logger)
 
-    unexpected_asids = {a_string(), a_string(), a_string()}
-    probe.unexpected_asid_count(unexpected_asids=unexpected_asids)
+    unknown_asid = a_string(12)
+    conversation_id = a_string()
+    transfer = build_transfer(
+        conversation_id=conversation_id,
+        requesting_practice=Practice(asid=unknown_asid, supplier=a_string(12)),
+    )
+
+    probe.record_unknown_practice_for_transfer(transfer=transfer)
 
     mock_logger.warning.assert_called_once_with(
-        "Unexpected ASID count",
-        extra={"event": "UNEXPECTED_ASID_COUNT", "asids": unexpected_asids, "count": 3},
+        "Unknown practice for transfer",
+        extra={
+            "event": "UNKNOWN_PRACTICE_FOR_TRANSFER",
+            "unknown_asid": unknown_asid,
+            "conversation_id": conversation_id,
+        },
     )

@@ -10,7 +10,6 @@ def group_transfers_by_practice(
     practice_transfers: Dict[str, List[Transfer]] = {
         ods_code: [] for ods_code in practice_lookup.all_ods_codes()
     }
-    unexpected_asids = set()
 
     for transfer in transfers:
         requesting_practice_asid = transfer.requesting_practice.asid
@@ -18,9 +17,6 @@ def group_transfers_by_practice(
             ods_code = practice_lookup.ods_code_from_asid(requesting_practice_asid)
             practice_transfers[ods_code].append(transfer)
         else:
-            unexpected_asids.add(requesting_practice_asid)
-
-    if len(unexpected_asids) > 0:
-        observability_probe.unexpected_asid_count(unexpected_asids)
+            observability_probe.record_unknown_practice_for_transfer(transfer)
 
     return practice_transfers

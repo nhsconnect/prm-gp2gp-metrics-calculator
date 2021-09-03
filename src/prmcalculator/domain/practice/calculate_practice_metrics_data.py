@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Dict, Set
+from typing import List, Dict
 
 from dateutil.tz import tzutc
 
@@ -35,13 +35,13 @@ class PracticeMetricsObservabilityProbe:
             },
         )
 
-    def unexpected_asid_count(self, unexpected_asids: Set[str]):
+    def record_unknown_practice_for_transfer(self, transfer: Transfer):
         self._logger.warning(
-            "Unexpected ASID count",
+            "Unknown practice for transfer",
             extra={
-                "event": "UNEXPECTED_ASID_COUNT",
-                "asids": unexpected_asids,
-                "count": len(unexpected_asids),
+                "event": "UNKNOWN_PRACTICE_FOR_TRANSFER",
+                "conversation_id": transfer.conversation_id,
+                "unknown_asid": transfer.requesting_practice.asid,
             },
         )
 
