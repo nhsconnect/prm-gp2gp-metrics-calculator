@@ -50,3 +50,6 @@ class TransferMetrics:
 
     def received_by_practice_total(self) -> int:
         return self.integrated_total() + self.process_failure_not_integrated()
+
+    def requested_by_practice_total(self) -> int:
+        return sum(self._counts_by_outcome.values())
