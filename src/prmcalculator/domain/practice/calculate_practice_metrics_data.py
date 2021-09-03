@@ -17,6 +17,24 @@ from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 
+from logging import getLogger, Logger
+
+module_logger = getLogger(__name__)
+
+
+class PracticeMetricsObservabilityProbe:
+    def __init__(self, logger: Logger = module_logger):
+        self._logger = logger
+
+    def record_calculating_practice_metrics(self, reporting_window: MonthlyReportingWindow):
+        self._logger.info(
+            "Calculating practice metrics",
+            extra={
+                "event": "CALCULATING_PRACTICE_METRICS",
+                "metric_months": reporting_window.metric_months,
+            },
+        )
+
 
 @dataclass
 class PracticeMetricsPresentation:
