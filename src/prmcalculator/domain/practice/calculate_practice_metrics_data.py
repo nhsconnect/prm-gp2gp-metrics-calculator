@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Dict
+from typing import List, Dict, Set
 
 from dateutil.tz import tzutc
 
@@ -32,6 +32,16 @@ class PracticeMetricsObservabilityProbe:
             extra={
                 "event": "CALCULATING_PRACTICE_METRICS",
                 "metric_months": reporting_window.metric_months,
+            },
+        )
+
+    def unexpected_asid_count(self, unexpected_asids: Set[str]):
+        self._logger.warning(
+            "Unexpected ASID count",
+            extra={
+                "event": "UNEXPECTED_ASID_COUNT",
+                "asids": unexpected_asids,
+                "count": len(unexpected_asids),
             },
         )
 
