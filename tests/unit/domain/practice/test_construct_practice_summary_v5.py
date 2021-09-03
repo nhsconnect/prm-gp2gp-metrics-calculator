@@ -1,5 +1,5 @@
-from prmcalculator.domain.practice.calculate_practice_metrics_data import construct_practice_summary
 from prmcalculator.domain.practice.construct_practice_summary_v5 import (
+    construct_practice_summary,
     IntegratedPracticeMetricsPresentation,
     TransfersReceivedPresentation,
     AwaitingIntegration,
