@@ -27,3 +27,30 @@ def test_returns_ods_code_and_name():
 
     assert actual.ods_code == expected_ods_code
     assert actual.name == expected_name
+
+
+def test_returns_year_and_month_for_first_metric():
+    expected_year = 2019
+    expected_month = 8
+
+    practice_details = build_practice_details()
+
+    reporting_window = MonthlyReportingWindow.prior_to(
+        date_anchor=a_datetime(year=expected_year, month=9), number_of_months=1
+    )
+    practice_transfer_metrics = PracticeTransferMetrics(
+        transfers=[
+            build_transfer(
+                date_requested=a_datetime(year=expected_year, month=expected_month, day=4)
+            )
+        ],
+    )
+
+    actual = construct_practice_summary(
+        practice_details=practice_details,
+        practice_metrics=practice_transfer_metrics,
+        reporting_window=reporting_window,
+    )
+
+    assert actual.metrics[0].year == expected_year
+    assert actual.metrics[0].month == expected_month
