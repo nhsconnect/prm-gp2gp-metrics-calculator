@@ -1,5 +1,4 @@
 from datetime import datetime
-from unittest import mock
 from unittest.mock import Mock
 
 from dateutil.tz import UTC
@@ -11,7 +10,7 @@ from prmcalculator.domain.national.construct_national_metrics_presentation impor
     PaperFallbackMetricsPresentation,
     ProcessFailureMetricsPresentation,
 )
-from prmcalculator.pipeline.io import PlatformMetricsIO, logger
+from prmcalculator.pipeline.io import PlatformMetricsIO
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 from tests.builders.common import a_datetime, a_string
 
@@ -98,27 +97,3 @@ def test_given_national_metrics_object_will_generate_json():
     expected_s3_path = f"s3://{expected_s3_path_fragment}/nationalMetrics.json"
 
     s3_manager.write_json.assert_called_once_with(expected_s3_path, expected_national_metrics_dict)
-
-
-def test_will_log_successful_upload_message():
-    s3_manager = Mock()
-    date_anchor = a_datetime(year=_DATE_ANCHOR_YEAR, month=_DATE_ANCHOR_MONTH)
-    reporting_window = MonthlyReportingWindow.prior_to(date_anchor=date_anchor, number_of_months=1)
-
-    data_platform_metrics_bucket = a_string()
-
-    with mock.patch.object(logger, "info") as mock_log_info:
-        metrics_io = PlatformMetricsIO(
-            reporting_window=reporting_window,
-            s3_data_manager=s3_manager,
-            organisation_metadata_bucket=a_string(),
-            transfer_data_bucket=a_string(),
-            data_platform_metrics_bucket=data_platform_metrics_bucket,
-        )
-
-        metrics_io.write_national_metrics(_NATIONAL_METRICS_OBJECT)
-
-        expected_s3_path = f"{data_platform_metrics_bucket}/v5/2020/12/nationalMetrics.json"
-        mock_log_info.assert_called_once_with(
-            f"Successfully calculated national metrics and uploaded to s3://{expected_s3_path}"
-        )

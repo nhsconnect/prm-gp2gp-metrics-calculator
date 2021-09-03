@@ -48,10 +48,8 @@ def main():
         data_platform_metrics_bucket=config.output_metrics_bucket,
     )
 
-    logger.info(f"Reading from  s3://{config.organisation_metadata_bucket}")
     organisation_metadata = metrics_io.read_ods_metadata()
 
-    logger.info(f"Reading from  s3://{config.input_transfer_data_bucket}")
     transfers = metrics_io.read_transfer_data()
 
     logger.info("Calculating practice metrics")
@@ -64,7 +62,6 @@ def main():
         transfers=transfers, reporting_window=reporting_window
     )
 
-    logger.info(f"Attempting to write to S3 bucket {config.output_metrics_bucket}")
     metrics_io.write_practice_metrics(practice_metrics_data)
     metrics_io.write_national_metrics(national_metrics_data)
 

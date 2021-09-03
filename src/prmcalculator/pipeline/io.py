@@ -97,9 +97,6 @@ class PlatformMetricsIO:
             f"s3://{national_metrics_path}",
             self._create_platform_json_object(national_metrics_presentation_data),
         )
-        logger.info(
-            f"Successfully calculated national metrics and uploaded to s3://{national_metrics_path}"
-        )
 
     def write_practice_metrics(self, practice_metrics: PracticeMetricsPresentation):
         practice_metrics_path = self._data_platform_metrics_bucket_s3_path(
@@ -109,20 +106,12 @@ class PlatformMetricsIO:
             f"s3://{practice_metrics_path}",
             self._create_platform_json_object(practice_metrics),
         )
-        logger.info(
-            f"Successfully calculated practice metrics and uploaded to s3://{practice_metrics_path}"
-        )
 
     def read_transfer_data(self) -> List[Transfer]:
         transfer_data_s3_paths = [
             self._transfer_data_bucket_s3_path(year, month)
             for (year, month) in self._window.metric_months
         ]
-        logger.info(
-            f"Reading transfer.parquet files from the following s3 keys: "
-            f"{', '.join(transfer_data_s3_paths)}"
-        )
-
         transfer_table = pa.concat_tables(
             [
                 self._s3_manager.read_parquet(f"s3://{s3_path}")
