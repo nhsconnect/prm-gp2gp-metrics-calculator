@@ -1,4 +1,3 @@
-from warnings import warn
 from typing import List, Dict
 
 from prmcalculator.domain.gp2gp.transfer import Transfer
@@ -6,7 +5,7 @@ from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 
 
 def group_transfers_by_practice(
-    transfers: List[Transfer], practice_lookup: PracticeLookup
+    transfers: List[Transfer], practice_lookup: PracticeLookup, observability_probe
 ) -> Dict[str, List[Transfer]]:
     practice_transfers: Dict[str, List[Transfer]] = {
         ods_code: [] for ods_code in practice_lookup.all_ods_codes()
@@ -22,6 +21,6 @@ def group_transfers_by_practice(
             unexpected_asids.add(requesting_practice_asid)
 
     if len(unexpected_asids) > 0:
-        warn(f"Unexpected ASID count: {len(unexpected_asids)}", RuntimeWarning)
+        observability_probe.unexpected_asid_count(unexpected_asids)
 
     return practice_transfers
