@@ -1,6 +1,5 @@
 from prmcalculator.domain.practice.construct_practice_summary_v6 import (
     construct_practice_summary,
-    TransfersReceivedPresentation,
 )
 
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
@@ -97,7 +96,36 @@ def test_returns_requester_transfers_requested_count():
     )
 
 
-def test_returns_requester_transfers_received():
+def test_returns_requester_transfers_received_count():
+    a_date_in_2019_12 = a_date_in(year=2019, month=12)
+
+    transfers = [
+        a_transfer_integrated_within_3_days(date_requested=a_date_in_2019_12()),
+        a_transfer_integrated_between_3_and_8_days(date_requested=a_date_in_2019_12()),
+        a_transfer_integrated_beyond_8_days(date_requested=a_date_in_2019_12()),
+        a_transfer_that_was_never_integrated(date_requested=a_date_in_2019_12()),
+    ]
+    reporting_window = MonthlyReportingWindow.prior_to(
+        date_anchor=a_datetime(year=2020, month=1), number_of_months=1
+    )
+    practice_transfer_metrics = PracticeTransferMetrics(transfers)
+
+    practice_details = build_practice_details()
+    expected_requester_transfers_received_count = 4
+
+    actual = construct_practice_summary(
+        practice_details=practice_details,
+        practice_metrics=practice_transfer_metrics,
+        reporting_window=reporting_window,
+    )
+    actual_requester_transfers_received_count = actual.metrics[
+        0
+    ].requester.transfers_requested.transfers_received.count
+
+    assert actual_requester_transfers_received_count == expected_requester_transfers_received_count
+
+
+def test_returns_requester_transfers_integrated_count():
     a_date_in_2019_12 = a_date_in(year=2019, month=12)
 
     transfers = [
@@ -111,15 +139,17 @@ def test_returns_requester_transfers_received():
     practice_transfer_metrics = PracticeTransferMetrics(transfers)
 
     practice_details = build_practice_details()
-    expected_requester_transfers_received = TransfersReceivedPresentation(count=3)
+    expected_requester_transfers_integrated_count = 3
 
     actual = construct_practice_summary(
         practice_details=practice_details,
         practice_metrics=practice_transfer_metrics,
         reporting_window=reporting_window,
     )
-    actual_requester_transfers_received = actual.metrics[
+    actual_requester_transfers_integrated_count = actual.metrics[
         0
-    ].requester.transfers_requested.transfers_received
+    ].requester.transfers_requested.transfers_received.transfers_integrated.count
 
-    assert actual_requester_transfers_received == expected_requester_transfers_received
+    assert (
+        actual_requester_transfers_integrated_count == expected_requester_transfers_integrated_count
+    )
