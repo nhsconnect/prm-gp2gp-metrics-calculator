@@ -13,7 +13,7 @@ from prmcalculator.domain.practice.calculate_practice_metrics_data import (
     calculate_practice_metrics_data,
     PracticeMetricsPresentation,
 )
-from prmcalculator.domain.practice.construct_practice_summary import (
+from prmcalculator.domain.practice.construct_practice_summary_v5 import (
     IntegratedPracticeMetricsPresentation,
     AwaitingIntegration,
     TransfersReceivedPresentation,

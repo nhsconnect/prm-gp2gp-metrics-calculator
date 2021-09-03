@@ -6,7 +6,7 @@ from dateutil.tz import tzutc
 
 from prmcalculator.domain.gp2gp.transfer import Transfer
 from prmcalculator.domain.ods_portal.organisation_metadata import CcgDetails, OrganisationMetadata
-from prmcalculator.domain.practice.construct_practice_summary import (
+from prmcalculator.domain.practice.construct_practice_summary_v5 import (
     construct_practice_summary,
     PracticeSummary,
 )
