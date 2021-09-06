@@ -142,3 +142,32 @@ def test_returns_requester_transfers_integrated_count():
     actual_integrated_count = actual.metrics[0].requested_transfers.integrated_count
 
     assert actual_integrated_count == expected_integrated_count
+
+
+def test_returns_requester_transfers_integrated_within_3_days_count():
+    a_date_in_2019_12 = a_date_in(year=2019, month=12)
+
+    transfers = [
+        a_transfer_integrated_within_3_days(date_requested=a_date_in_2019_12()),
+        a_transfer_integrated_within_3_days(date_requested=a_date_in_2019_12()),
+        a_transfer_integrated_between_3_and_8_days(date_requested=a_date_in_2019_12()),
+    ]
+    reporting_window = MonthlyReportingWindow.prior_to(
+        date_anchor=a_datetime(year=2020, month=1), number_of_months=1
+    )
+
+    practice_transfer_metrics = PracticeTransferMetrics(
+        ods_code=a_string(), name=a_string(), transfers=transfers
+    )
+
+    expected_integrated_within_3_days_count = 2
+
+    actual = construct_practice_summary(
+        practice_metrics=practice_transfer_metrics,
+        reporting_window=reporting_window,
+    )
+    actual_integrated_within_3_days_count = actual.metrics[
+        0
+    ].requested_transfers.integrated_within_3_days_count
+
+    assert actual_integrated_within_3_days_count == expected_integrated_within_3_days_count

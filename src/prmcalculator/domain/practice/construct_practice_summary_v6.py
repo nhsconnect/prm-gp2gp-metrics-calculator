@@ -11,6 +11,7 @@ class RequestedTransferMetrics:
     requested_count: int
     received_count: int
     integrated_count: int
+    integrated_within_3_days_count: int
 
 
 @dataclass
@@ -38,6 +39,7 @@ def _construct_monthly_metrics_presentation(
             requested_count=transfer_month_metrics.requested_by_practice_total(),
             received_count=transfer_month_metrics.received_by_practice_total(),
             integrated_count=transfer_month_metrics.integrated_total(),
+            integrated_within_3_days_count=transfer_month_metrics.integrated_within_3_days(),
         ),
     )
 
