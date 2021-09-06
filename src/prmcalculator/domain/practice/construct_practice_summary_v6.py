@@ -14,6 +14,7 @@ class RequestedTransferMetrics:
     integrated_within_3_days_count: int
     integrated_within_8_days_count: int
     integrated_beyond_8_days_count: int
+    awaiting_integration_count: int
 
 
 @dataclass
@@ -44,6 +45,7 @@ def _construct_monthly_metrics_presentation(
             integrated_within_3_days_count=transfer_month_metrics.integrated_within_3_days(),
             integrated_within_8_days_count=transfer_month_metrics.integrated_within_8_days(),
             integrated_beyond_8_days_count=transfer_month_metrics.integrated_beyond_8_days(),
+            awaiting_integration_count=transfer_month_metrics.process_failure_not_integrated(),
         ),
     )
 
