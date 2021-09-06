@@ -1,7 +1,5 @@
 from unittest.mock import Mock
 
-import pytest
-
 from prmcalculator.domain.gp2gp.transfer import Practice
 from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
 from prmcalculator.domain.practice.group_transfers_by_practice import (
@@ -16,7 +14,6 @@ from tests.builders.gp2gp import (
 )
 
 
-@pytest.mark.filterwarnings("ignore:Unexpected ASID count:RuntimeWarning")
 def test_produces_an_empty_list_given_practice_with_no_matching_transfers():
     mock_probe = Mock()
     ods_code = "A1234"
