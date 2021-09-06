@@ -17,6 +17,22 @@ from tests.builders.gp2gp import (
 )
 
 
+def _one_month_of_practice_metrics(transfer_archetypes):
+    a_date_in_2019_12 = a_date_in(year=2019, month=12)
+
+    reporting_window = MonthlyReportingWindow.prior_to(
+        date_anchor=a_datetime(year=2020, month=1), number_of_months=1
+    )
+
+    practice_transfer_metrics = PracticeTransferMetrics(
+        ods_code=a_string(),
+        name=a_string(),
+        transfers=[builder(date_requested=a_date_in_2019_12()) for builder in transfer_archetypes],
+    )
+
+    return practice_transfer_metrics, reporting_window
+
+
 def test_returns_ods_code_and_name():
     expected_ods_code = "A12345"
     expected_name = "Test GP Practice"
@@ -66,19 +82,13 @@ def test_returns_year_and_month_for_first_metric():
 
 
 def test_returns_requester_transfers_requested_count():
-    a_date_in_2019_12 = a_date_in(year=2019, month=12)
-
-    transfers = [
-        a_transfer_integrated_within_3_days(date_requested=a_date_in_2019_12()),
-        a_transfer_integrated_beyond_8_days(date_requested=a_date_in_2019_12()),
-        a_transfer_that_was_never_integrated(date_requested=a_date_in_2019_12()),
-        a_transfer_with_a_final_error(date_requested=a_date_in_2019_12()),
-    ]
-    reporting_window = MonthlyReportingWindow.prior_to(
-        date_anchor=a_datetime(year=2020, month=1), number_of_months=1
-    )
-    practice_transfer_metrics = PracticeTransferMetrics(
-        ods_code=a_string(), name=a_string(), transfers=transfers
+    practice_transfer_metrics, reporting_window, = _one_month_of_practice_metrics(
+        [
+            a_transfer_integrated_within_3_days,
+            a_transfer_integrated_beyond_8_days,
+            a_transfer_that_was_never_integrated,
+            a_transfer_with_a_final_error,
+        ]
     )
 
     expected_requested_count = 4
@@ -92,20 +102,13 @@ def test_returns_requester_transfers_requested_count():
 
 
 def test_returns_requester_transfers_received_count():
-    a_date_in_2019_12 = a_date_in(year=2019, month=12)
-
-    transfers = [
-        a_transfer_integrated_within_3_days(date_requested=a_date_in_2019_12()),
-        a_transfer_integrated_between_3_and_8_days(date_requested=a_date_in_2019_12()),
-        a_transfer_integrated_beyond_8_days(date_requested=a_date_in_2019_12()),
-        a_transfer_that_was_never_integrated(date_requested=a_date_in_2019_12()),
-    ]
-    reporting_window = MonthlyReportingWindow.prior_to(
-        date_anchor=a_datetime(year=2020, month=1), number_of_months=1
-    )
-
-    practice_transfer_metrics = PracticeTransferMetrics(
-        ods_code=a_string(), name=a_string(), transfers=transfers
+    practice_transfer_metrics, reporting_window, = _one_month_of_practice_metrics(
+        [
+            a_transfer_integrated_within_3_days,
+            a_transfer_integrated_between_3_and_8_days,
+            a_transfer_integrated_beyond_8_days,
+            a_transfer_that_was_never_integrated,
+        ]
     )
 
     expected_received_count = 4
@@ -120,19 +123,12 @@ def test_returns_requester_transfers_received_count():
 
 
 def test_returns_requester_transfers_integrated_count():
-    a_date_in_2019_12 = a_date_in(year=2019, month=12)
-
-    transfers = [
-        a_transfer_integrated_within_3_days(date_requested=a_date_in_2019_12()),
-        a_transfer_integrated_between_3_and_8_days(date_requested=a_date_in_2019_12()),
-        a_transfer_integrated_beyond_8_days(date_requested=a_date_in_2019_12()),
-    ]
-    reporting_window = MonthlyReportingWindow.prior_to(
-        date_anchor=a_datetime(year=2020, month=1), number_of_months=1
-    )
-
-    practice_transfer_metrics = PracticeTransferMetrics(
-        ods_code=a_string(), name=a_string(), transfers=transfers
+    practice_transfer_metrics, reporting_window, = _one_month_of_practice_metrics(
+        [
+            a_transfer_integrated_within_3_days,
+            a_transfer_integrated_between_3_and_8_days,
+            a_transfer_integrated_beyond_8_days,
+        ]
     )
 
     expected_integrated_count = 3
@@ -147,19 +143,12 @@ def test_returns_requester_transfers_integrated_count():
 
 
 def test_returns_requester_transfers_integrated_within_3_days_count():
-    a_date_in_2019_12 = a_date_in(year=2019, month=12)
-
-    transfers = [
-        a_transfer_integrated_within_3_days(date_requested=a_date_in_2019_12()),
-        a_transfer_integrated_within_3_days(date_requested=a_date_in_2019_12()),
-        a_transfer_integrated_between_3_and_8_days(date_requested=a_date_in_2019_12()),
-    ]
-    reporting_window = MonthlyReportingWindow.prior_to(
-        date_anchor=a_datetime(year=2020, month=1), number_of_months=1
-    )
-
-    practice_transfer_metrics = PracticeTransferMetrics(
-        ods_code=a_string(), name=a_string(), transfers=transfers
+    practice_transfer_metrics, reporting_window, = _one_month_of_practice_metrics(
+        [
+            a_transfer_integrated_within_3_days,
+            a_transfer_integrated_within_3_days,
+            a_transfer_integrated_between_3_and_8_days,
+        ]
     )
 
     expected_integrated_within_3_days_count = 2
@@ -176,19 +165,12 @@ def test_returns_requester_transfers_integrated_within_3_days_count():
 
 
 def test_returns_requester_transfers_integrated_within_8_days_count():
-    a_date_in_2019_12 = a_date_in(year=2019, month=12)
-
-    transfers = [
-        a_transfer_integrated_within_3_days(date_requested=a_date_in_2019_12()),
-        a_transfer_integrated_between_3_and_8_days(date_requested=a_date_in_2019_12()),
-        a_transfer_integrated_between_3_and_8_days(date_requested=a_date_in_2019_12()),
-    ]
-    reporting_window = MonthlyReportingWindow.prior_to(
-        date_anchor=a_datetime(year=2020, month=1), number_of_months=1
-    )
-
-    practice_transfer_metrics = PracticeTransferMetrics(
-        ods_code=a_string(), name=a_string(), transfers=transfers
+    practice_transfer_metrics, reporting_window, = _one_month_of_practice_metrics(
+        [
+            a_transfer_integrated_within_3_days,
+            a_transfer_integrated_between_3_and_8_days,
+            a_transfer_integrated_between_3_and_8_days,
+        ]
     )
 
     expected_integrated_within_8_days_count = 2
@@ -205,19 +187,12 @@ def test_returns_requester_transfers_integrated_within_8_days_count():
 
 
 def test_returns_requester_transfers_integrated_beyond_8_days_count():
-    a_date_in_2019_12 = a_date_in(year=2019, month=12)
-
-    transfers = [
-        a_transfer_integrated_between_3_and_8_days(date_requested=a_date_in_2019_12()),
-        a_transfer_integrated_beyond_8_days(date_requested=a_date_in_2019_12()),
-        a_transfer_integrated_beyond_8_days(date_requested=a_date_in_2019_12()),
-    ]
-    reporting_window = MonthlyReportingWindow.prior_to(
-        date_anchor=a_datetime(year=2020, month=1), number_of_months=1
-    )
-
-    practice_transfer_metrics = PracticeTransferMetrics(
-        ods_code=a_string(), name=a_string(), transfers=transfers
+    practice_transfer_metrics, reporting_window, = _one_month_of_practice_metrics(
+        [
+            a_transfer_integrated_between_3_and_8_days,
+            a_transfer_integrated_beyond_8_days,
+            a_transfer_integrated_beyond_8_days,
+        ]
     )
 
     expected_integrated_beyond_8_days_count = 2
@@ -234,19 +209,12 @@ def test_returns_requester_transfers_integrated_beyond_8_days_count():
 
 
 def test_returns_requester_transfers_awaiting_integration_count():
-    a_date_in_2019_12 = a_date_in(year=2019, month=12)
-
-    transfers = [
-        a_transfer_integrated_beyond_8_days(date_requested=a_date_in_2019_12()),
-        a_transfer_that_was_never_integrated(date_requested=a_date_in_2019_12()),
-        a_transfer_that_was_never_integrated(date_requested=a_date_in_2019_12()),
-    ]
-    reporting_window = MonthlyReportingWindow.prior_to(
-        date_anchor=a_datetime(year=2020, month=1), number_of_months=1
-    )
-
-    practice_transfer_metrics = PracticeTransferMetrics(
-        ods_code=a_string(), name=a_string(), transfers=transfers
+    practice_transfer_metrics, reporting_window, = _one_month_of_practice_metrics(
+        [
+            a_transfer_integrated_beyond_8_days,
+            a_transfer_that_was_never_integrated,
+            a_transfer_that_was_never_integrated,
+        ]
     )
 
     expected_awaiting_integration_count = 2
@@ -263,22 +231,13 @@ def test_returns_requester_transfers_awaiting_integration_count():
 
 
 def test_returns_requester_transfers_technical_failures_count():
-    a_date_in_2019_12 = a_date_in(year=2019, month=12)
-
-    transfers = [
-        a_transfer_that_was_never_integrated(date_requested=a_date_in_2019_12()),
-        a_transfer_with_a_final_error(date_requested=a_date_in_2019_12()),
-        a_transfer_where_the_sender_reported_an_unrecoverable_error(
-            date_requested=a_date_in_2019_12()
-        ),
-        a_transfer_where_no_core_ehr_was_sent(date_requested=a_date_in_2019_12()),
-    ]
-    reporting_window = MonthlyReportingWindow.prior_to(
-        date_anchor=a_datetime(year=2020, month=1), number_of_months=1
-    )
-
-    practice_transfer_metrics = PracticeTransferMetrics(
-        ods_code=a_string(), name=a_string(), transfers=transfers
+    practice_transfer_metrics, reporting_window, = _one_month_of_practice_metrics(
+        [
+            a_transfer_that_was_never_integrated,
+            a_transfer_with_a_final_error,
+            a_transfer_where_the_sender_reported_an_unrecoverable_error,
+            a_transfer_where_no_core_ehr_was_sent,
+        ]
     )
 
     expected_technical_failures_count = 3
