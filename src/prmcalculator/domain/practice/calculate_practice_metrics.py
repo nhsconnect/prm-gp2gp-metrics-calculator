@@ -70,11 +70,10 @@ def calculate_practice_metrics(
         generated_on=datetime.now(tzutc()),
         practices=[
             construct_practice_summary(
-                practice_details=practice_details,
-                practice_metrics=practice_transfer_metrics[practice_details.ods_code],
+                practice_metrics=practice_metrics,
                 reporting_window=reporting_window,
             )
-            for practice_details in practice_lookup.all_practices()
+            for practice_metrics in practice_transfer_metrics.values()
         ],
         ccgs=organisation_metadata.ccgs,
     )

@@ -13,7 +13,6 @@ from tests.builders.gp2gp import (
     a_transfer_that_was_never_integrated,
     a_transfer_integrated_between_3_and_8_days,
 )
-from tests.builders.ods_portal import build_practice_details
 
 
 def test_returns_ods_code_and_name():
@@ -22,7 +21,6 @@ def test_returns_ods_code_and_name():
     reporting_window = MonthlyReportingWindow.prior_to(
         date_anchor=a_datetime(year=2021, month=8), number_of_months=1
     )
-    practice_details = build_practice_details(name=expected_name, ods_code=expected_ods_code)
 
     practice_transfer_metrics = PracticeTransferMetrics(
         ods_code=expected_ods_code,
@@ -31,7 +29,6 @@ def test_returns_ods_code_and_name():
     )
 
     actual = construct_practice_summary(
-        practice_details=practice_details,
         practice_metrics=practice_transfer_metrics,
         reporting_window=reporting_window,
     )
@@ -43,8 +40,6 @@ def test_returns_ods_code_and_name():
 def test_returns_year_and_month_for_first_metric():
     expected_year = 2019
     expected_month = 8
-
-    practice_details = build_practice_details()
 
     reporting_window = MonthlyReportingWindow.prior_to(
         date_anchor=a_datetime(year=expected_year, month=9), number_of_months=1
@@ -60,7 +55,6 @@ def test_returns_year_and_month_for_first_metric():
     )
 
     actual = construct_practice_summary(
-        practice_details=practice_details,
         practice_metrics=practice_transfer_metrics,
         reporting_window=reporting_window,
     )
@@ -85,11 +79,8 @@ def test_returns_requester_transfers_requested_count():
         ods_code=a_string(), name=a_string(), transfers=transfers
     )
 
-    practice_details = build_practice_details()
-
     expected_requested_count = 4
     actual = construct_practice_summary(
-        practice_details=practice_details,
         practice_metrics=practice_transfer_metrics,
         reporting_window=reporting_window,
     )
@@ -115,11 +106,9 @@ def test_returns_requester_transfers_received_count():
         ods_code=a_string(), name=a_string(), transfers=transfers
     )
 
-    practice_details = build_practice_details()
     expected_received_count = 4
 
     actual = construct_practice_summary(
-        practice_details=practice_details,
         practice_metrics=practice_transfer_metrics,
         reporting_window=reporting_window,
     )
@@ -144,11 +133,9 @@ def test_returns_requester_transfers_integrated_count():
         ods_code=a_string(), name=a_string(), transfers=transfers
     )
 
-    practice_details = build_practice_details()
     expected_integrated_count = 3
 
     actual = construct_practice_summary(
-        practice_details=practice_details,
         practice_metrics=practice_transfer_metrics,
         reporting_window=reporting_window,
     )
