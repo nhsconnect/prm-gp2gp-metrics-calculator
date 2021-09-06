@@ -81,19 +81,15 @@ def test_returns_requester_transfers_requested_count():
 
     practice_details = build_practice_details()
 
-    expected_requester_transfers_requested_count = 4
+    expected_requested_count = 4
     actual = construct_practice_summary(
         practice_details=practice_details,
         practice_metrics=practice_transfer_metrics,
         reporting_window=reporting_window,
     )
-    actual_requester_transfers_requested_count = actual.metrics[
-        0
-    ].requester.transfers_requested.count
+    actual_requested_count = actual.metrics[0].requested_transfers.requested_count
 
-    assert (
-        actual_requester_transfers_requested_count == expected_requester_transfers_requested_count
-    )
+    assert actual_requested_count == expected_requested_count
 
 
 def test_returns_requester_transfers_received_count():

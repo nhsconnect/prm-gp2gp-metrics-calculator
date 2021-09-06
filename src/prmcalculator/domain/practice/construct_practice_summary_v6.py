@@ -20,7 +20,6 @@ class TransfersReceived:
 
 @dataclass
 class TransfersRequested:
-    count: int
     transfers_received: TransfersReceived
 
 
@@ -30,10 +29,16 @@ class RequesterMetrics:
 
 
 @dataclass
+class RequestedTransferMetrics:
+    requested_count: int
+
+
+@dataclass
 class MonthlyMetricsPresentation:
     year: int
     month: int
     requester: RequesterMetrics
+    requested_transfers: RequestedTransferMetrics
 
 
 @dataclass
@@ -50,9 +55,11 @@ def _construct_monthly_metrics_presentation(
     return MonthlyMetricsPresentation(
         year=year,
         month=month,
+        requested_transfers=RequestedTransferMetrics(
+            requested_count=transfer_month_metrics.requested_by_practice_total(),
+        ),
         requester=RequesterMetrics(
             transfers_requested=TransfersRequested(
-                count=transfer_month_metrics.requested_by_practice_total(),
                 transfers_received=TransfersReceived(
                     count=transfer_month_metrics.received_by_practice_total(),
                     transfers_integrated=TransfersIntegrated(
