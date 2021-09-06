@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Dict
+from typing import List
 
 from dateutil.tz import tzutc
 
@@ -14,7 +14,6 @@ from prmcalculator.domain.practice.group_transfers_by_practice import (
     group_transfers_by_practice,
 )
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
-from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 
 from logging import getLogger, Logger
@@ -61,12 +60,11 @@ def calculate_practice_metrics(
 ) -> PracticeMetricsPresentation:
     observability_probe.record_calculating_practice_metrics(reporting_window)
     practice_lookup = PracticeLookup(organisation_metadata.practices)
-    practice_transfers = group_transfers_by_practice(
+    practice_transfer_metrics = group_transfers_by_practice(
         transfers=transfers,
         practice_lookup=practice_lookup,
         observability_probe=observability_probe,
     )
-    practice_transfer_metrics = _create_practice_transfer_metrics_mapping(practice_transfers)
 
     return PracticeMetricsPresentation(
         generated_on=datetime.now(tzutc()),
@@ -80,12 +78,3 @@ def calculate_practice_metrics(
         ],
         ccgs=organisation_metadata.ccgs,
     )
-
-
-def _create_practice_transfer_metrics_mapping(
-    practice_transfers: Dict[str, List[Transfer]],
-) -> Dict[str, PracticeTransferMetrics]:
-    return {
-        ods_code: PracticeTransferMetrics(ods_code, transfers)
-        for (ods_code, transfers) in practice_transfers.items()
-    }

@@ -70,6 +70,9 @@ def a_transfer_integrated_beyond_8_days(**kwargs):
             failure_reason=TransferFailureReason.INTEGRATED_LATE,
         ),
         sla_duration=timedelta(seconds=EIGHT_DAYS_IN_SECONDS + 1),
+        requesting_practice=kwargs.get(
+            "requesting_practice", Practice(asid=a_string(12), supplier=a_string(12))
+        ),
         date_requested=kwargs.get("date_requested", a_datetime()),
     )
 
