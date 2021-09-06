@@ -57,3 +57,25 @@ def test_returns_a_practice_summary_for_one_month_of_metrics():
     )
 
     assert actual == expected
+
+
+def test_returns_a_practice_summary_for_multiple_months():
+    mock_transfer_metrics = Mock()
+    mock_transfer_metrics.monthly_metrics.return_value = Mock()
+
+    reporting_window = MonthlyReportingWindow.prior_to(
+        a_datetime(year=2021, month=7), number_of_months=3
+    )
+
+    actual = construct_practice_summary(
+        practice_metrics=mock_transfer_metrics,
+        reporting_window=reporting_window,
+    )
+
+    assert actual.metrics[0].month == 6
+    assert actual.metrics[1].month == 5
+    assert actual.metrics[2].month == 4
+    mock_transfer_metrics.monthly_metrics.assert_any_call(year=2021, month=6)
+    mock_transfer_metrics.monthly_metrics.assert_any_call(year=2021, month=5)
+    mock_transfer_metrics.monthly_metrics.assert_any_call(year=2021, month=4)
+    assert mock_transfer_metrics.monthly_metrics.call_count == 3

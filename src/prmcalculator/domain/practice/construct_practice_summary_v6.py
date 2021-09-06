@@ -56,17 +56,15 @@ def construct_practice_summary(
     practice_metrics: PracticeTransferMetrics,
     reporting_window: MonthlyReportingWindow,
 ) -> PracticeSummary:
-    latest_year = reporting_window.metric_months[0][0]
-    latest_month = reporting_window.metric_months[0][1]
-
     return PracticeSummary(
         name=practice_metrics.name,
         ods_code=practice_metrics.ods_code,
         metrics=[
             _construct_monthly_metrics_presentation(
-                transfer_month_metrics=practice_metrics.monthly_metrics(latest_year, latest_month),
-                year=latest_year,
-                month=latest_month,
+                transfer_month_metrics=practice_metrics.monthly_metrics(year=year, month=month),
+                year=year,
+                month=month,
             )
+            for (year, month) in reporting_window.metric_months
         ],
     )
