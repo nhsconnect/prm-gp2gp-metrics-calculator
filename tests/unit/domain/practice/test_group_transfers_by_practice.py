@@ -18,19 +18,19 @@ def test_produces_empty_metrics_given_practices_with_no_transfers():
     mock_probe = Mock()
     lookup = PracticeLookup(
         [
-            PracticeDetails(asids=[a_string()], ods_code="A1234", name=a_string()),
-            PracticeDetails(asids=[a_string()], ods_code="B5678", name=a_string()),
+            PracticeDetails(asids=[a_string()], ods_code="A1234", name="Practice 1"),
+            PracticeDetails(asids=[a_string()], ods_code="B5678", name="Practice 2"),
         ]
     )
 
-    expected_ods = {"A1234", "B5678"}
+    expected_practices = {("A1234", "Practice 1"), ("B5678", "Practice 2")}
 
     actual = group_transfers_by_practice(
         transfers=[], practice_lookup=lookup, observability_probe=mock_probe
     )
-    actual_ods = {practice_metrics.ods_code for practice_metrics in actual.values()}
+    actual_practices = {(metrics.ods_code, metrics.name) for metrics in actual.values()}
 
-    assert actual_ods == expected_ods
+    assert actual_practices == expected_practices
 
 
 def test_produces_an_empty_metrics_object_given_practice_with_no_matching_transfers():

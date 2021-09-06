@@ -10,8 +10,9 @@ YearMonth = Tuple[YearNumber, MonthNumber]
 
 
 class PracticeTransferMetrics:
-    def __init__(self, ods_code: str, transfers=Iterable[Transfer]):
+    def __init__(self, ods_code: str, name: str, transfers=Iterable[Transfer]):
         self.ods_code = ods_code
+        self.name = name
         self._transfers_by_month: Dict[YearMonth, List[Transfer]] = defaultdict(list)
 
         for transfer in transfers:

@@ -27,6 +27,7 @@ def test_returns_ods_code_and_name():
 
     practice_transfer_metrics = PracticeTransferMetrics(
         ods_code=expected_ods_code,
+        name=expected_name,
         transfers=[build_transfer(date_requested=a_datetime(year=2021, month=7, day=4))],
     )
 
@@ -51,6 +52,7 @@ def test_returns_year_and_month_for_first_metric():
     )
     practice_transfer_metrics = PracticeTransferMetrics(
         ods_code=a_string(),
+        name=a_string(),
         transfers=[
             build_transfer(
                 date_requested=a_datetime(year=expected_year, month=expected_month, day=4)
@@ -79,7 +81,9 @@ def test_returns_requester_transfers_received():
     reporting_window = MonthlyReportingWindow.prior_to(
         date_anchor=a_datetime(year=2020, month=1), number_of_months=1
     )
-    practice_transfer_metrics = PracticeTransferMetrics(ods_code=a_string(), transfers=transfers)
+    practice_transfer_metrics = PracticeTransferMetrics(
+        ods_code=a_string(), name=a_string(), transfers=transfers
+    )
 
     practice_details = build_practice_details()
     expected_requester_transfers_received = TransfersReceivedPresentation(
@@ -110,7 +114,9 @@ def test_returns_requester_transfers_received_for_two_metric_months():
     reporting_window = MonthlyReportingWindow.prior_to(
         date_anchor=a_datetime(year=2020, month=1), number_of_months=2
     )
-    practice_transfer_metrics = PracticeTransferMetrics(ods_code=a_string(), transfers=transfers)
+    practice_transfer_metrics = PracticeTransferMetrics(
+        ods_code=a_string(), name=a_string(), transfers=transfers
+    )
     practice_details = build_practice_details()
     expected_requester_transfers_received = TransfersReceivedPresentation(
         transfer_count=1,
@@ -149,7 +155,10 @@ def test_returns_default_requester_transfers_received_for_two_metric_months_with
     reporting_window = MonthlyReportingWindow.prior_to(
         date_anchor=a_datetime(year=2021, month=8), number_of_months=2
     )
-    practice_transfer_metrics = PracticeTransferMetrics(ods_code=a_string(), transfers=[])
+    practice_transfer_metrics = PracticeTransferMetrics(
+        ods_code=a_string(), name=a_string(), transfers=[]
+    )
+
     practice_details = build_practice_details()
 
     actual = construct_practice_summary(
