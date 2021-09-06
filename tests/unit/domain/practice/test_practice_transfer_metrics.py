@@ -34,6 +34,16 @@ def test_returns_transfer_metrics():
     assert aug_transfer_metrics.integrated_beyond_8_days() == 1
 
 
+def test_returns_empty_transfer_metrics_given_month_with_no_transfers():
+    practice_transfers = PracticeTransferMetrics(ods_code=a_string(), name=a_string(), transfers=[])
+    expected_transfer_count = 0
+
+    actual = practice_transfers.monthly_metrics(2021, 7)
+
+    actual_transfer_count = actual.received_by_practice_total()
+    assert actual_transfer_count == expected_transfer_count
+
+
 def test_returns_ods_code():
     practice_transfers = PracticeTransferMetrics(
         ods_code="ABC123",
