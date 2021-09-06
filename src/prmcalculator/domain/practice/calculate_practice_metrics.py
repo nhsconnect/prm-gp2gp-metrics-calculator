@@ -86,6 +86,6 @@ def _create_practice_transfer_metrics_mapping(
     practice_transfers: Dict[str, List[Transfer]],
 ) -> Dict[str, PracticeTransferMetrics]:
     return {
-        ods_code: PracticeTransferMetrics(transfers)
+        ods_code: PracticeTransferMetrics(ods_code, transfers)
         for (ods_code, transfers) in practice_transfers.items()
     }
