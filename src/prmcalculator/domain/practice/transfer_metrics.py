@@ -23,10 +23,12 @@ class TransferMetrics:
         self._counts_by_outcome: Counter[TransferOutcome] = Counter()
         self._counts_by_status: Counter[TransferStatus] = Counter()
         self._sla_counter: SlaCounter = SlaCounter()
+        self._transfers_requested_count = 0
 
         for transfer in transfers:
             self._counts_by_outcome.update([transfer.outcome])
             self._counts_by_status.update([transfer.outcome.status])
+            self._transfers_requested_count += 1
             if transfer.outcome.status == TransferStatus.INTEGRATED_ON_TIME:
                 self._sla_counter.increment(transfer.sla_duration)
 
@@ -52,7 +54,7 @@ class TransferMetrics:
         return self.integrated_total() + self.process_failure_not_integrated()
 
     def requested_by_practice_total(self) -> int:
-        return sum(self._counts_by_outcome.values())
+        return self._transfers_requested_count
 
     def technical_failures_total(self) -> int:
         return self._counts_by_status[TransferStatus.TECHNICAL_FAILURE]
