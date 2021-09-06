@@ -12,6 +12,8 @@ from tests.builders.gp2gp import (
     a_transfer_with_a_final_error,
     a_transfer_that_was_never_integrated,
     a_transfer_integrated_between_3_and_8_days,
+    a_transfer_where_the_sender_reported_an_unrecoverable_error,
+    a_transfer_where_no_core_ehr_was_sent,
 )
 
 
@@ -258,3 +260,33 @@ def test_returns_requester_transfers_awaiting_integration_count():
     ].requested_transfers.awaiting_integration_count
 
     assert actual_awaiting_integration_count == expected_awaiting_integration_count
+
+
+def test_returns_requester_transfers_technical_failures_count():
+    a_date_in_2019_12 = a_date_in(year=2019, month=12)
+
+    transfers = [
+        a_transfer_that_was_never_integrated(date_requested=a_date_in_2019_12()),
+        a_transfer_with_a_final_error(date_requested=a_date_in_2019_12()),
+        a_transfer_where_the_sender_reported_an_unrecoverable_error(
+            date_requested=a_date_in_2019_12()
+        ),
+        a_transfer_where_no_core_ehr_was_sent(date_requested=a_date_in_2019_12()),
+    ]
+    reporting_window = MonthlyReportingWindow.prior_to(
+        date_anchor=a_datetime(year=2020, month=1), number_of_months=1
+    )
+
+    practice_transfer_metrics = PracticeTransferMetrics(
+        ods_code=a_string(), name=a_string(), transfers=transfers
+    )
+
+    expected_technical_failures_count = 3
+
+    actual = construct_practice_summary(
+        practice_metrics=practice_transfer_metrics,
+        reporting_window=reporting_window,
+    )
+    actual_technical_failures_count = actual.metrics[0].requested_transfers.technical_failures_count
+
+    assert actual_technical_failures_count == expected_technical_failures_count

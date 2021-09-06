@@ -53,3 +53,6 @@ class TransferMetrics:
 
     def requested_by_practice_total(self) -> int:
         return sum(self._counts_by_outcome.values())
+
+    def technical_failures_total(self) -> int:
+        return self._counts_by_status[TransferStatus.TECHNICAL_FAILURE]
