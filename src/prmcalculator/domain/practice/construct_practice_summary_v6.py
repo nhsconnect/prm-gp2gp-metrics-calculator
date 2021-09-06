@@ -31,6 +31,7 @@ class RequesterMetrics:
 @dataclass
 class RequestedTransferMetrics:
     requested_count: int
+    received_count: int
 
 
 @dataclass
@@ -57,6 +58,7 @@ def _construct_monthly_metrics_presentation(
         month=month,
         requested_transfers=RequestedTransferMetrics(
             requested_count=transfer_month_metrics.requested_by_practice_total(),
+            received_count=transfer_month_metrics.received_by_practice_total(),
         ),
         requester=RequesterMetrics(
             transfers_requested=TransfersRequested(
