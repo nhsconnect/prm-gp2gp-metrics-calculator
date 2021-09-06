@@ -14,7 +14,26 @@ from tests.builders.gp2gp import (
 )
 
 
-def test_produces_an_empty_list_given_practice_with_no_matching_transfers():
+def test_produces_empty_metrics_given_practices_with_no_transfers():
+    mock_probe = Mock()
+    lookup = PracticeLookup(
+        [
+            PracticeDetails(asids=[a_string()], ods_code="A1234", name=a_string()),
+            PracticeDetails(asids=[a_string()], ods_code="B5678", name=a_string()),
+        ]
+    )
+
+    expected_ods = {"A1234", "B5678"}
+
+    actual = group_transfers_by_practice(
+        transfers=[], practice_lookup=lookup, observability_probe=mock_probe
+    )
+    actual_ods = {practice_metrics.ods_code for practice_metrics in actual.values()}
+
+    assert actual_ods == expected_ods
+
+
+def test_produces_an_empty_metrics_object_given_practice_with_no_matching_transfers():
     mock_probe = Mock()
     ods_code = "A1234"
     lookup = PracticeLookup(
