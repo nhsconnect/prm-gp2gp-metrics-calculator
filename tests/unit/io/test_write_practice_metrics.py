@@ -1,7 +1,7 @@
 from datetime import datetime
 from unittest.mock import Mock
 
-from prmcalculator.domain.practice.calculate_practice_metrics_data import (
+from prmcalculator.domain.practice.calculate_practice_metrics import (
     PracticeMetricsPresentation,
 )
 from prmcalculator.domain.practice.construct_practice_summary_v5 import (

@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 
 from prmcalculator.domain.gp2gp.transfer import Practice
-from prmcalculator.domain.practice.calculate_practice_metrics_data import (
+from prmcalculator.domain.practice.calculate_practice_metrics import (
     PracticeMetricsObservabilityProbe,
 )
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow

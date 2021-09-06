@@ -7,7 +7,7 @@ from prmcalculator.domain.gp2gp.transfer import Transfer, convert_table_to_trans
 from prmcalculator.domain.national.construct_national_metrics_presentation import (
     NationalMetricsPresentation,
 )
-from prmcalculator.domain.practice.calculate_practice_metrics_data import (
+from prmcalculator.domain.practice.calculate_practice_metrics import (
     PracticeMetricsPresentation,
 )
 

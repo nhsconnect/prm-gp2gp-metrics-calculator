@@ -7,7 +7,6 @@ from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 
 
-
 @dataclass
 class RequestedTransferMetrics:
     requested_count: int

@@ -53,7 +53,7 @@ class PracticeMetricsPresentation:
     ccgs: List[CcgDetails]
 
 
-def calculate_practice_metrics_data(
+def calculate_practice_metrics(
     transfers: List[Transfer],
     organisation_metadata: OrganisationMetadata,
     reporting_window: MonthlyReportingWindow,

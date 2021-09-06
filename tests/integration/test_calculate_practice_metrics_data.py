@@ -10,8 +10,8 @@ from prmcalculator.domain.ods_portal.organisation_metadata import (
     CcgDetails,
     OrganisationMetadata,
 )
-from prmcalculator.domain.practice.calculate_practice_metrics_data import (
-    calculate_practice_metrics_data,
+from prmcalculator.domain.practice.calculate_practice_metrics import (
+    calculate_practice_metrics,
     PracticeMetricsPresentation,
 )
 from prmcalculator.domain.practice.construct_practice_summary_v5 import (
@@ -102,7 +102,7 @@ def test_calculates_correct_practice_metrics_given_transfers():
         ccgs=ccg_list,
     )
 
-    actual = calculate_practice_metrics_data(
+    actual = calculate_practice_metrics(
         transfers=transfers,
         organisation_metadata=organisation_metadata,
         reporting_window=reporting_window,
@@ -167,7 +167,7 @@ def test_returns_default_metric_values_for_practice_without_transfers():
         ccgs=[],
     )
 
-    actual = calculate_practice_metrics_data(
+    actual = calculate_practice_metrics(
         transfers=[],
         organisation_metadata=organisation_metadata,
         reporting_window=reporting_window,
@@ -191,7 +191,7 @@ def test_calls_observability_probe_calculating_practice_metrics():
         ccgs=[],
     )
 
-    calculate_practice_metrics_data(
+    calculate_practice_metrics(
         transfers=[],
         organisation_metadata=organisation_metadata,
         reporting_window=reporting_window,
