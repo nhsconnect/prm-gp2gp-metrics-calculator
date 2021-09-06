@@ -7,38 +7,18 @@ from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 
 
-@dataclass
-class TransfersIntegrated:
-    count: int
-
-
-@dataclass
-class TransfersReceived:
-    count: int
-    transfers_integrated: TransfersIntegrated
-
-
-@dataclass
-class TransfersRequested:
-    transfers_received: TransfersReceived
-
-
-@dataclass
-class RequesterMetrics:
-    transfers_requested: TransfersRequested
-
 
 @dataclass
 class RequestedTransferMetrics:
     requested_count: int
     received_count: int
+    integrated_count: int
 
 
 @dataclass
 class MonthlyMetricsPresentation:
     year: int
     month: int
-    requester: RequesterMetrics
     requested_transfers: RequestedTransferMetrics
 
 
@@ -59,16 +39,7 @@ def _construct_monthly_metrics_presentation(
         requested_transfers=RequestedTransferMetrics(
             requested_count=transfer_month_metrics.requested_by_practice_total(),
             received_count=transfer_month_metrics.received_by_practice_total(),
-        ),
-        requester=RequesterMetrics(
-            transfers_requested=TransfersRequested(
-                transfers_received=TransfersReceived(
-                    count=transfer_month_metrics.received_by_practice_total(),
-                    transfers_integrated=TransfersIntegrated(
-                        count=transfer_month_metrics.integrated_total()
-                    ),
-                ),
-            )
+            integrated_count=transfer_month_metrics.integrated_total(),
         ),
     )
 
