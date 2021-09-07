@@ -10,6 +10,8 @@ from prmcalculator.domain.practice.calculate_practice_metrics_v5 import (
     calculate_practice_metrics_v5,
     PracticeMetricsObservabilityProbe,
 )
+
+from prmcalculator.domain.practice.calculate_practice_metrics_v6 import calculate_practice_metrics
 from prmcalculator.pipeline.config import PipelineConfig
 
 from prmcalculator.pipeline.io import PlatformMetricsIO
@@ -50,14 +52,6 @@ def main():
 
     transfers = metrics_io.read_transfer_data()
 
-    practice_metrics_observability_probe = PracticeMetricsObservabilityProbe()
-    practice_metrics_data = calculate_practice_metrics_v5(
-        transfers=transfers,
-        organisation_metadata=organisation_metadata,
-        reporting_window=reporting_window,
-        observability_probe=practice_metrics_observability_probe,
-    )
-
     national_metrics_observability_probe = NationalMetricsObservabilityProbe()
     national_metrics_data = calculate_national_metrics_data(
         transfers=transfers,
@@ -65,8 +59,27 @@ def main():
         observability_probe=national_metrics_observability_probe,
     )
 
-    metrics_io.write_practice_metrics(practice_metrics_data)
-    metrics_io.write_national_metrics(national_metrics_data)
+    practice_metrics_observability_probe = PracticeMetricsObservabilityProbe()
+
+    if config.output_v6_metrics:
+        practice_metrics_data_v6 = calculate_practice_metrics(
+            transfers=transfers,
+            organisation_metadata=organisation_metadata,
+            reporting_window=reporting_window,
+            observability_probe=practice_metrics_observability_probe,
+        )
+        metrics_io.write_practice_metrics_v6(practice_metrics_data_v6)
+        metrics_io.write_national_metrics_v6(national_metrics_data)
+
+    else:
+        practice_metrics_data_v5 = calculate_practice_metrics_v5(
+            transfers=transfers,
+            organisation_metadata=organisation_metadata,
+            reporting_window=reporting_window,
+            observability_probe=practice_metrics_observability_probe,
+        )
+        metrics_io.write_practice_metrics(practice_metrics_data_v5)
+        metrics_io.write_national_metrics(national_metrics_data)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List
+from typing import List, Union
 
 from dateutil.tz import tzutc
 
@@ -9,6 +9,9 @@ from prmcalculator.domain.ods_portal.organisation_metadata import CcgDetails, Or
 from prmcalculator.domain.practice.construct_practice_summary_v6 import (
     construct_practice_summary,
     PracticeSummary,
+)
+from prmcalculator.domain.practice.calculate_practice_metrics_v5 import (
+    PracticeMetricsObservabilityProbe as PracticeMetricsObservabilityProbeV5,
 )
 from prmcalculator.domain.practice.group_transfers_by_practice import (
     group_transfers_by_practice,
@@ -57,7 +60,9 @@ def calculate_practice_metrics(
     transfers: List[Transfer],
     organisation_metadata: OrganisationMetadata,
     reporting_window: MonthlyReportingWindow,
-    observability_probe: PracticeMetricsObservabilityProbe,
+    observability_probe: Union[
+        PracticeMetricsObservabilityProbe, PracticeMetricsObservabilityProbeV5
+    ],
 ) -> PracticeMetricsPresentation:
     observability_probe.record_calculating_practice_metrics(reporting_window)
     practice_lookup = PracticeLookup(organisation_metadata.practices)
