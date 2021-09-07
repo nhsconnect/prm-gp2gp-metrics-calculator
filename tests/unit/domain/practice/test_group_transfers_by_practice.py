@@ -7,12 +7,8 @@ from prmcalculator.domain.practice.group_transfers_by_practice import (
     PracticeTransfers,
 )
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
-from tests.builders.common import a_string, a_datetime
-from tests.builders.gp2gp import (
-    build_transfer,
-    a_transfer_integrated_within_3_days,
-    a_transfer_integrated_beyond_8_days,
-)
+from tests.builders.common import a_string
+from tests.builders.gp2gp import build_transfer
 
 
 def test_produces_empty_metrics_given_practices_with_no_transfers():
@@ -46,7 +42,6 @@ def test_produces_an_empty_metrics_object_given_practice_with_no_matching_transf
         ]
     )
     transfer = build_transfer(
-        date_requested=a_datetime(year=2020, month=1),
         requesting_practice=Practice(asid="565656565656", supplier=a_string(12)),
     )
 
@@ -67,11 +62,9 @@ def test_produces_a_group_given_single_practice_with_transfers_matching_asid():
         [PracticeDetails(asids=["121212121212"], ods_code=ods_code, name="Test Practice")]
     )
     transfer_one = build_transfer(
-        date_requested=a_datetime(year=2020, month=1),
         requesting_practice=Practice(asid="121212121212", supplier=a_string(12)),
     )
     transfer_two = build_transfer(
-        date_requested=a_datetime(year=2020, month=1),
         requesting_practice=Practice(asid="121212121212", supplier=a_string(12)),
     )
 
@@ -102,12 +95,10 @@ def test_produces_a_group_given_single_practice_with_transfers_matching_asids():
     )
 
     transfer_one = build_transfer(
-        date_requested=a_datetime(year=2020, month=1),
         requesting_practice=Practice(asid="343434343434", supplier=a_string(12)),
     )
 
     transfer_two = build_transfer(
-        date_requested=a_datetime(year=2020, month=1),
         requesting_practice=Practice(asid="121212121212", supplier=a_string(12)),
     )
 
@@ -142,12 +133,10 @@ def test_produces_correct_groups_given_two_practices_each_with_transfers():
             ),
         ]
     )
-    practice_a_transfer = a_transfer_integrated_within_3_days(
-        date_requested=a_datetime(year=2020, month=1),
+    practice_a_transfer = build_transfer(
         requesting_practice=Practice(asid=practice_a_asid, supplier=a_string(12)),
     )
-    practice_b_transfer = a_transfer_integrated_beyond_8_days(
-        date_requested=a_datetime(year=2020, month=1),
+    practice_b_transfer = build_transfer(
         requesting_practice=Practice(asid=practice_b_asid, supplier=a_string(12)),
     )
 

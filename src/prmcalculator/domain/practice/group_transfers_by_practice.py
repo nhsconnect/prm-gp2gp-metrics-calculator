@@ -5,10 +5,12 @@ from prmcalculator.domain.gp2gp.transfer import Transfer
 from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 
+ODSCode = str
+
 
 @dataclass(frozen=True)
 class PracticeTransfers:
-    ods_code: str
+    ods_code: ODSCode
     name: str
     transfers: Tuple[Transfer, ...]
 
@@ -31,7 +33,7 @@ class TransferAccumulator:
 def group_transfers_by_practice(
     transfers: List[Transfer], practice_lookup: PracticeLookup, observability_probe
 ) -> List[PracticeTransfers]:
-    practice_transfers: Dict[str, TransferAccumulator] = {
+    practice_transfers: Dict[ODSCode, TransferAccumulator] = {
         practice.ods_code: TransferAccumulator(practice)
         for practice in practice_lookup.all_practices()
     }
