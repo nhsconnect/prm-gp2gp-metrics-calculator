@@ -10,7 +10,7 @@ from prmcalculator.domain.ods_portal.organisation_metadata import (
     CcgDetails,
     OrganisationMetadata,
 )
-from prmcalculator.domain.practice.calculate_practice_metrics import (
+from prmcalculator.domain.practice.calculate_practice_metrics_v5 import (
     calculate_practice_metrics,
     PracticeMetricsPresentation,
 )

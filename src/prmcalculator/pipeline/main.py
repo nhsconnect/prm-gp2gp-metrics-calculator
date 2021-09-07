@@ -6,7 +6,7 @@ from prmcalculator.domain.national.calculate_national_metrics_data import (
     calculate_national_metrics_data,
     NationalMetricsObservabilityProbe,
 )
-from prmcalculator.domain.practice.calculate_practice_metrics import (
+from prmcalculator.domain.practice.calculate_practice_metrics_v5 import (
     calculate_practice_metrics,
     PracticeMetricsObservabilityProbe,
 )
