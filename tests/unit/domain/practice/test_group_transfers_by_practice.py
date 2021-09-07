@@ -4,6 +4,7 @@ from prmcalculator.domain.gp2gp.transfer import Practice
 from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
 from prmcalculator.domain.practice.group_transfers_by_practice import (
     group_transfers_by_practice,
+    PracticeTransfers,
 )
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 from tests.builders.common import a_string, a_datetime
@@ -23,14 +24,15 @@ def test_produces_empty_metrics_given_practices_with_no_transfers():
         ]
     )
 
-    expected_practices = {("A1234", "Practice 1"), ("B5678", "Practice 2")}
+    expected = [
+        PracticeTransfers(name="Practice 1", ods_code="A1234", transfers=()),
+        PracticeTransfers(name="Practice 2", ods_code="B5678", transfers=()),
+    ]
 
     actual = group_transfers_by_practice(
         transfers=[], practice_lookup=lookup, observability_probe=mock_probe
     )
-    actual_practices = {(metrics.ods_code, metrics.name) for metrics in actual.values()}
-
-    assert actual_practices == expected_practices
+    assert set(actual) == set(expected)
 
 
 def test_produces_an_empty_metrics_object_given_practice_with_no_matching_transfers():
@@ -39,25 +41,22 @@ def test_produces_an_empty_metrics_object_given_practice_with_no_matching_transf
     lookup = PracticeLookup(
         [
             PracticeDetails(
-                asids=["121212121212", "343434343434"], ods_code=ods_code, name=a_string()
+                asids=["121212121212", "343434343434"], ods_code=ods_code, name="Test Practice"
             )
         ]
     )
-    transfers = [
-        build_transfer(
-            date_requested=a_datetime(year=2020, month=1),
-            requesting_practice=Practice(asid="565656565656", supplier=a_string(12)),
-        )
-    ]
-
-    expected_requested = 0
+    transfer = build_transfer(
+        date_requested=a_datetime(year=2020, month=1),
+        requesting_practice=Practice(asid="565656565656", supplier=a_string(12)),
+    )
 
     actual = group_transfers_by_practice(
-        transfers=transfers, practice_lookup=lookup, observability_probe=mock_probe
+        transfers=[transfer], practice_lookup=lookup, observability_probe=mock_probe
     )
-    actual_metrics = actual["A1234"].monthly_metrics(2020, 1)
 
-    assert actual_metrics.requested_by_practice_total() == expected_requested
+    expected = [PracticeTransfers(name="Test Practice", ods_code="A1234", transfers=())]
+
+    assert actual == expected
 
 
 def test_produces_a_group_given_single_practice_with_transfers_matching_asid():
@@ -65,27 +64,30 @@ def test_produces_a_group_given_single_practice_with_transfers_matching_asid():
     ods_code = "A1234"
 
     lookup = PracticeLookup(
-        [PracticeDetails(asids=["121212121212"], ods_code=ods_code, name=a_string())]
+        [PracticeDetails(asids=["121212121212"], ods_code=ods_code, name="Test Practice")]
     )
-    transfers = [
-        build_transfer(
-            date_requested=a_datetime(year=2020, month=1),
-            requesting_practice=Practice(asid="121212121212", supplier=a_string(12)),
-        ),
-        build_transfer(
-            date_requested=a_datetime(year=2020, month=1),
-            requesting_practice=Practice(asid="121212121212", supplier=a_string(12)),
-        ),
+    transfer_one = build_transfer(
+        date_requested=a_datetime(year=2020, month=1),
+        requesting_practice=Practice(asid="121212121212", supplier=a_string(12)),
+    )
+    transfer_two = build_transfer(
+        date_requested=a_datetime(year=2020, month=1),
+        requesting_practice=Practice(asid="121212121212", supplier=a_string(12)),
+    )
+
+    expected = [
+        PracticeTransfers(
+            name="Test Practice", ods_code="A1234", transfers=(transfer_one, transfer_two)
+        )
     ]
 
-    expected_requested = 2
-
     actual = group_transfers_by_practice(
-        transfers=transfers, practice_lookup=lookup, observability_probe=mock_probe
+        transfers=[transfer_one, transfer_two],
+        practice_lookup=lookup,
+        observability_probe=mock_probe,
     )
-    actual_metrics = actual["A1234"].monthly_metrics(2020, 1)
 
-    assert actual_metrics.requested_by_practice_total() == expected_requested
+    assert actual == expected
 
 
 def test_produces_a_group_given_single_practice_with_transfers_matching_asids():
@@ -94,29 +96,34 @@ def test_produces_a_group_given_single_practice_with_transfers_matching_asids():
     lookup = PracticeLookup(
         [
             PracticeDetails(
-                asids=["121212121212", "343434343434"], ods_code=ods_code, name=a_string()
+                asids=["121212121212", "343434343434"], ods_code=ods_code, name="Test Practice"
             )
         ]
     )
-    transfers = [
-        build_transfer(
-            date_requested=a_datetime(year=2020, month=1),
-            requesting_practice=Practice(asid="343434343434", supplier=a_string(12)),
-        ),
-        build_transfer(
-            date_requested=a_datetime(year=2020, month=1),
-            requesting_practice=Practice(asid="121212121212", supplier=a_string(12)),
-        ),
+
+    transfer_one = build_transfer(
+        date_requested=a_datetime(year=2020, month=1),
+        requesting_practice=Practice(asid="343434343434", supplier=a_string(12)),
+    )
+
+    transfer_two = build_transfer(
+        date_requested=a_datetime(year=2020, month=1),
+        requesting_practice=Practice(asid="121212121212", supplier=a_string(12)),
+    )
+
+    expected = [
+        PracticeTransfers(
+            name="Test Practice", ods_code="A1234", transfers=(transfer_one, transfer_two)
+        )
     ]
 
-    expected_requested = 2
-
     actual = group_transfers_by_practice(
-        transfers=transfers, practice_lookup=lookup, observability_probe=mock_probe
+        transfers=[transfer_one, transfer_two],
+        practice_lookup=lookup,
+        observability_probe=mock_probe,
     )
-    actual_metrics = actual["A1234"].monthly_metrics(2020, 1)
 
-    assert actual_metrics.requested_by_practice_total() == expected_requested
+    assert actual == expected
 
 
 def test_produces_correct_groups_given_two_practices_each_with_transfers():
@@ -127,8 +134,12 @@ def test_produces_correct_groups_given_two_practices_each_with_transfers():
     practice_b_asid = "3512352431233"
     lookup = PracticeLookup(
         [
-            PracticeDetails(asids=[practice_a_asid], ods_code=practice_a_ods_code, name=a_string()),
-            PracticeDetails(asids=[practice_b_asid], ods_code=practice_b_ods_code, name=a_string()),
+            PracticeDetails(
+                asids=[practice_a_asid], ods_code=practice_a_ods_code, name="Practice A"
+            ),
+            PracticeDetails(
+                asids=[practice_b_asid], ods_code=practice_b_ods_code, name="Practice B"
+            ),
         ]
     )
     practice_a_transfer = a_transfer_integrated_within_3_days(
@@ -140,18 +151,22 @@ def test_produces_correct_groups_given_two_practices_each_with_transfers():
         requesting_practice=Practice(asid=practice_b_asid, supplier=a_string(12)),
     )
 
-    transfers = [practice_a_transfer, practice_b_transfer]
+    expected = [
+        PracticeTransfers(
+            name="Practice A", ods_code=practice_a_ods_code, transfers=(practice_a_transfer,)
+        ),
+        PracticeTransfers(
+            name="Practice B", ods_code=practice_b_ods_code, transfers=(practice_b_transfer,)
+        ),
+    ]
 
     actual = group_transfers_by_practice(
-        transfers=transfers, practice_lookup=lookup, observability_probe=mock_probe
+        transfers=[practice_a_transfer, practice_b_transfer],
+        practice_lookup=lookup,
+        observability_probe=mock_probe,
     )
 
-    actual_practice_a_metrics = actual[practice_a_ods_code].monthly_metrics(2020, 1)
-    actual_practice_b_metrics = actual[practice_b_ods_code].monthly_metrics(2020, 1)
-
-    assert actual_practice_a_metrics.integrated_within_3_days() == 1
-    assert actual_practice_b_metrics.integrated_beyond_8_days() == 1
-    assert len(actual.keys()) == 2
+    assert set(actual) == set(expected)
 
 
 def test_calls_observability_probe_when_multiple_unknown_practices_for_transfers():

@@ -2,6 +2,7 @@ from collections import defaultdict
 from typing import Iterable, Dict, Tuple, List
 
 from prmcalculator.domain.gp2gp.transfer import Transfer
+from prmcalculator.domain.practice.group_transfers_by_practice import PracticeTransfers
 from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
 
 YearNumber = int
@@ -10,6 +11,10 @@ YearMonth = Tuple[YearNumber, MonthNumber]
 
 
 class PracticeTransferMetrics:
+    @classmethod
+    def from_group(cls, group: PracticeTransfers):
+        return cls(ods_code=group.ods_code, name=group.name, transfers=group.transfers)
+
     def __init__(self, ods_code: str, name: str, transfers=Iterable[Transfer]):
         self.ods_code = ods_code
         self.name = name

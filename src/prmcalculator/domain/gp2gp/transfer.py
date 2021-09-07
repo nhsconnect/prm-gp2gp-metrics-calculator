@@ -39,7 +39,7 @@ class TransferOutcome:
     failure_reason: Optional[TransferFailureReason]
 
 
-@dataclass
+@dataclass(frozen=True)
 class Practice:
     asid: str
     supplier: str

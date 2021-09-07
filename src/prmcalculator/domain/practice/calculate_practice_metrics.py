@@ -14,6 +14,7 @@ from prmcalculator.domain.practice.group_transfers_by_practice import (
     group_transfers_by_practice,
 )
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
+from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
 from prmcalculator.utils.reporting_window import MonthlyReportingWindow
 
 from logging import getLogger, Logger
@@ -60,7 +61,7 @@ def calculate_practice_metrics(
 ) -> PracticeMetricsPresentation:
     observability_probe.record_calculating_practice_metrics(reporting_window)
     practice_lookup = PracticeLookup(organisation_metadata.practices)
-    practice_transfer_metrics = group_transfers_by_practice(
+    grouped_transfers = group_transfers_by_practice(
         transfers=transfers,
         practice_lookup=practice_lookup,
         observability_probe=observability_probe,
@@ -70,10 +71,10 @@ def calculate_practice_metrics(
         generated_on=datetime.now(tzutc()),
         practices=[
             construct_practice_summary(
-                practice_metrics=practice_metrics,
+                practice_metrics=PracticeTransferMetrics.from_group(practice_transfers),
                 reporting_window=reporting_window,
             )
-            for practice_metrics in practice_transfer_metrics.values()
+            for practice_transfers in grouped_transfers
         ],
         ccgs=organisation_metadata.ccgs,
     )

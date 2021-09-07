@@ -1,9 +1,16 @@
-from typing import List, Dict
+from dataclasses import dataclass
+from typing import List, Dict, Tuple
 
 from prmcalculator.domain.gp2gp.transfer import Transfer
 from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
-from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
+
+
+@dataclass(frozen=True)
+class PracticeTransfers:
+    ods_code: str
+    name: str
+    transfers: Tuple[Transfer, ...]
 
 
 class TransferAccumulator:
@@ -15,15 +22,15 @@ class TransferAccumulator:
     def add_transfer(self, transfer: Transfer):
         self._transfers.append(transfer)
 
-    def into_metrics(self) -> PracticeTransferMetrics:
-        return PracticeTransferMetrics(
-            ods_code=self._ods_code, name=self._name, transfers=self._transfers
+    def into_group(self) -> PracticeTransfers:
+        return PracticeTransfers(
+            ods_code=self._ods_code, name=self._name, transfers=tuple(self._transfers)
         )
 
 
 def group_transfers_by_practice(
     transfers: List[Transfer], practice_lookup: PracticeLookup, observability_probe
-) -> Dict[str, PracticeTransferMetrics]:
+) -> List[PracticeTransfers]:
     practice_transfers: Dict[str, TransferAccumulator] = {
         practice.ods_code: TransferAccumulator(practice)
         for practice in practice_lookup.all_practices()
@@ -36,6 +43,4 @@ def group_transfers_by_practice(
         else:
             observability_probe.record_unknown_practice_for_transfer(transfer)
 
-    return {
-        ods_code: accumulator.into_metrics() for ods_code, accumulator in practice_transfers.items()
-    }
+    return [accumulator.into_group() for accumulator in practice_transfers.values()]
