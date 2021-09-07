@@ -157,3 +157,11 @@ def test_returns_technical_failures_total():
     transfer_metrics = TransferMetrics(transfers=transfers)
 
     assert transfer_metrics.technical_failures_total() == 7
+
+
+def test_returns_unclassified_failure_total():
+    transfers = [a_transfer_where_a_copc_triggered_an_error()]
+
+    transfer_metrics = TransferMetrics(transfers=transfers)
+
+    assert transfer_metrics.unclassified_failure_total() == 1

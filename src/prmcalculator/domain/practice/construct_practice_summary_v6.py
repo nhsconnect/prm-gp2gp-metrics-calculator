@@ -16,6 +16,7 @@ class RequestedTransferMetrics:
     integrated_beyond_8_days_count: int
     awaiting_integration_count: int
     technical_failures_count: int
+    unclassified_failure_count: int
 
 
 @dataclass
@@ -48,6 +49,7 @@ def _construct_monthly_metrics_presentation(
             integrated_beyond_8_days_count=transfer_month_metrics.integrated_beyond_8_days(),
             awaiting_integration_count=transfer_month_metrics.process_failure_not_integrated(),
             technical_failures_count=transfer_month_metrics.technical_failures_total(),
+            unclassified_failure_count=transfer_month_metrics.unclassified_failure_total(),
         ),
     )
 

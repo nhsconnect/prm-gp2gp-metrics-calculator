@@ -25,6 +25,7 @@ def test_returns_a_practice_summary_for_one_month_of_metrics():
     mock_monthly_metrics.integrated_beyond_8_days.return_value = 6
     mock_monthly_metrics.process_failure_not_integrated.return_value = 7
     mock_monthly_metrics.technical_failures_total.return_value = 8
+    mock_monthly_metrics.unclassified_failure_total.return_value = 9
 
     reporting_window = MonthlyReportingWindow.prior_to(
         a_datetime(year=2021, month=7), number_of_months=1
@@ -46,6 +47,7 @@ def test_returns_a_practice_summary_for_one_month_of_metrics():
                     integrated_beyond_8_days_count=6,
                     awaiting_integration_count=7,
                     technical_failures_count=8,
+                    unclassified_failure_count=9,
                 ),
             )
         ],

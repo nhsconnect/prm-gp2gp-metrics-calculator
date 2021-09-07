@@ -58,3 +58,6 @@ class TransferMetrics:
 
     def technical_failures_total(self) -> int:
         return self._counts_by_status[TransferStatus.TECHNICAL_FAILURE]
+
+    def unclassified_failure_total(self) -> int:
+        return self._counts_by_status[TransferStatus.UNCLASSIFIED_FAILURE]
