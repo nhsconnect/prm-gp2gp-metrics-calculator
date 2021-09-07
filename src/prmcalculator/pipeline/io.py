@@ -8,8 +8,10 @@ from prmcalculator.domain.national.construct_national_metrics_presentation impor
     NationalMetricsPresentation,
 )
 from prmcalculator.domain.practice.calculate_practice_metrics_v5 import (
-    PracticeMetricsPresentation,
+    PracticeMetricsPresentation as PracticeMetricsPresentationV5,
 )
+
+from prmcalculator.domain.practice.calculate_practice_metrics_v6 import PracticeMetricsPresentation
 
 from prmcalculator.domain.ods_portal.organisation_metadata import OrganisationMetadata
 from prmcalculator.utils.io.dictionary import camelize_dict
@@ -98,12 +100,43 @@ class PlatformMetricsIO:
             self._create_platform_json_object(national_metrics_presentation_data),
         )
 
-    def write_practice_metrics(self, practice_metrics: PracticeMetricsPresentation):
+    def write_national_metrics_v6(
+        self, national_metrics_presentation_data: NationalMetricsPresentation
+    ):
+        national_metrics_path_v6 = "/".join(
+            [
+                self._data_platform_metrics_bucket,
+                "v6",
+                self._metric_month_path_fragment(),
+                self._NATIONAL_METRICS_FILE_NAME,
+            ]
+        )
+        self._s3_manager.write_json(
+            f"s3://{national_metrics_path_v6}",
+            self._create_platform_json_object(national_metrics_presentation_data),
+        )
+
+    def write_practice_metrics(self, practice_metrics: PracticeMetricsPresentationV5):
         practice_metrics_path = self._data_platform_metrics_bucket_s3_path(
             self._PRACTICE_METRICS_FILE_NAME
         )
         self._s3_manager.write_json(
             f"s3://{practice_metrics_path}",
+            self._create_platform_json_object(practice_metrics),
+        )
+
+    def write_practice_metrics_v6(self, practice_metrics: PracticeMetricsPresentation):
+        practice_metrics_path_v6 = "/".join(
+            [
+                self._data_platform_metrics_bucket,
+                "v6",
+                self._metric_month_path_fragment(),
+                self._PRACTICE_METRICS_FILE_NAME,
+            ]
+        )
+
+        self._s3_manager.write_json(
+            f"s3://{practice_metrics_path_v6}",
             self._create_platform_json_object(practice_metrics),
         )
 
