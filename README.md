@@ -84,13 +84,13 @@ To build your image locally:
 Configuration is achieved via the following environment variables:
 
 
-| Environment variable         | Description                                              | 
-| ---------------------------- | -------------------------------------------------------- |
-| INPUT_TRANSFER_DATA_BUCKET   | Bucket to read transfer files from.                      |
-| ORGANISATION_METADATA_BUCKET | Bucket to read organisation metadata.                    |
-| OUTPUT_METRICS_BUCKET        | Bucket to write metrics.                                 |
-| NUMBER_OF_MONTHS             | Number of months to create metrics for (historical data).|
-| OUTPUT_V6_METRICS            | Output version 6 of the metrics. Set to 'true'          |
+| Environment variable         | Description                                                                       | 
+| ---------------------------- | --------------------------------------------------------------------------------- |
+| INPUT_TRANSFER_DATA_BUCKET   | Bucket to read transfer files from.                                                |
+| ORGANISATION_METADATA_BUCKET | Bucket to read organisation metadata.                                             |
+| OUTPUT_METRICS_BUCKET        | Bucket to write metrics.                                                          |
+| NUMBER_OF_MONTHS             | Number of months to create metrics for (historical data).                         |
+| OUTPUT_V6_METRICS            | Boolean flag indicating whether to Output version 6 of the metrics (default: False)|
 
 ### Troubleshooting
 

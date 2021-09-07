@@ -46,7 +46,7 @@ class EnvConfig:
 
     def read_optional_bool(self, name: str, default: bool) -> bool:
         return self._read_env(
-            name, optional=True, converter=lambda string: string == "true", default=default
+            name, optional=True, converter=lambda string: string.lower() == "true", default=default
         )
 
 
