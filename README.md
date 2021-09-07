@@ -90,6 +90,7 @@ Configuration is achieved via the following environment variables:
 | ORGANISATION_METADATA_BUCKET | Bucket to read organisation metadata.                    |
 | OUTPUT_METRICS_BUCKET        | Bucket to write metrics.                                 |
 | NUMBER_OF_MONTHS             | Number of months to create metrics for (historical data).|
+| OUTPUT_V6_METRICS            | Output version 6 of the metrics. Set to 'true'          |
 
 ### Troubleshooting
 

@@ -16,6 +16,7 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
         "NUMBER_OF_MONTHS": "3",
         "DATE_ANCHOR": "2020-01-30T18:44:49Z",
         "S3_ENDPOINT_URL": "a_url",
+        "OUTPUT_V6_METRICS": "true",
     }
 
     expected_config = PipelineConfig(
@@ -27,6 +28,7 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
             year=2020, month=1, day=30, hour=18, minute=44, second=49, tzinfo=tzutc()
         ),
         s3_endpoint_url="a_url",
+        output_v6_metrics=True,
     )
 
     actual_config = PipelineConfig.from_environment_variables(environment)
@@ -51,6 +53,7 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
             year=2020, month=1, day=30, hour=18, minute=44, second=49, tzinfo=tzutc()
         ),
         s3_endpoint_url=None,
+        output_v6_metrics=False,
     )
 
     actual_config = PipelineConfig.from_environment_variables(environment)

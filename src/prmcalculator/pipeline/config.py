@@ -44,6 +44,11 @@ class EnvConfig:
     def read_datetime(self, name: str) -> datetime:
         return self._read_env(name, optional=False, converter=isoparse)
 
+    def read_optional_bool(self, name: str, default: bool) -> bool:
+        return self._read_env(
+            name, optional=True, converter=lambda string: string == "true", default=default
+        )
+
 
 @dataclass
 class PipelineConfig:
@@ -51,8 +56,9 @@ class PipelineConfig:
     organisation_metadata_bucket: str
     output_metrics_bucket: str
     date_anchor: datetime
-    number_of_months: int = 1
-    s3_endpoint_url: Optional[str] = None
+    output_v6_metrics: bool
+    number_of_months: int
+    s3_endpoint_url: Optional[str]
 
     @classmethod
     def from_environment_variables(cls, env_vars):
@@ -62,8 +68,7 @@ class PipelineConfig:
             organisation_metadata_bucket=env.read_str("ORGANISATION_METADATA_BUCKET"),
             output_metrics_bucket=env.read_str("OUTPUT_METRICS_BUCKET"),
             date_anchor=env.read_datetime("DATE_ANCHOR"),
-            number_of_months=env.read_optional_int(
-                name="NUMBER_OF_MONTHS", default=cls.number_of_months
-            ),
+            number_of_months=env.read_optional_int(name="NUMBER_OF_MONTHS", default=1),
             s3_endpoint_url=env.read_optional_str("S3_ENDPOINT_URL"),
+            output_v6_metrics=env.read_optional_bool(name="OUTPUT_V6_METRICS", default=False),
         )
