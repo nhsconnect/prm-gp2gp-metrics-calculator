@@ -46,6 +46,7 @@ def main():
         organisation_metadata_bucket=config.organisation_metadata_bucket,
         transfer_data_bucket=config.input_transfer_data_bucket,
         data_platform_metrics_bucket=config.output_metrics_bucket,
+        data_platform_metrics_version="v6" if config.output_v6_metrics else None,
     )
 
     organisation_metadata = metrics_io.read_ods_metadata()
@@ -61,25 +62,18 @@ def main():
 
     practice_metrics_observability_probe = PracticeMetricsObservabilityProbe()
 
-    if config.output_v6_metrics:
-        practice_metrics_data_v6 = calculate_practice_metrics(
-            transfers=transfers,
-            organisation_metadata=organisation_metadata,
-            reporting_window=reporting_window,
-            observability_probe=practice_metrics_observability_probe,
-        )
-        metrics_io.write_practice_metrics_v6(practice_metrics_data_v6)
-        metrics_io.write_national_metrics_v6(national_metrics_data)
+    practice_metrics_calculation = (
+        calculate_practice_metrics if config.output_v6_metrics else calculate_practice_metrics_v5
+    )
+    practice_metrics_data = practice_metrics_calculation(
+        transfers=transfers,
+        organisation_metadata=organisation_metadata,
+        reporting_window=reporting_window,
+        observability_probe=practice_metrics_observability_probe,
+    )
 
-    else:
-        practice_metrics_data_v5 = calculate_practice_metrics_v5(
-            transfers=transfers,
-            organisation_metadata=organisation_metadata,
-            reporting_window=reporting_window,
-            observability_probe=practice_metrics_observability_probe,
-        )
-        metrics_io.write_practice_metrics(practice_metrics_data_v5)
-        metrics_io.write_national_metrics(national_metrics_data)
+    metrics_io.write_practice_metrics(practice_metrics_data)
+    metrics_io.write_national_metrics(national_metrics_data)
 
 
 if __name__ == "__main__":
