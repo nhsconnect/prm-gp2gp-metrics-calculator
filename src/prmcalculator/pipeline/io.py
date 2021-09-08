@@ -1,5 +1,5 @@
 from dataclasses import asdict
-from typing import List
+from typing import List, Optional
 import logging
 import pyarrow as pa
 
@@ -20,15 +20,16 @@ from prmcalculator.utils.io.s3 import S3DataManager
 
 logger = logging.getLogger(__name__)
 
+_TRANSFER_DATA_VERSION = "v4"
+_ORG_METADATA_VERSION = "v2"
+_DEFAULT_DATA_PLATFORM_METRICS_VERSION = "v5"
+
 
 class PlatformMetricsIO:
-    _ORG_METADATA_VERSION = "v2"
     _ORG_METADATA_FILE_NAME = "organisationMetadata.json"
-    _DATA_PLATFORM_METRICS_VERSION = "v5"
     _PRACTICE_METRICS_FILE_NAME = "practiceMetrics.json"
     _NATIONAL_METRICS_FILE_NAME = "nationalMetrics.json"
     _TRANSFER_DATA_FILE_NAME = "transfers.parquet"
-    _TRANSFER_DATA_VERSION = "v4"
 
     def __init__(
         self,
@@ -38,18 +39,22 @@ class PlatformMetricsIO:
         organisation_metadata_bucket: str,
         transfer_data_bucket: str,
         data_platform_metrics_bucket: str,
+        data_platform_metrics_version: Optional[str] = None,
     ):
         self._window = reporting_window
         self._s3_manager = s3_data_manager
         self._org_metadata_bucket_name = organisation_metadata_bucket
         self._transfer_data_bucket = transfer_data_bucket
         self._data_platform_metrics_bucket = data_platform_metrics_bucket
+        self._data_platform_metrics_version = (
+            data_platform_metrics_version or _DEFAULT_DATA_PLATFORM_METRICS_VERSION
+        )
 
     def _data_platform_metrics_bucket_s3_path(self, file_name: str) -> str:
         return "/".join(
             [
                 self._data_platform_metrics_bucket,
-                self._DATA_PLATFORM_METRICS_VERSION,
+                self._data_platform_metrics_version,
                 self._metric_month_path_fragment(),
                 file_name,
             ]
@@ -59,7 +64,7 @@ class PlatformMetricsIO:
         return "/".join(
             [
                 self._transfer_data_bucket,
-                self._TRANSFER_DATA_VERSION,
+                _TRANSFER_DATA_VERSION,
                 f"{year}/{month}",
                 self._TRANSFER_DATA_FILE_NAME,
             ]
@@ -80,7 +85,7 @@ class PlatformMetricsIO:
         ods_metadata_s3_path = "/".join(
             [
                 self._org_metadata_bucket_name,
-                self._ORG_METADATA_VERSION,
+                _ORG_METADATA_VERSION,
                 self._date_anchor_month_path_fragment(),
                 self._ORG_METADATA_FILE_NAME,
             ]

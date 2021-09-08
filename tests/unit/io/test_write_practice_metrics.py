@@ -102,3 +102,32 @@ def test_given_practice_metrics_object_will_generate_json():
     expected_s3_path = f"s3://{expected_s3_path_fragment}/practiceMetrics.json"
 
     s3_manager.write_json.assert_called_once_with(expected_s3_path, expected_practice_metrics_dict)
+
+
+def test_given_data_platform_metrics_version_will_override_default():
+    s3_manager = Mock()
+    date_anchor = a_datetime(year=_DATE_ANCHOR_YEAR, month=_DATE_ANCHOR_MONTH)
+    reporting_window = MonthlyReportingWindow.prior_to(date_anchor=date_anchor, number_of_months=1)
+
+    data_platform_metrics_bucket = a_string()
+    data_platform_metrics_version = "v102"
+
+    metrics_io = PlatformMetricsIO(
+        reporting_window=reporting_window,
+        s3_data_manager=s3_manager,
+        organisation_metadata_bucket=a_string(),
+        transfer_data_bucket=a_string(),
+        data_platform_metrics_bucket=data_platform_metrics_bucket,
+        data_platform_metrics_version=data_platform_metrics_version,
+    )
+
+    metrics_io.write_practice_metrics(_PRACTICE_METRICS_OBJECT)
+
+    expected_practice_metrics_dict = _PRACTICE_METRICS_DICT
+    expected_s3_path = (
+        f"s3://{data_platform_metrics_bucket}"
+        f"/{data_platform_metrics_version}"
+        f"/{_METRIC_YEAR}/{_METRIC_MONTH}/practiceMetrics.json"
+    )
+
+    s3_manager.write_json.assert_called_once_with(expected_s3_path, expected_practice_metrics_dict)
