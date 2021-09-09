@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Union
+from typing import List
 
 from dateutil.tz import tzutc
 
@@ -57,9 +57,7 @@ def calculate_practice_metrics_v5(
     transfers: List[Transfer],
     organisation_metadata: OrganisationMetadata,
     reporting_window: MonthlyReportingWindow,
-    observability_probe: Union[
-        PracticeMetricsObservabilityProbe, PracticeMetricsObservabilityProbe
-    ],
+    observability_probe: PracticeMetricsObservabilityProbe,
 ) -> PracticeMetricsPresentation:
     observability_probe.record_calculating_practice_metrics(reporting_window)
     practice_lookup = PracticeLookup(organisation_metadata.practices)
