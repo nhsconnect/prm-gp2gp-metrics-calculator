@@ -9,6 +9,7 @@ from prmcalculator.pipeline.config import (
 
 
 def test_reads_from_environment_variables_and_converts_to_required_format():
+    build_tag = "61ad1e1c"
     environment = {
         "INPUT_TRANSFER_DATA_BUCKET": "input-transfer-data-bucket",
         "ORGANISATION_METADATA_BUCKET": "metadata-bucket",
@@ -17,6 +18,7 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
         "DATE_ANCHOR": "2020-01-30T18:44:49Z",
         "S3_ENDPOINT_URL": "a_url",
         "OUTPUT_V6_METRICS": "true",
+        "BUILD_TAG": build_tag,
     }
 
     expected_config = PipelineConfig(
@@ -29,6 +31,7 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
         ),
         s3_endpoint_url="a_url",
         output_v6_metrics=True,
+        build_tag=build_tag,
     )
 
     actual_config = PipelineConfig.from_environment_variables(environment)
@@ -37,11 +40,13 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
 
 
 def test_read_config_from_environment_when_optional_parameters_are_not_set():
+    build_tag = "61ad1e1c"
     environment = {
         "INPUT_TRANSFER_DATA_BUCKET": "input-transfer-data-bucket",
         "ORGANISATION_METADATA_BUCKET": "metadata-bucket",
         "OUTPUT_METRICS_BUCKET": "output-metrics-bucket",
         "DATE_ANCHOR": "2020-01-30T18:44:49Z",
+        "BUILD_TAG": build_tag,
     }
 
     expected_config = PipelineConfig(
@@ -54,6 +59,7 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
         ),
         s3_endpoint_url=None,
         output_v6_metrics=False,
+        build_tag=build_tag,
     )
 
     actual_config = PipelineConfig.from_environment_variables(environment)
@@ -70,6 +76,4 @@ def test_error_from_environment_when_required_fields_are_not_set():
     try:
         PipelineConfig.from_environment_variables(environment)
     except MissingEnvironmentVariable as ex:
-        assert (
-            str(ex) == "Expected environment variable OUTPUT_METRICS_BUCKET was not set, exiting..."
-        )
+        assert str(ex) == "Expected environment variable BUILD_TAG was not set, exiting..."

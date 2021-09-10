@@ -91,6 +91,7 @@ def test_end_to_end_with_fake_s3_v6_metrics(datadir):
     environ["OUTPUT_V6_METRICS"] = "true"
     environ["DATE_ANCHOR"] = "2020-01-30T18:44:49Z"
     environ["S3_ENDPOINT_URL"] = fake_s3_url
+    environ["BUILD_TAG"] = "fb1eb31"
 
     s3 = boto3.resource(
         "s3",

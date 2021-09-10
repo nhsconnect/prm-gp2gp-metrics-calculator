@@ -52,6 +52,7 @@ class EnvConfig:
 
 @dataclass
 class PipelineConfig:
+    build_tag: str
     input_transfer_data_bucket: str
     organisation_metadata_bucket: str
     output_metrics_bucket: str
@@ -64,6 +65,7 @@ class PipelineConfig:
     def from_environment_variables(cls, env_vars):
         env = EnvConfig(env_vars)
         return cls(
+            build_tag=env.read_str("BUILD_TAG"),
             input_transfer_data_bucket=env.read_str("INPUT_TRANSFER_DATA_BUCKET"),
             organisation_metadata_bucket=env.read_str("ORGANISATION_METADATA_BUCKET"),
             output_metrics_bucket=env.read_str("OUTPUT_METRICS_BUCKET"),

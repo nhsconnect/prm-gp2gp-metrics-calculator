@@ -91,6 +91,7 @@ Configuration is achieved via the following environment variables:
 | OUTPUT_METRICS_BUCKET        | Bucket to write metrics.                                                          |
 | NUMBER_OF_MONTHS             | Number of months to create metrics for (historical data).                         |
 | OUTPUT_V6_METRICS            | Boolean flag indicating whether to Output version 6 of the metrics (default: False)|
+| BUILD_TAG                    | Unique identifier for version of code build tag (e.g. short git hash)              |
 
 ### Troubleshooting
 
