@@ -2,6 +2,7 @@ import json
 import logging
 from datetime import datetime
 from io import BytesIO
+from typing import Dict
 from urllib.parse import urlparse
 import pyarrow.parquet as pq
 from pyarrow.lib import Table
@@ -35,14 +36,14 @@ class S3DataManager:
         body = response["Body"].read()
         return json.loads(body.decode("utf8"))
 
-    def write_json(self, object_uri: str, data: dict):
+    def write_json(self, object_uri: str, data: dict, metadata: Dict[str, str]):
         logger.info(
             "Attempting to upload: " + object_uri,
             extra={"event": "ATTEMPTING_UPLOAD_JSON_TO_S3", "object_uri": object_uri},
         )
         s3_object = self._object_from_uri(object_uri)
         body = json.dumps(data, default=_serialize_datetime).encode("utf8")
-        s3_object.put(Body=body, ContentType="application/json")
+        s3_object.put(Body=body, ContentType="application/json", Metadata=metadata)
         logger.info(
             "Successfully uploaded to: " + object_uri,
             extra={"event": "UPLOADED_JSON_TO_S3", "object_uri": object_uri},

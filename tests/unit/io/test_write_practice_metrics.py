@@ -101,7 +101,9 @@ def test_given_practice_metrics_object_will_generate_json():
     expected_s3_path_fragment = f"{data_platform_metrics_bucket}/v5/{_METRIC_YEAR}/{_METRIC_MONTH}"
     expected_s3_path = f"s3://{expected_s3_path_fragment}/practiceMetrics.json"
 
-    s3_manager.write_json.assert_called_once_with(expected_s3_path, expected_practice_metrics_dict)
+    s3_manager.write_json.assert_called_once_with(
+        object_uri=expected_s3_path, data=expected_practice_metrics_dict, metadata={}
+    )
 
 
 def test_given_data_platform_metrics_version_will_override_default():
@@ -130,4 +132,6 @@ def test_given_data_platform_metrics_version_will_override_default():
         f"/{_METRIC_YEAR}/{_METRIC_MONTH}/practiceMetrics.json"
     )
 
-    s3_manager.write_json.assert_called_once_with(expected_s3_path, expected_practice_metrics_dict)
+    s3_manager.write_json.assert_called_once_with(
+        object_uri=expected_s3_path, data=expected_practice_metrics_dict, metadata={}
+    )

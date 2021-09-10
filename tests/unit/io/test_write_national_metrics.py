@@ -96,4 +96,6 @@ def test_given_national_metrics_object_will_generate_json():
     expected_s3_path_fragment = f"{data_platform_metrics_bucket}/v5/{_METRIC_YEAR}/{_METRIC_MONTH}"
     expected_s3_path = f"s3://{expected_s3_path_fragment}/nationalMetrics.json"
 
-    s3_manager.write_json.assert_called_once_with(expected_s3_path, expected_national_metrics_dict)
+    s3_manager.write_json.assert_called_once_with(
+        object_uri=expected_s3_path, data=expected_national_metrics_dict, metadata={}
+    )

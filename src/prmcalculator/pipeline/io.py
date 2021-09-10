@@ -96,8 +96,9 @@ class PlatformMetricsIO:
             self._NATIONAL_METRICS_FILE_NAME
         )
         self._s3_manager.write_json(
-            f"s3://{national_metrics_path}",
-            self._create_platform_json_object(national_metrics_presentation_data),
+            object_uri=f"s3://{national_metrics_path}",
+            data=self._create_platform_json_object(national_metrics_presentation_data),
+            metadata={},
         )
 
     def write_practice_metrics(self, practice_metrics):
@@ -105,8 +106,9 @@ class PlatformMetricsIO:
             self._PRACTICE_METRICS_FILE_NAME
         )
         self._s3_manager.write_json(
-            f"s3://{practice_metrics_path}",
-            self._create_platform_json_object(practice_metrics),
+            object_uri=f"s3://{practice_metrics_path}",
+            data=self._create_platform_json_object(practice_metrics),
+            metadata={},
         )
 
     def read_transfer_data(self) -> List[Transfer]:
