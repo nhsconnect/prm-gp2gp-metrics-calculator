@@ -18,15 +18,22 @@ logger = logging.getLogger(__name__)
 _TRANSFER_DATA_VERSION = "v4"
 _ORG_METADATA_VERSION = "v2"
 _DEFAULT_DATA_PLATFORM_METRICS_VERSION = "v5"
+_DATA_PLATFORM_METRICS_V6 = "v6"
 
 
 class PlatformMetricsS3UriResolver:
     _ORG_METADATA_FILE_NAME = "organisationMetadata.json"
     _PRACTICE_METRICS_FILE_NAME = "practiceMetrics.json"
 
-    def __init__(self, ods_bucket: str, data_platform_metrics_bucket: str):
+    def __init__(
+        self,
+        ods_bucket: str,
+        data_platform_metrics_bucket: str,
+        output_v6_metrics: Optional[bool] = False,
+    ):
         self._ods_bucket_name = ods_bucket
         self.data_platform_metrics_bucket = data_platform_metrics_bucket
+        self._output_v6_metrics = output_v6_metrics
 
     def ods_metadata(self, year: int, month: int):
         s3_key = "/".join(
@@ -40,10 +47,15 @@ class PlatformMetricsS3UriResolver:
         return f"s3://{s3_key}"
 
     def practice_metrics(self, year: int, month: int):
+        version = (
+            _DATA_PLATFORM_METRICS_V6
+            if self._output_v6_metrics
+            else _DEFAULT_DATA_PLATFORM_METRICS_VERSION
+        )
         s3_key = "/".join(
             [
                 self.data_platform_metrics_bucket,
-                _DEFAULT_DATA_PLATFORM_METRICS_VERSION,
+                version,
                 f"{year}/{month}",
                 self._PRACTICE_METRICS_FILE_NAME,
             ]

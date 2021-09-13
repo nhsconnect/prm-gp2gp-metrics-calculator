@@ -34,3 +34,22 @@ def test_resolver_returns_correct_practice_metrics_uri():
     expected = f"s3://{data_platform_metrics_bucket}/v5/{year}/{month}/practiceMetrics.json"
 
     assert actual == expected
+
+
+def test_resolver_returns_correct_practice_metrics_uri_with_v6_override():
+    data_platform_metrics_bucket = a_string()
+    date_anchor = a_datetime()
+    year = date_anchor.year
+    month = date_anchor.month
+
+    uri_resolver = PlatformMetricsS3UriResolver(
+        ods_bucket=a_string(),
+        data_platform_metrics_bucket=data_platform_metrics_bucket,
+        output_v6_metrics=True,
+    )
+
+    actual = uri_resolver.practice_metrics(year, month)
+
+    expected = f"s3://{data_platform_metrics_bucket}/v6/{year}/{month}/practiceMetrics.json"
+
+    assert actual == expected
