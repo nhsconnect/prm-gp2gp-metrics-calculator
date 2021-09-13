@@ -40,6 +40,8 @@ def main():
 
     reporting_window = MonthlyReportingWindow.prior_to(config.date_anchor, config.number_of_months)
 
+    output_metadata = {"build-tag": config.build_tag, "date-anchor": config.date_anchor.isoformat()}
+
     metrics_io = PlatformMetricsIO(
         reporting_window=reporting_window,
         s3_data_manager=s3_manager,
@@ -47,7 +49,7 @@ def main():
         transfer_data_bucket=config.input_transfer_data_bucket,
         data_platform_metrics_bucket=config.output_metrics_bucket,
         data_platform_metrics_version="v6" if config.output_v6_metrics else None,
-        output_metadata={"build-tag": config.build_tag},
+        output_metadata=output_metadata,
     )
 
     organisation_metadata = metrics_io.read_ods_metadata()

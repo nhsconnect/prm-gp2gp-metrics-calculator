@@ -135,6 +135,8 @@ def test_end_to_end_with_fake_s3_v6_metrics(datadir):
 
     s3_metrics_output_path = "v6/2019/12/"
 
+    expected_metadata = {"build-tag": build_tag, "date-anchor": "2020-01-30T18:44:49+00:00"}
+
     try:
         main()
         practice_metrics_s3_path = f"{s3_metrics_output_path}{expected_practice_metrics_output_key}"
@@ -156,8 +158,8 @@ def test_end_to_end_with_fake_s3_v6_metrics(datadir):
         assert actual_practice_metrics["practices"] == expected_practice_metrics["practices"]
         assert actual_practice_metrics["ccgs"] == expected_practice_metrics["ccgs"]
         assert actual_national_metrics["metrics"] == expected_national_metrics["metrics"]
-        assert actual_practice_metrics_s3_metadata["build-tag"] == build_tag
-        assert actual_national_metrics_s3_metadata["build-tag"] == build_tag
+        assert actual_practice_metrics_s3_metadata == expected_metadata
+        assert actual_national_metrics_s3_metadata == expected_metadata
     finally:
         output_metrics_bucket.objects.all().delete()
         output_metrics_bucket.delete()

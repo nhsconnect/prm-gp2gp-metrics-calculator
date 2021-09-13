@@ -86,6 +86,8 @@ def test_end_to_end_with_fake_s3(datadir):
     fake_s3 = _build_fake_s3(fake_s3_host, fake_s3_port)
     fake_s3.start()
 
+    date_anchor = "2020-01-30T18:44:49Z"
+
     environ["AWS_ACCESS_KEY_ID"] = fake_s3_access_key
     environ["AWS_SECRET_ACCESS_KEY"] = fake_s3_secret_key
     environ["AWS_DEFAULT_REGION"] = fake_s3_region
@@ -94,7 +96,7 @@ def test_end_to_end_with_fake_s3(datadir):
     environ["OUTPUT_METRICS_BUCKET"] = s3_output_metrics_bucket_name
     environ["ORGANISATION_METADATA_BUCKET"] = s3_organisation_metadata_bucket_name
     environ["NUMBER_OF_MONTHS"] = "2"
-    environ["DATE_ANCHOR"] = "2020-01-30T18:44:49Z"
+    environ["DATE_ANCHOR"] = date_anchor
     environ["S3_ENDPOINT_URL"] = fake_s3_url
     environ["BUILD_TAG"] = build_tag
 
@@ -132,6 +134,8 @@ def test_end_to_end_with_fake_s3(datadir):
     expected_practice_metrics = _read_json(datadir / "expected_outputs" / "practiceMetrics.json")
     expected_national_metrics = _read_json(datadir / "expected_outputs" / "nationalMetrics.json")
 
+    expected_metadata = {"build-tag": build_tag, "date-anchor": "2020-01-30T18:44:49+00:00"}
+
     s3_metrics_output_path = "v5/2019/12/"
 
     try:
@@ -152,8 +156,8 @@ def test_end_to_end_with_fake_s3(datadir):
         assert actual_practice_metrics["practices"] == expected_practice_metrics["practices"]
         assert actual_practice_metrics["ccgs"] == expected_practice_metrics["ccgs"]
         assert actual_national_metrics["metrics"] == expected_national_metrics["metrics"]
-        assert actual_practice_metrics_s3_metadata["build-tag"] == build_tag
-        assert actual_national_metrics_s3_metadata["build-tag"] == build_tag
+        assert actual_practice_metrics_s3_metadata == expected_metadata
+        assert actual_national_metrics_s3_metadata == expected_metadata
     finally:
         output_metrics_bucket.objects.all().delete()
         output_metrics_bucket.delete()
