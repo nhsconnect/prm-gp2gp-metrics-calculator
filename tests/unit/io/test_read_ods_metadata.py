@@ -9,8 +9,7 @@ from prmcalculator.domain.ods_portal.organisation_metadata import (
     CcgDetails,
 )
 from prmcalculator.pipeline.io import PlatformMetricsIO
-from prmcalculator.utils.reporting_window import MonthlyReportingWindow
-from tests.builders.common import a_datetime, a_string
+from tests.builders.common import a_string
 
 _DATE_ANCHOR_MONTH = 1
 _DATE_ANCHOR_YEAR = 2021
@@ -29,30 +28,22 @@ _ORGANISATION_METADATA_DICT = {
 
 def test_read_organisation_metadata():
     s3_manager = Mock()
-    date_anchor = a_datetime(year=_DATE_ANCHOR_YEAR, month=_DATE_ANCHOR_MONTH)
-    reporting_window = MonthlyReportingWindow.prior_to(date_anchor=date_anchor, number_of_months=1)
-
-    ods_bucket = "test_ods_bucket"
+    ods_bucket = a_string()
+    s3_uri = (
+        f"s3://{ods_bucket}/v2/{_DATE_ANCHOR_YEAR}/{_DATE_ANCHOR_MONTH}/organisationMetadata.json"
+    )
 
     metrics_io = PlatformMetricsIO(
-        reporting_window=reporting_window,
         s3_data_manager=s3_manager,
-        organisation_metadata_bucket=ods_bucket,
-        transfer_data_bucket=a_string(),
-        data_platform_metrics_bucket=a_string(),
         output_metadata={},
     )
 
     s3_manager.read_json.return_value = _ORGANISATION_METADATA_DICT
 
-    expected_path = (
-        f"s3://{ods_bucket}/v2/{_DATE_ANCHOR_YEAR}/{_DATE_ANCHOR_MONTH}/organisationMetadata.json"
-    )
-
     expected_data = _ORGANISATION_METADATA_OBJECT
 
-    actual_data = metrics_io.read_ods_metadata()
+    actual_data = metrics_io.read_ods_metadata(s3_uri=s3_uri)
 
     assert actual_data == expected_data
 
-    s3_manager.read_json.assert_called_once_with(expected_path)
+    s3_manager.read_json.assert_called_once_with(s3_uri)

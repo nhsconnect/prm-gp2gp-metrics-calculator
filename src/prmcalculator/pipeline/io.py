@@ -11,7 +11,6 @@ from prmcalculator.domain.national.construct_national_metrics_presentation impor
 from prmcalculator.domain.ods_portal.organisation_metadata import OrganisationMetadata
 from prmcalculator.utils.io.dictionary import camelize_dict
 from prmcalculator.utils.reporting_window import (
-    MonthlyReportingWindow,
     YearMonth,
     YearNumber,
     MonthNumber,
@@ -96,108 +95,42 @@ class PlatformMetricsS3UriResolver:
 
 
 class PlatformMetricsIO:
-    _ORG_METADATA_FILE_NAME = "organisationMetadata.json"
-    _PRACTICE_METRICS_FILE_NAME = "practiceMetrics.json"
-    _NATIONAL_METRICS_FILE_NAME = "nationalMetrics.json"
-    _TRANSFER_DATA_FILE_NAME = "transfers.parquet"
-
     def __init__(
         self,
-        *,
-        reporting_window: MonthlyReportingWindow,
         s3_data_manager: S3DataManager,
-        organisation_metadata_bucket: str,
-        transfer_data_bucket: str,
-        data_platform_metrics_bucket: str,
-        data_platform_metrics_version: Optional[str] = None,
         output_metadata: Dict[str, str],
     ):
-        self._window = reporting_window
         self._s3_manager = s3_data_manager
-        self._org_metadata_bucket_name = organisation_metadata_bucket
-        self._transfer_data_bucket = transfer_data_bucket
-        self._data_platform_metrics_bucket = data_platform_metrics_bucket
-        self._data_platform_metrics_version = (
-            data_platform_metrics_version or _DEFAULT_DATA_PLATFORM_METRICS_VERSION
-        )
         self._output_metadata = output_metadata
-
-    def _data_platform_metrics_bucket_s3_path(self, file_name: str) -> str:
-        return "/".join(
-            [
-                self._data_platform_metrics_bucket,
-                self._data_platform_metrics_version,
-                self._metric_month_path_fragment(),
-                file_name,
-            ]
-        )
-
-    def _transfer_data_bucket_s3_path(self, year: int, month: int) -> str:
-        return "/".join(
-            [
-                self._transfer_data_bucket,
-                _TRANSFER_DATA_VERSION,
-                f"{year}/{month}",
-                self._TRANSFER_DATA_FILE_NAME,
-            ]
-        )
 
     @staticmethod
     def _create_platform_json_object(platform_data) -> dict:
         content_dict = asdict(platform_data)
         return camelize_dict(content_dict)
 
-    def _metric_month_path_fragment(self) -> str:
-        return f"{self._window.metric_year}/{self._window.metric_month}"
-
-    def _date_anchor_month_path_fragment(self) -> str:
-        return f"{self._window.date_anchor_year}/{self._window.date_anchor_month}"
-
-    def read_ods_metadata(self) -> OrganisationMetadata:
-        ods_metadata_s3_path = "/".join(
-            [
-                self._org_metadata_bucket_name,
-                _ORG_METADATA_VERSION,
-                self._date_anchor_month_path_fragment(),
-                self._ORG_METADATA_FILE_NAME,
-            ]
-        )
-
-        ods_metadata_dict = self._s3_manager.read_json(f"s3://{ods_metadata_s3_path}")
+    def read_ods_metadata(self, s3_uri: str) -> OrganisationMetadata:
+        ods_metadata_dict = self._s3_manager.read_json(s3_uri)
         return OrganisationMetadata.from_dict(ods_metadata_dict)
 
     def write_national_metrics(
-        self, national_metrics_presentation_data: NationalMetricsPresentation
+        self, national_metrics_presentation_data: NationalMetricsPresentation, s3_uri: str
     ):
-        national_metrics_path = self._data_platform_metrics_bucket_s3_path(
-            self._NATIONAL_METRICS_FILE_NAME
-        )
         self._s3_manager.write_json(
-            object_uri=f"s3://{national_metrics_path}",
+            object_uri=s3_uri,
             data=self._create_platform_json_object(national_metrics_presentation_data),
             metadata=self._output_metadata,
         )
 
-    def write_practice_metrics(self, practice_metrics):
-        practice_metrics_path = self._data_platform_metrics_bucket_s3_path(
-            self._PRACTICE_METRICS_FILE_NAME
-        )
+    def write_practice_metrics(self, practice_metrics_presentation_data, s3_uri: str):
         self._s3_manager.write_json(
-            object_uri=f"s3://{practice_metrics_path}",
-            data=self._create_platform_json_object(practice_metrics),
+            object_uri=s3_uri,
+            data=self._create_platform_json_object(practice_metrics_presentation_data),
             metadata=self._output_metadata,
         )
 
-    def read_transfer_data(self) -> List[Transfer]:
-        transfer_data_s3_paths = [
-            self._transfer_data_bucket_s3_path(year, month)
-            for (year, month) in self._window.metric_months
-        ]
+    def read_transfer_data(self, s3_uris: List[str]) -> List[Transfer]:
         transfer_table = pa.concat_tables(
-            [
-                self._s3_manager.read_parquet(f"s3://{s3_path}")
-                for s3_path in transfer_data_s3_paths
-            ],
+            [self._s3_manager.read_parquet(s3_path) for s3_path in s3_uris],
             promote=True,
         )
 

@@ -15,8 +15,7 @@ from prmcalculator.domain.practice.construct_practice_summary_v5 import (
 
 from prmcalculator.domain.ods_portal.organisation_metadata import CcgDetails
 from prmcalculator.pipeline.io import PlatformMetricsIO
-from prmcalculator.utils.reporting_window import MonthlyReportingWindow
-from tests.builders.common import a_datetime, a_string
+from tests.builders.common import a_string
 
 _DATE_ANCHOR_MONTH = 1
 _DATE_ANCHOR_YEAR = 2021
@@ -82,59 +81,50 @@ _PRACTICE_METRICS_DICT = {
 
 def test_given_practice_metrics_object_will_generate_json():
     s3_manager = Mock()
-    date_anchor = a_datetime(year=_DATE_ANCHOR_YEAR, month=_DATE_ANCHOR_MONTH)
-    reporting_window = MonthlyReportingWindow.prior_to(date_anchor=date_anchor, number_of_months=1)
 
     data_platform_metrics_bucket = a_string()
+    s3_key = f"v5/{_METRIC_YEAR}/{_METRIC_MONTH}/practiceMetrics.json"
+    s3_uri = f"s3://{data_platform_metrics_bucket}/{s3_key}"
 
     output_metadata = {"metadata-field": "metadata_value"}
     metrics_io = PlatformMetricsIO(
-        reporting_window=reporting_window,
         s3_data_manager=s3_manager,
-        organisation_metadata_bucket=a_string(),
-        transfer_data_bucket=a_string(),
-        data_platform_metrics_bucket=data_platform_metrics_bucket,
         output_metadata=output_metadata,
     )
 
-    metrics_io.write_practice_metrics(_PRACTICE_METRICS_OBJECT)
+    metrics_io.write_practice_metrics(
+        practice_metrics_presentation_data=_PRACTICE_METRICS_OBJECT, s3_uri=s3_uri
+    )
 
     expected_practice_metrics_dict = _PRACTICE_METRICS_DICT
-    expected_s3_path_fragment = f"{data_platform_metrics_bucket}/v5/{_METRIC_YEAR}/{_METRIC_MONTH}"
-    expected_s3_path = f"s3://{expected_s3_path_fragment}/practiceMetrics.json"
 
     s3_manager.write_json.assert_called_once_with(
-        object_uri=expected_s3_path, data=expected_practice_metrics_dict, metadata=output_metadata
+        object_uri=s3_uri, data=expected_practice_metrics_dict, metadata=output_metadata
     )
 
 
 def test_given_data_platform_metrics_version_will_override_default():
     s3_manager = Mock()
-    date_anchor = a_datetime(year=_DATE_ANCHOR_YEAR, month=_DATE_ANCHOR_MONTH)
-    reporting_window = MonthlyReportingWindow.prior_to(date_anchor=date_anchor, number_of_months=1)
 
     data_platform_metrics_bucket = a_string()
     data_platform_metrics_version = "v102"
-
-    metrics_io = PlatformMetricsIO(
-        reporting_window=reporting_window,
-        s3_data_manager=s3_manager,
-        organisation_metadata_bucket=a_string(),
-        transfer_data_bucket=a_string(),
-        data_platform_metrics_bucket=data_platform_metrics_bucket,
-        data_platform_metrics_version=data_platform_metrics_version,
-        output_metadata={},
-    )
-
-    metrics_io.write_practice_metrics(_PRACTICE_METRICS_OBJECT)
-
-    expected_practice_metrics_dict = _PRACTICE_METRICS_DICT
-    expected_s3_path = (
+    s3_uri = (
         f"s3://{data_platform_metrics_bucket}"
         f"/{data_platform_metrics_version}"
         f"/{_METRIC_YEAR}/{_METRIC_MONTH}/practiceMetrics.json"
     )
 
+    metrics_io = PlatformMetricsIO(
+        s3_data_manager=s3_manager,
+        output_metadata={},
+    )
+
+    metrics_io.write_practice_metrics(
+        practice_metrics_presentation_data=_PRACTICE_METRICS_OBJECT, s3_uri=s3_uri
+    )
+
+    expected_practice_metrics_dict = _PRACTICE_METRICS_DICT
+
     s3_manager.write_json.assert_called_once_with(
-        object_uri=expected_s3_path, data=expected_practice_metrics_dict, metadata={}
+        object_uri=s3_uri, data=expected_practice_metrics_dict, metadata={}
     )

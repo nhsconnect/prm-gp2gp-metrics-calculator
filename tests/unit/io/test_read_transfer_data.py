@@ -10,8 +10,7 @@ from prmcalculator.domain.gp2gp.transfer import (
     TransferFailureReason,
 )
 from prmcalculator.pipeline.io import PlatformMetricsIO
-from prmcalculator.utils.reporting_window import MonthlyReportingWindow
-from tests.builders.common import a_datetime, a_string
+from tests.builders.common import a_datetime
 
 _DATE_ANCHOR_MONTH = 1
 _DATE_ANCHOR_YEAR = 2021
@@ -73,31 +72,21 @@ def test_read_transfer_data():
     s3_manager = Mock()
     s3_manager.read_parquet.return_value = pa.Table.from_pydict(_INTEGRATED_TRANSFER_DATA_DICT)
 
-    date_anchor = a_datetime(year=_DATE_ANCHOR_YEAR, month=_DATE_ANCHOR_MONTH)
-    reporting_window = MonthlyReportingWindow.prior_to(date_anchor=date_anchor, number_of_months=1)
-
     transfer_data_bucket = "test_transfer_data_bucket"
+    s3_uri = f"s3://{transfer_data_bucket}/v4/{_METRIC_YEAR}/{_METRIC_MONTH}/transfers.parquet"
 
     metrics_io = PlatformMetricsIO(
-        reporting_window=reporting_window,
         s3_data_manager=s3_manager,
-        organisation_metadata_bucket=a_string(),
-        transfer_data_bucket=transfer_data_bucket,
-        data_platform_metrics_bucket=a_string(),
         output_metadata={},
-    )
-
-    expected_path = (
-        f"s3://{transfer_data_bucket}/v4/{_METRIC_YEAR}/{_METRIC_MONTH}/transfers.parquet"
     )
 
     expected_data = [_INTEGRATED_TRANSFER]
 
-    actual_data = metrics_io.read_transfer_data()
+    actual_data = metrics_io.read_transfer_data(s3_uris=[s3_uri])
 
     assert actual_data == expected_data
 
-    s3_manager.read_parquet.assert_called_once_with(expected_path)
+    s3_manager.read_parquet.assert_called_once_with(s3_uri)
 
 
 def test_read_transfer_data_from_multiple_files():
@@ -107,31 +96,22 @@ def test_read_transfer_data_from_multiple_files():
         pa.Table.from_pydict(_INTEGRATED_LATE_TRANSFER_DATA_DICT),
     ]
 
-    date_anchor = a_datetime(year=_DATE_ANCHOR_YEAR, month=_DATE_ANCHOR_MONTH)
-    reporting_window = MonthlyReportingWindow.prior_to(date_anchor=date_anchor, number_of_months=2)
-
     transfer_data_bucket = "test_transfer_data_bucket"
 
     metrics_io = PlatformMetricsIO(
-        reporting_window=reporting_window,
         s3_data_manager=s3_manager,
-        organisation_metadata_bucket=a_string(),
-        transfer_data_bucket=transfer_data_bucket,
-        data_platform_metrics_bucket=a_string(),
         output_metadata={},
     )
 
-    expected_calls = [
-        call(f"s3://{transfer_data_bucket}/v4/{_METRIC_YEAR}/{_METRIC_MONTH}/transfers.parquet"),
-        call(
-            f"s3://{transfer_data_bucket}/v4/{_METRIC_YEAR}/{_METRIC_MONTH - 1}/transfers.parquet"
-        ),
-    ]
+    s3_uri_one = f"s3://{transfer_data_bucket}/v4/{_METRIC_YEAR}/{_METRIC_MONTH}/transfers.parquet"
+    s3_uri_two = (
+        f"s3://{transfer_data_bucket}/v4/{_METRIC_YEAR}/{_METRIC_MONTH - 1}/transfers.parquet"
+    )
 
     expected_data = [_INTEGRATED_TRANSFER, _INTEGRATED_LATE_TRANSFER]
 
-    actual_data = metrics_io.read_transfer_data()
+    actual_data = metrics_io.read_transfer_data(s3_uris=[s3_uri_one, s3_uri_two])
 
     assert actual_data == expected_data
 
-    s3_manager.read_parquet.assert_has_calls(expected_calls)
+    s3_manager.read_parquet.assert_has_calls([call(s3_uri_one), call(s3_uri_two)])
