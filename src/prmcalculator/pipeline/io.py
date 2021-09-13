@@ -24,6 +24,7 @@ _DATA_PLATFORM_METRICS_V6 = "v6"
 class PlatformMetricsS3UriResolver:
     _ORG_METADATA_FILE_NAME = "organisationMetadata.json"
     _PRACTICE_METRICS_FILE_NAME = "practiceMetrics.json"
+    _NATIONAL_METRICS_FILE_NAME = "nationalMetrics.json"
 
     def __init__(
         self,
@@ -32,8 +33,12 @@ class PlatformMetricsS3UriResolver:
         output_v6_metrics: Optional[bool] = False,
     ):
         self._ods_bucket_name = ods_bucket
-        self.data_platform_metrics_bucket = data_platform_metrics_bucket
-        self._output_v6_metrics = output_v6_metrics
+        self._data_platform_metrics_bucket = data_platform_metrics_bucket
+        self._data_platform_metrics_version = (
+            _DATA_PLATFORM_METRICS_V6
+            if output_v6_metrics
+            else _DEFAULT_DATA_PLATFORM_METRICS_VERSION
+        )
 
     def ods_metadata(self, year: int, month: int):
         s3_key = "/".join(
@@ -47,17 +52,23 @@ class PlatformMetricsS3UriResolver:
         return f"s3://{s3_key}"
 
     def practice_metrics(self, year: int, month: int):
-        version = (
-            _DATA_PLATFORM_METRICS_V6
-            if self._output_v6_metrics
-            else _DEFAULT_DATA_PLATFORM_METRICS_VERSION
-        )
         s3_key = "/".join(
             [
-                self.data_platform_metrics_bucket,
-                version,
+                self._data_platform_metrics_bucket,
+                self._data_platform_metrics_version,
                 f"{year}/{month}",
                 self._PRACTICE_METRICS_FILE_NAME,
+            ]
+        )
+        return f"s3://{s3_key}"
+
+    def national_metrics(self, year: int, month: int):
+        s3_key = "/".join(
+            [
+                self._data_platform_metrics_bucket,
+                self._data_platform_metrics_version,
+                f"{year}/{month}",
+                self._NATIONAL_METRICS_FILE_NAME,
             ]
         )
         return f"s3://{s3_key}"
