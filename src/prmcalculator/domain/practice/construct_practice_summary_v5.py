@@ -4,7 +4,7 @@ from typing import List, Optional
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
 from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
 from prmcalculator.utils.calculate_percentage import calculate_percentage
-from prmcalculator.utils.reporting_window import MonthlyReportingWindow
+from prmcalculator.domain.datetime import MonthlyReportingWindow
 
 
 @dataclass

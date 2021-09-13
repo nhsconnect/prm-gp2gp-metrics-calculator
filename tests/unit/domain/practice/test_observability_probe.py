@@ -4,7 +4,7 @@ from prmcalculator.domain.gp2gp.transfer import Practice
 from prmcalculator.domain.practice.calculate_practice_metrics_v5 import (
     PracticeMetricsObservabilityProbe,
 )
-from prmcalculator.utils.reporting_window import MonthlyReportingWindow
+from prmcalculator.domain.datetime import MonthlyReportingWindow
 from tests.builders.common import a_datetime, a_string
 from tests.builders.gp2gp import build_transfer
 

@@ -17,7 +17,7 @@ from prmcalculator.pipeline.config import PipelineConfig
 from prmcalculator.pipeline.io import PlatformMetricsIO, PlatformMetricsS3UriResolver
 from prmcalculator.utils.io.json_formatter import JsonFormatter
 from prmcalculator.utils.io.s3 import S3DataManager
-from prmcalculator.utils.reporting_window import MonthlyReportingWindow
+from prmcalculator.domain.datetime import MonthlyReportingWindow
 
 logger = logging.getLogger("prmcalculator")
 

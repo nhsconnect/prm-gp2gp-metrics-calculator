@@ -6,7 +6,7 @@ from prmcalculator.domain.practice.construct_practice_summary_v5 import (
 )
 
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
-from prmcalculator.utils.reporting_window import MonthlyReportingWindow
+from prmcalculator.domain.datetime import MonthlyReportingWindow
 from tests.builders.common import a_datetime, a_date_in, a_string
 from tests.builders.gp2gp import (
     build_transfer,

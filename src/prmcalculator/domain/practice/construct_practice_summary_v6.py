@@ -3,7 +3,7 @@ from typing import List
 
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
 from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
-from prmcalculator.utils.reporting_window import MonthlyReportingWindow
+from prmcalculator.domain.datetime import MonthlyReportingWindow
 
 
 @dataclass

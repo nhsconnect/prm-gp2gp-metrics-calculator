@@ -14,7 +14,7 @@ from prmcalculator.domain.national.construct_national_metrics_presentation impor
     ProcessFailureMetricsPresentation,
     PaperFallbackMetricsPresentation,
 )
-from prmcalculator.utils.reporting_window import MonthlyReportingWindow
+from prmcalculator.domain.datetime import MonthlyReportingWindow
 from tests.builders.common import a_duration, a_datetime, a_date_in
 from tests.builders.gp2gp import (
     a_transfer_integrated_beyond_8_days,

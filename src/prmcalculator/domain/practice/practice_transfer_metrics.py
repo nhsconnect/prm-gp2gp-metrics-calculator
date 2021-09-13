@@ -4,7 +4,7 @@ from typing import Iterable, Dict, List
 from prmcalculator.domain.gp2gp.transfer import Transfer
 from prmcalculator.domain.practice.group_transfers_by_practice import PracticeTransfers
 from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
-from prmcalculator.utils.reporting_window import YearMonth, YearNumber, MonthNumber
+from prmcalculator.domain.datetime import YearNumber, MonthNumber, YearMonth
 
 
 class PracticeTransferMetrics:

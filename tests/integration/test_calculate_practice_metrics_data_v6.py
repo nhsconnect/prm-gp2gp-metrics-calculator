@@ -20,7 +20,7 @@ from prmcalculator.domain.practice.construct_practice_summary_v6 import (
     RequestedTransferMetrics,
 )
 
-from prmcalculator.utils.reporting_window import MonthlyReportingWindow
+from prmcalculator.domain.datetime import MonthlyReportingWindow
 from tests.builders.common import a_datetime
 from tests.builders.gp2gp import (
     a_transfer_that_was_never_integrated,

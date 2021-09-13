@@ -7,7 +7,7 @@ from prmcalculator.domain.practice.construct_practice_summary_v6 import (
     PracticeSummary,
 )
 
-from prmcalculator.utils.reporting_window import MonthlyReportingWindow
+from prmcalculator.domain.datetime import MonthlyReportingWindow
 from tests.builders.common import a_datetime
 
 

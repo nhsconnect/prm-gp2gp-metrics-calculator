@@ -10,11 +10,7 @@ from prmcalculator.domain.national.construct_national_metrics_presentation impor
 
 from prmcalculator.domain.ods_portal.organisation_metadata import OrganisationMetadata
 from prmcalculator.utils.io.dictionary import camelize_dict
-from prmcalculator.utils.reporting_window import (
-    YearMonth,
-    YearNumber,
-    MonthNumber,
-)
+from prmcalculator.domain.datetime import YearNumber, MonthNumber, YearMonth
 from prmcalculator.utils.io.s3 import S3DataManager
 
 logger = logging.getLogger(__name__)

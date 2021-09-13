@@ -7,7 +7,7 @@ from prmcalculator.domain.national.construct_national_metrics_presentation impor
     construct_national_metrics_presentation,
     NationalMetricsPresentation,
 )
-from prmcalculator.utils.reporting_window import MonthlyReportingWindow
+from prmcalculator.domain.datetime import MonthlyReportingWindow
 
 module_logger = getLogger(__name__)
 
