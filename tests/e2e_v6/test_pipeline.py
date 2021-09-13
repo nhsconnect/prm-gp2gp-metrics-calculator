@@ -13,6 +13,7 @@ import pyarrow as pa
 from werkzeug.serving import make_server
 
 from prmcalculator.pipeline.main import main
+from tests.builders.common import a_string
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,10 @@ class ThreadedServer:
 
 def _read_json(path):
     return json.loads(path.read_text())
+
+
+def _read_s3_metadata(bucket, key):
+    return bucket.Object(key).get()["Metadata"]
 
 
 def _parse_dates(items):
@@ -76,6 +81,7 @@ def test_end_to_end_with_fake_s3_v6_metrics(datadir):
     s3_output_metrics_bucket_name = "output-metrics-bucket"
     s3_input_transfer_data_bucket_name = "input-transfer-data-bucket"
     s3_organisation_metadata_bucket_name = "organisation-metadata-bucket"
+    build_tag = a_string(7)
 
     fake_s3 = _build_fake_s3(fake_s3_host, fake_s3_port)
     fake_s3.start()
@@ -91,7 +97,7 @@ def test_end_to_end_with_fake_s3_v6_metrics(datadir):
     environ["OUTPUT_V6_METRICS"] = "true"
     environ["DATE_ANCHOR"] = "2020-01-30T18:44:49Z"
     environ["S3_ENDPOINT_URL"] = fake_s3_url
-    environ["BUILD_TAG"] = "fb1eb31"
+    environ["BUILD_TAG"] = build_tag
 
     s3 = boto3.resource(
         "s3",
@@ -131,17 +137,27 @@ def test_end_to_end_with_fake_s3_v6_metrics(datadir):
 
     try:
         main()
+        practice_metrics_s3_path = f"{s3_metrics_output_path}{expected_practice_metrics_output_key}"
         actual_practice_metrics = _read_s3_json(
             output_metrics_bucket, f"{s3_metrics_output_path}{expected_practice_metrics_output_key}"
         )
 
+        national_metrics_s3_path = f"{s3_metrics_output_path}{expected_national_metrics_output_key}"
         actual_national_metrics = _read_s3_json(
             output_metrics_bucket, f"{s3_metrics_output_path}{expected_national_metrics_output_key}"
+        )
+        actual_practice_metrics_s3_metadata = _read_s3_metadata(
+            output_metrics_bucket, practice_metrics_s3_path
+        )
+        actual_national_metrics_s3_metadata = _read_s3_metadata(
+            output_metrics_bucket, national_metrics_s3_path
         )
 
         assert actual_practice_metrics["practices"] == expected_practice_metrics["practices"]
         assert actual_practice_metrics["ccgs"] == expected_practice_metrics["ccgs"]
         assert actual_national_metrics["metrics"] == expected_national_metrics["metrics"]
+        assert actual_practice_metrics_s3_metadata["build-tag"] == build_tag
+        assert actual_national_metrics_s3_metadata["build-tag"] == build_tag
     finally:
         output_metrics_bucket.objects.all().delete()
         output_metrics_bucket.delete()

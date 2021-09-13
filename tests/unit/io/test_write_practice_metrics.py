@@ -87,12 +87,14 @@ def test_given_practice_metrics_object_will_generate_json():
 
     data_platform_metrics_bucket = a_string()
 
+    output_metadata = {"metadata-field": "metadata_value"}
     metrics_io = PlatformMetricsIO(
         reporting_window=reporting_window,
         s3_data_manager=s3_manager,
         organisation_metadata_bucket=a_string(),
         transfer_data_bucket=a_string(),
         data_platform_metrics_bucket=data_platform_metrics_bucket,
+        output_metadata=output_metadata,
     )
 
     metrics_io.write_practice_metrics(_PRACTICE_METRICS_OBJECT)
@@ -102,7 +104,7 @@ def test_given_practice_metrics_object_will_generate_json():
     expected_s3_path = f"s3://{expected_s3_path_fragment}/practiceMetrics.json"
 
     s3_manager.write_json.assert_called_once_with(
-        object_uri=expected_s3_path, data=expected_practice_metrics_dict, metadata={}
+        object_uri=expected_s3_path, data=expected_practice_metrics_dict, metadata=output_metadata
     )
 
 
@@ -121,6 +123,7 @@ def test_given_data_platform_metrics_version_will_override_default():
         transfer_data_bucket=a_string(),
         data_platform_metrics_bucket=data_platform_metrics_bucket,
         data_platform_metrics_version=data_platform_metrics_version,
+        output_metadata={},
     )
 
     metrics_io.write_practice_metrics(_PRACTICE_METRICS_OBJECT)

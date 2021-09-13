@@ -81,6 +81,7 @@ def test_given_national_metrics_object_will_generate_json():
     reporting_window = MonthlyReportingWindow.prior_to(date_anchor=date_anchor, number_of_months=1)
 
     data_platform_metrics_bucket = a_string()
+    output_metadata = {"metadata-field": "metadata_value"}
 
     metrics_io = PlatformMetricsIO(
         reporting_window=reporting_window,
@@ -88,6 +89,7 @@ def test_given_national_metrics_object_will_generate_json():
         organisation_metadata_bucket=a_string(),
         transfer_data_bucket=a_string(),
         data_platform_metrics_bucket=data_platform_metrics_bucket,
+        output_metadata=output_metadata,
     )
 
     metrics_io.write_national_metrics(_NATIONAL_METRICS_OBJECT)
@@ -97,5 +99,5 @@ def test_given_national_metrics_object_will_generate_json():
     expected_s3_path = f"s3://{expected_s3_path_fragment}/nationalMetrics.json"
 
     s3_manager.write_json.assert_called_once_with(
-        object_uri=expected_s3_path, data=expected_national_metrics_dict, metadata={}
+        object_uri=expected_s3_path, data=expected_national_metrics_dict, metadata=output_metadata
     )

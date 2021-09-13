@@ -40,6 +40,7 @@ def test_read_organisation_metadata():
         organisation_metadata_bucket=ods_bucket,
         transfer_data_bucket=a_string(),
         data_platform_metrics_bucket=a_string(),
+        output_metadata={},
     )
 
     s3_manager.read_json.return_value = _ORGANISATION_METADATA_DICT

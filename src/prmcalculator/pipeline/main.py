@@ -47,6 +47,7 @@ def main():
         transfer_data_bucket=config.input_transfer_data_bucket,
         data_platform_metrics_bucket=config.output_metrics_bucket,
         data_platform_metrics_version="v6" if config.output_v6_metrics else None,
+        output_metadata={"build-tag": config.build_tag},
     )
 
     organisation_metadata = metrics_io.read_ods_metadata()

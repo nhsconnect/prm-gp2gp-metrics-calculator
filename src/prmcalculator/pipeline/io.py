@@ -1,5 +1,5 @@
 from dataclasses import asdict
-from typing import List, Optional
+from typing import List, Optional, Dict
 import logging
 import pyarrow as pa
 
@@ -35,6 +35,7 @@ class PlatformMetricsIO:
         transfer_data_bucket: str,
         data_platform_metrics_bucket: str,
         data_platform_metrics_version: Optional[str] = None,
+        output_metadata: Dict[str, str],
     ):
         self._window = reporting_window
         self._s3_manager = s3_data_manager
@@ -44,6 +45,7 @@ class PlatformMetricsIO:
         self._data_platform_metrics_version = (
             data_platform_metrics_version or _DEFAULT_DATA_PLATFORM_METRICS_VERSION
         )
+        self._output_metadata = output_metadata
 
     def _data_platform_metrics_bucket_s3_path(self, file_name: str) -> str:
         return "/".join(
@@ -98,7 +100,7 @@ class PlatformMetricsIO:
         self._s3_manager.write_json(
             object_uri=f"s3://{national_metrics_path}",
             data=self._create_platform_json_object(national_metrics_presentation_data),
-            metadata={},
+            metadata=self._output_metadata,
         )
 
     def write_practice_metrics(self, practice_metrics):
@@ -108,7 +110,7 @@ class PlatformMetricsIO:
         self._s3_manager.write_json(
             object_uri=f"s3://{practice_metrics_path}",
             data=self._create_platform_json_object(practice_metrics),
-            metadata={},
+            metadata=self._output_metadata,
         )
 
     def read_transfer_data(self) -> List[Transfer]:

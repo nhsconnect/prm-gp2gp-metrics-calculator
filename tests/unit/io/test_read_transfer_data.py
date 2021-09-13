@@ -84,6 +84,7 @@ def test_read_transfer_data():
         organisation_metadata_bucket=a_string(),
         transfer_data_bucket=transfer_data_bucket,
         data_platform_metrics_bucket=a_string(),
+        output_metadata={},
     )
 
     expected_path = (
@@ -117,6 +118,7 @@ def test_read_transfer_data_from_multiple_files():
         organisation_metadata_bucket=a_string(),
         transfer_data_bucket=transfer_data_bucket,
         data_platform_metrics_bucket=a_string(),
+        output_metadata={},
     )
 
     expected_calls = [
