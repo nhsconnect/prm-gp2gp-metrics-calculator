@@ -1,5 +1,5 @@
 from dataclasses import asdict
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Tuple
 import logging
 import pyarrow as pa
 
@@ -25,14 +25,17 @@ class PlatformMetricsS3UriResolver:
     _ORG_METADATA_FILE_NAME = "organisationMetadata.json"
     _PRACTICE_METRICS_FILE_NAME = "practiceMetrics.json"
     _NATIONAL_METRICS_FILE_NAME = "nationalMetrics.json"
+    _TRANSFER_DATA_FILE_NAME = "transfers.parquet"
 
     def __init__(
         self,
         ods_bucket: str,
+        transfer_data_bucket: str,
         data_platform_metrics_bucket: str,
         output_v6_metrics: Optional[bool] = False,
     ):
         self._ods_bucket_name = ods_bucket
+        self._transfer_data_bucket = transfer_data_bucket
         self._data_platform_metrics_bucket = data_platform_metrics_bucket
         self._data_platform_metrics_version = (
             _DATA_PLATFORM_METRICS_V6
@@ -40,7 +43,7 @@ class PlatformMetricsS3UriResolver:
             else _DEFAULT_DATA_PLATFORM_METRICS_VERSION
         )
 
-    def ods_metadata(self, year: int, month: int):
+    def ods_metadata(self, year: int, month: int) -> str:
         s3_key = "/".join(
             [
                 self._ods_bucket_name,
@@ -51,7 +54,7 @@ class PlatformMetricsS3UriResolver:
         )
         return f"s3://{s3_key}"
 
-    def practice_metrics(self, year: int, month: int):
+    def practice_metrics(self, year: int, month: int) -> str:
         s3_key = "/".join(
             [
                 self._data_platform_metrics_bucket,
@@ -62,7 +65,7 @@ class PlatformMetricsS3UriResolver:
         )
         return f"s3://{s3_key}"
 
-    def national_metrics(self, year: int, month: int):
+    def national_metrics(self, year: int, month: int) -> str:
         s3_key = "/".join(
             [
                 self._data_platform_metrics_bucket,
@@ -72,6 +75,19 @@ class PlatformMetricsS3UriResolver:
             ]
         )
         return f"s3://{s3_key}"
+
+    def _transfer_data_uri(self, year: int, month: int) -> str:
+        return "/".join(
+            [
+                self._transfer_data_bucket,
+                _TRANSFER_DATA_VERSION,
+                f"{year}/{month}",
+                self._TRANSFER_DATA_FILE_NAME,
+            ]
+        )
+
+    def transfer_data(self, metric_months: List[Tuple[int, int]]) -> List[str]:
+        return [f"s3://{self._transfer_data_uri(year, month)}" for (year, month) in metric_months]
 
 
 class PlatformMetricsIO:
