@@ -22,9 +22,11 @@ _DEFAULT_DATA_PLATFORM_METRICS_VERSION = "v5"
 
 class PlatformMetricsS3UriResolver:
     _ORG_METADATA_FILE_NAME = "organisationMetadata.json"
+    _PRACTICE_METRICS_FILE_NAME = "practiceMetrics.json"
 
-    def __init__(self, ods_bucket: str):
+    def __init__(self, ods_bucket: str, data_platform_metrics_bucket: str):
         self._ods_bucket_name = ods_bucket
+        self.data_platform_metrics_bucket = data_platform_metrics_bucket
 
     def ods_metadata(self, year: int, month: int):
         s3_key = "/".join(
@@ -33,6 +35,17 @@ class PlatformMetricsS3UriResolver:
                 _ORG_METADATA_VERSION,
                 f"{year}/{month}",
                 self._ORG_METADATA_FILE_NAME,
+            ]
+        )
+        return f"s3://{s3_key}"
+
+    def practice_metrics(self, year: int, month: int):
+        s3_key = "/".join(
+            [
+                self.data_platform_metrics_bucket,
+                _DEFAULT_DATA_PLATFORM_METRICS_VERSION,
+                f"{year}/{month}",
+                self._PRACTICE_METRICS_FILE_NAME,
             ]
         )
         return f"s3://{s3_key}"
