@@ -1,13 +1,10 @@
 from collections import defaultdict
-from typing import Iterable, Dict, Tuple, List
+from typing import Iterable, Dict, List
 
 from prmcalculator.domain.gp2gp.transfer import Transfer
 from prmcalculator.domain.practice.group_transfers_by_practice import PracticeTransfers
 from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
-
-YearNumber = int
-MonthNumber = int
-YearMonth = Tuple[YearNumber, MonthNumber]
+from prmcalculator.utils.reporting_window import YearMonth, YearNumber, MonthNumber
 
 
 class PracticeTransferMetrics:
