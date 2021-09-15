@@ -40,7 +40,11 @@ def main():
 
     reporting_window = MonthlyReportingWindow.prior_to(config.date_anchor, config.number_of_months)
 
-    output_metadata = {"build-tag": config.build_tag, "date-anchor": config.date_anchor.isoformat()}
+    output_metadata = {
+        "build-tag": config.build_tag,
+        "date-anchor": config.date_anchor.isoformat(),
+        "number-of-months": str(config.number_of_months),
+    }
 
     s3_uri_resolver = PlatformMetricsS3UriResolver(
         ods_bucket=config.organisation_metadata_bucket,

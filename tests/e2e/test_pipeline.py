@@ -134,7 +134,11 @@ def test_end_to_end_with_fake_s3(datadir):
     expected_practice_metrics = _read_json(datadir / "expected_outputs" / "practiceMetrics.json")
     expected_national_metrics = _read_json(datadir / "expected_outputs" / "nationalMetrics.json")
 
-    expected_metadata = {"build-tag": build_tag, "date-anchor": "2020-01-30T18:44:49+00:00"}
+    expected_metadata = {
+        "build-tag": build_tag,
+        "date-anchor": "2020-01-30T18:44:49+00:00",
+        "number-of-months": "2",
+    }
 
     s3_metrics_output_path = "v5/2019/12/"
 

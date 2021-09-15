@@ -135,7 +135,11 @@ def test_end_to_end_with_fake_s3_v6_metrics(datadir):
 
     s3_metrics_output_path = "v6/2019/12/"
 
-    expected_metadata = {"build-tag": build_tag, "date-anchor": "2020-01-30T18:44:49+00:00"}
+    expected_metadata = {
+        "build-tag": build_tag,
+        "date-anchor": "2020-01-30T18:44:49+00:00",
+        "number-of-months": "2",
+    }
 
     try:
         main()
