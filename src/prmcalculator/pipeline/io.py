@@ -10,7 +10,7 @@ from prmcalculator.domain.national.construct_national_metrics_presentation impor
 
 from prmcalculator.domain.ods_portal.organisation_metadata import OrganisationMetadata
 from prmcalculator.utils.io.dictionary import camelize_dict
-from prmcalculator.domain.datetime import YearNumber, MonthNumber, YearMonth
+from prmcalculator.domain.datetime import YearMonth
 from prmcalculator.utils.io.s3 import S3DataManager
 
 logger = logging.getLogger(__name__)
@@ -43,7 +43,8 @@ class PlatformMetricsS3UriResolver:
             else _DEFAULT_DATA_PLATFORM_METRICS_VERSION
         )
 
-    def ods_metadata(self, year: YearNumber, month: MonthNumber) -> str:
+    def ods_metadata(self, year_month: YearMonth) -> str:
+        year, month = year_month
         s3_key = "/".join(
             [
                 self._ods_bucket_name,
@@ -54,7 +55,8 @@ class PlatformMetricsS3UriResolver:
         )
         return f"s3://{s3_key}"
 
-    def practice_metrics(self, year: YearNumber, month: MonthNumber) -> str:
+    def practice_metrics(self, year_month: YearMonth) -> str:
+        year, month = year_month
         s3_key = "/".join(
             [
                 self._data_platform_metrics_bucket,
@@ -65,7 +67,8 @@ class PlatformMetricsS3UriResolver:
         )
         return f"s3://{s3_key}"
 
-    def national_metrics(self, year: YearNumber, month: MonthNumber) -> str:
+    def national_metrics(self, year_month: YearMonth) -> str:
+        year, month = year_month
         s3_key = "/".join(
             [
                 self._data_platform_metrics_bucket,
@@ -76,7 +79,8 @@ class PlatformMetricsS3UriResolver:
         )
         return f"s3://{s3_key}"
 
-    def _transfer_data_uri(self, year: YearNumber, month: MonthNumber) -> str:
+    def _transfer_data_uri(self, year_month: YearMonth) -> str:
+        year, month = year_month
         return "/".join(
             [
                 self._transfer_data_bucket,
@@ -87,7 +91,7 @@ class PlatformMetricsS3UriResolver:
         )
 
     def transfer_data(self, metric_months: List[YearMonth]) -> List[str]:
-        return [f"s3://{self._transfer_data_uri(year, month)}" for (year, month) in metric_months]
+        return [f"s3://{self._transfer_data_uri(year_month)}" for year_month in metric_months]
 
 
 class PlatformMetricsIO:

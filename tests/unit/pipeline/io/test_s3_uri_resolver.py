@@ -14,7 +14,7 @@ def test_resolver_returns_correct_ods_metadata_uri():
         transfer_data_bucket=a_string(),
     )
 
-    actual = uri_resolver.ods_metadata(year, month)
+    actual = uri_resolver.ods_metadata((year, month))
 
     expected = f"s3://{ods_bucket_name}/v2/{year}/{month}/organisationMetadata.json"
 
@@ -33,7 +33,7 @@ def test_resolver_returns_correct_practice_metrics_uri():
         transfer_data_bucket=a_string(),
     )
 
-    actual = uri_resolver.practice_metrics(year, month)
+    actual = uri_resolver.practice_metrics((year, month))
 
     expected = f"s3://{data_platform_metrics_bucket}/v5/{year}/{month}/practiceMetrics.json"
 
@@ -53,7 +53,7 @@ def test_resolver_returns_correct_practice_metrics_uri_with_v6_override():
         output_v6_metrics=True,
     )
 
-    actual = uri_resolver.practice_metrics(year, month)
+    actual = uri_resolver.practice_metrics((year, month))
 
     expected = f"s3://{data_platform_metrics_bucket}/v6/{year}/{month}/practiceMetrics.json"
 
@@ -72,7 +72,7 @@ def test_resolver_returns_correct_national_metrics_uri():
         transfer_data_bucket=a_string(),
     )
 
-    actual = uri_resolver.national_metrics(year, month)
+    actual = uri_resolver.national_metrics((year, month))
 
     expected = f"s3://{data_platform_metrics_bucket}/v5/{year}/{month}/nationalMetrics.json"
 
@@ -92,7 +92,7 @@ def test_resolver_returns_correct_national_metrics_uri_with_v6_override():
         output_v6_metrics=True,
     )
 
-    actual = uri_resolver.national_metrics(year, month)
+    actual = uri_resolver.national_metrics((year, month))
 
     expected = f"s3://{data_platform_metrics_bucket}/v6/{year}/{month}/nationalMetrics.json"
 

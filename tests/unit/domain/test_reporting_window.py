@@ -11,21 +11,9 @@ def test_prior_to_correctly_determines_metric_month():
 
     reporting_window = MonthlyReportingWindow.prior_to(moment, default_number_of_months)
 
-    expected = 2
+    expected = 2021, 2
 
-    actual = reporting_window.metric_month
-
-    assert actual == expected
-
-
-def test_prior_to_correctly_determines_metric_year():
-    moment = a_datetime(year=2021, month=3, day=4)
-
-    reporting_window = MonthlyReportingWindow.prior_to(moment, default_number_of_months)
-
-    expected = 2021
-
-    actual = reporting_window.metric_year
+    actual = reporting_window.last_metric_month
 
     assert actual == expected
 
@@ -35,21 +23,9 @@ def test_prior_to_correctly_determines_metric_month_over_new_year():
 
     reporting_window = MonthlyReportingWindow.prior_to(moment, default_number_of_months)
 
-    expected = 12
+    expected = 2020, 12
 
-    actual = reporting_window.metric_month
-
-    assert actual == expected
-
-
-def test_prior_to_correctly_determines_metric_year_over_new_year():
-    moment = a_datetime(year=2021, month=1, day=4)
-
-    reporting_window = MonthlyReportingWindow.prior_to(moment, default_number_of_months)
-
-    expected = 2020
-
-    actual = reporting_window.metric_year
+    actual = reporting_window.last_metric_month
 
     assert actual == expected
 
@@ -59,21 +35,9 @@ def test_prior_to_correctly_determines_date_anchor_month():
 
     reporting_window = MonthlyReportingWindow.prior_to(moment, default_number_of_months)
 
-    expected = 3
+    expected = 2021, 3
 
     actual = reporting_window.date_anchor_month
-
-    assert actual == expected
-
-
-def test_prior_to_correctly_determines_date_anchor_year():
-    moment = a_datetime(year=2021, month=3, day=4)
-
-    reporting_window = MonthlyReportingWindow.prior_to(moment, default_number_of_months)
-
-    expected = 2021
-
-    actual = reporting_window.date_anchor_year
 
     assert actual == expected
 

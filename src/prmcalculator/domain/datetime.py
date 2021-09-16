@@ -29,12 +29,9 @@ class MonthlyReportingWindow:
         return cls(date_anchor_month_start, metric_monthly_datetimes)
 
     @property
-    def metric_month(self) -> MonthNumber:
-        return self._latest_metric_month.month
-
-    @property
-    def metric_year(self) -> YearNumber:
-        return self._latest_metric_month.year
+    def last_metric_month(self) -> YearMonth:
+        month = self._latest_metric_month
+        return month.year, month.month
 
     @property
     def metric_months(self) -> List[YearMonth]:
@@ -44,12 +41,9 @@ class MonthlyReportingWindow:
         ]
 
     @property
-    def date_anchor_month(self) -> MonthNumber:
-        return self._date_anchor_month_start.month
-
-    @property
-    def date_anchor_year(self) -> YearNumber:
-        return self._date_anchor_month_start.year
+    def date_anchor_month(self) -> YearMonth:
+        month = self._date_anchor_month_start
+        return month.year, month.month
 
     def contains(self, time: datetime):
         return self._latest_metric_month <= time < self._date_anchor_month_start
