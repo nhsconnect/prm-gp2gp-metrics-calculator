@@ -58,7 +58,7 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
             year=2020, month=1, day=30, hour=18, minute=44, second=49, tzinfo=tzutc()
         ),
         s3_endpoint_url=None,
-        output_v6_metrics=False,
+        output_v6_metrics=True,
         build_tag=build_tag,
     )
 
