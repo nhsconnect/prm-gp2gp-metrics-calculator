@@ -8,35 +8,31 @@
         {
           "year": 2019,
           "month": 12,
-          "requester": {
-            "transfersReceived": {
-              "transferCount": 6,
-              "awaitingIntegration": {
-                "percentage": 50.0
-              },
-              "integrated": {
-                "within3DaysPercentage": 16.7,
-                "within8DaysPercentage": 16.7,
-                "beyond8DaysPercentage": 16.7
-              }
-            }
+          "requestedTransfers": {
+            "requestedCount": 8,
+            "receivedCount": 6,
+            "integratedCount": 3,
+            "integratedWithin3DaysCount": 1,
+            "integratedWithin8DaysCount": 1,
+            "integratedBeyond8DaysCount": 1,
+            "awaitingIntegrationCount": 3,
+            "technicalFailuresCount": 2,
+            "unclassifiedFailureCount": 0
           }
         },
         {
           "year": 2019,
           "month": 11,
-          "requester": {
-            "transfersReceived": {
-              "transferCount": 1,
-              "awaitingIntegration": {
-                "percentage": 0.0
-              },
-              "integrated": {
-                "within3DaysPercentage": 0.0,
-                "within8DaysPercentage": 100.0,
-                "beyond8DaysPercentage": 0.0
-              }
-            }
+          "requestedTransfers": {
+            "requestedCount": 1,
+            "receivedCount": 1,
+            "integratedCount": 1,
+            "integratedWithin3DaysCount": 0,
+            "integratedWithin8DaysCount": 1,
+            "integratedBeyond8DaysCount": 0,
+            "awaitingIntegrationCount": 0,
+            "technicalFailuresCount": 0,
+            "unclassifiedFailureCount": 0
           }
         }
       ]
@@ -48,35 +44,31 @@
         {
           "year": 2019,
           "month": 12,
-          "requester": {
-            "transfersReceived": {
-              "transferCount": 0,
-              "awaitingIntegration": {
-                "percentage": null
-              },
-              "integrated": {
-                "within3DaysPercentage": null,
-                "within8DaysPercentage": null,
-                "beyond8DaysPercentage": null
-              }
-            }
+          "requestedTransfers": {
+            "requestedCount": 0,
+            "receivedCount": 0,
+            "integratedCount": 0,
+            "integratedWithin3DaysCount": 0,
+            "integratedWithin8DaysCount": 0,
+            "integratedBeyond8DaysCount": 0,
+            "awaitingIntegrationCount": 0,
+            "technicalFailuresCount": 0,
+            "unclassifiedFailureCount": 0
           }
         },
         {
           "year": 2019,
           "month": 11,
-          "requester": {
-            "transfersReceived": {
-              "transferCount": 0,
-              "awaitingIntegration": {
-                "percentage": null
-              },
-              "integrated": {
-                "within3DaysPercentage": null,
-                "within8DaysPercentage": null,
-                "beyond8DaysPercentage": null
-              }
-            }
+          "requestedTransfers": {
+            "requestedCount": 0,
+            "receivedCount": 0,
+            "integratedCount": 0,
+            "integratedWithin3DaysCount": 0,
+            "integratedWithin8DaysCount": 0,
+            "integratedBeyond8DaysCount": 0,
+            "awaitingIntegrationCount": 0,
+            "technicalFailuresCount": 0,
+            "unclassifiedFailureCount": 0
           }
         }
       ]
@@ -88,35 +80,31 @@
         {
           "year": 2019,
           "month": 12,
-          "requester": {
-            "transfersReceived": {
-              "transferCount": 2,
-              "awaitingIntegration": {
-                "percentage": 0.0
-              },
-              "integrated": {
-                "within3DaysPercentage": 50.0,
-                "within8DaysPercentage": 50.0,
-                "beyond8DaysPercentage": 0.0
-              }
-            }
+          "requestedTransfers": {
+            "requestedCount": 3,
+            "receivedCount": 2,
+            "integratedCount": 2,
+            "integratedWithin3DaysCount": 1,
+            "integratedWithin8DaysCount": 1,
+            "integratedBeyond8DaysCount": 0,
+            "awaitingIntegrationCount": 0,
+            "technicalFailuresCount": 0,
+            "unclassifiedFailureCount": 1
           }
         },
         {
           "year": 2019,
           "month": 11,
-          "requester": {
-            "transfersReceived": {
-              "transferCount": 0,
-              "awaitingIntegration": {
-                "percentage": null
-              },
-              "integrated": {
-                "within3DaysPercentage": null,
-                "within8DaysPercentage": null,
-                "beyond8DaysPercentage": null
-              }
-            }
+          "requestedTransfers": {
+            "requestedCount": 0,
+            "receivedCount": 0,
+            "integratedCount": 0,
+            "integratedWithin3DaysCount": 0,
+            "integratedWithin8DaysCount": 0,
+            "integratedBeyond8DaysCount": 0,
+            "awaitingIntegrationCount": 0,
+            "technicalFailuresCount": 0,
+            "unclassifiedFailureCount": 0
           }
         }
       ]

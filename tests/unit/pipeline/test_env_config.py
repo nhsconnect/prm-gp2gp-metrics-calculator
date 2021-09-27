@@ -8,8 +8,8 @@ from prmcalculator.pipeline.config import EnvConfig
     ["True", "true", "TRUE", "TrUe"],
 )
 def test_read_optional_bool_returns_true_given_different_casing(string):
-    env = EnvConfig({"OUTPUT_V6_METRICS": string})
-    actual = env.read_optional_bool(name="OUTPUT_V6_METRICS", default=False)
+    env = EnvConfig({"OPTIONAL_BOOL_CONFIG": string})
+    actual = env.read_optional_bool(name="OPTIONAL_BOOL_CONFIG", default=False)
     expected = True
 
     assert actual == expected
@@ -20,8 +20,8 @@ def test_read_optional_bool_returns_true_given_different_casing(string):
     ["False", "false", "FALSE", "FaLse", "mango"],
 )
 def test_read_optional_bool_returns_false_given_different_casing(string):
-    env = EnvConfig({"OUTPUT_V6_METRICS": string})
-    actual = env.read_optional_bool(name="OUTPUT_V6_METRICS", default=True)
+    env = EnvConfig({"OPTIONAL_BOOL_CONFIG": string})
+    actual = env.read_optional_bool(name="OPTIONAL_BOOL_CONFIG", default=True)
     expected = False
 
     assert actual == expected

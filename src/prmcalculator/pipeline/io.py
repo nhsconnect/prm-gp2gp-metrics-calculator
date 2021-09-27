@@ -1,5 +1,5 @@
 from dataclasses import asdict
-from typing import List, Optional, Dict
+from typing import List, Dict
 import logging
 import pyarrow as pa
 
@@ -17,8 +17,7 @@ logger = logging.getLogger(__name__)
 
 _TRANSFER_DATA_VERSION = "v4"
 _ORG_METADATA_VERSION = "v2"
-_DEFAULT_DATA_PLATFORM_METRICS_VERSION = "v5"
-_DATA_PLATFORM_METRICS_V6 = "v6"
+_DEFAULT_DATA_PLATFORM_METRICS_VERSION = "v6"
 
 
 class PlatformMetricsS3UriResolver:
@@ -32,16 +31,11 @@ class PlatformMetricsS3UriResolver:
         ods_bucket: str,
         transfer_data_bucket: str,
         data_platform_metrics_bucket: str,
-        output_v6_metrics: Optional[bool] = False,
     ):
         self._ods_bucket_name = ods_bucket
         self._transfer_data_bucket = transfer_data_bucket
         self._data_platform_metrics_bucket = data_platform_metrics_bucket
-        self._data_platform_metrics_version = (
-            _DATA_PLATFORM_METRICS_V6
-            if output_v6_metrics
-            else _DEFAULT_DATA_PLATFORM_METRICS_VERSION
-        )
+        self._data_platform_metrics_version = _DEFAULT_DATA_PLATFORM_METRICS_VERSION
 
     def ods_metadata(self, year_month: YearMonth) -> str:
         year, month = year_month

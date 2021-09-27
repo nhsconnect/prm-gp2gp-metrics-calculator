@@ -99,7 +99,6 @@ def test_end_to_end_with_fake_s3(datadir):
     environ["DATE_ANCHOR"] = date_anchor
     environ["S3_ENDPOINT_URL"] = fake_s3_url
     environ["BUILD_TAG"] = build_tag
-    environ["OUTPUT_V6_METRICS"] = "False"
 
     s3 = boto3.resource(
         "s3",
@@ -141,7 +140,7 @@ def test_end_to_end_with_fake_s3(datadir):
         "number-of-months": "2",
     }
 
-    s3_metrics_output_path = "v5/2019/12/"
+    s3_metrics_output_path = "v6/2019/12/"
 
     try:
         main()

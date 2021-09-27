@@ -7,7 +7,6 @@ from prmcalculator.domain.national.calculate_national_metrics_data import (
     NationalMetricsObservabilityProbe,
 )
 from prmcalculator.domain.practice.calculate_practice_metrics_v5 import (
-    calculate_practice_metrics_v5,
     PracticeMetricsObservabilityProbe,
 )
 
@@ -45,17 +44,10 @@ class MetricsPipeline:
             "number-of-months": str(config.number_of_months),
         }
 
-        self._practice_metrics_calculation = (
-            calculate_practice_metrics
-            if config.output_v6_metrics
-            else calculate_practice_metrics_v5
-        )
-
         self._uris = PlatformMetricsS3UriResolver(
             ods_bucket=config.organisation_metadata_bucket,
             transfer_data_bucket=config.input_transfer_data_bucket,
             data_platform_metrics_bucket=config.output_metrics_bucket,
-            output_v6_metrics=config.output_v6_metrics,
         )
 
         self._io = PlatformMetricsIO(
@@ -79,7 +71,7 @@ class MetricsPipeline:
         )
 
     def _calculate_practice_metrics(self, transfers, ods_metadata):
-        return self._practice_metrics_calculation(
+        return calculate_practice_metrics(
             transfers=transfers,
             organisation_metadata=ods_metadata,
             reporting_window=self._reporting_window,

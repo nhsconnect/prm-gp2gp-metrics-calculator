@@ -57,7 +57,6 @@ class PipelineConfig:
     organisation_metadata_bucket: str
     output_metrics_bucket: str
     date_anchor: datetime
-    output_v6_metrics: bool
     number_of_months: int
     s3_endpoint_url: Optional[str]
 
@@ -72,5 +71,4 @@ class PipelineConfig:
             date_anchor=env.read_datetime("DATE_ANCHOR"),
             number_of_months=env.read_optional_int(name="NUMBER_OF_MONTHS", default=1),
             s3_endpoint_url=env.read_optional_str("S3_ENDPOINT_URL"),
-            output_v6_metrics=env.read_optional_bool(name="OUTPUT_V6_METRICS", default=True),
         )
