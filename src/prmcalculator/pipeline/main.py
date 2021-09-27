@@ -6,11 +6,10 @@ from prmcalculator.domain.national.calculate_national_metrics_data import (
     calculate_national_metrics_data,
     NationalMetricsObservabilityProbe,
 )
-from prmcalculator.domain.practice.calculate_practice_metrics_v5 import (
+from prmcalculator.domain.practice.calculate_practice_metrics_v6 import (
+    calculate_practice_metrics,
     PracticeMetricsObservabilityProbe,
 )
-
-from prmcalculator.domain.practice.calculate_practice_metrics_v6 import calculate_practice_metrics
 from prmcalculator.pipeline.config import PipelineConfig
 
 from prmcalculator.pipeline.io import PlatformMetricsIO, PlatformMetricsS3UriResolver

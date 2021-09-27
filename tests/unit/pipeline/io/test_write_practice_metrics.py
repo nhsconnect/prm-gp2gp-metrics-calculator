@@ -1,16 +1,13 @@
 from datetime import datetime
 from unittest.mock import Mock
 
-from prmcalculator.domain.practice.calculate_practice_metrics_v5 import (
+from prmcalculator.domain.practice.calculate_practice_metrics_v6 import (
     PracticeMetricsPresentation,
 )
-from prmcalculator.domain.practice.construct_practice_summary_v5 import (
+from prmcalculator.domain.practice.construct_practice_summary_v6 import (
     PracticeSummary,
     MonthlyMetricsPresentation,
-    RequesterMetrics,
-    IntegratedPracticeMetricsPresentation,
-    TransfersReceivedPresentation,
-    AwaitingIntegration,
+    RequestedTransferMetrics,
 )
 
 from prmcalculator.domain.ods_portal.organisation_metadata import CcgDetails
@@ -32,16 +29,16 @@ _PRACTICE_METRICS_OBJECT = PracticeMetricsPresentation(
                 MonthlyMetricsPresentation(
                     year=2021,
                     month=1,
-                    requester=RequesterMetrics(
-                        transfers_received=TransfersReceivedPresentation(
-                            transfer_count=2,
-                            awaiting_integration=AwaitingIntegration(percentage=50.0),
-                            integrated=IntegratedPracticeMetricsPresentation(
-                                within_3_days_percentage=50.0,
-                                within_8_days_percentage=0.0,
-                                beyond_8_days_percentage=0.0,
-                            ),
-                        ),
+                    requested_transfers=RequestedTransferMetrics(
+                        requested_count=9,
+                        received_count=3,
+                        integrated_count=2,
+                        integrated_within_3_days_count=1,
+                        integrated_within_8_days_count=0,
+                        integrated_beyond_8_days_count=1,
+                        awaiting_integration_count=1,
+                        technical_failures_count=3,
+                        unclassified_failure_count=4,
                     ),
                 )
             ],
@@ -60,16 +57,16 @@ _PRACTICE_METRICS_DICT = {
                 {
                     "year": 2021,
                     "month": 1,
-                    "requester": {
-                        "transfersReceived": {
-                            "transferCount": 2,
-                            "awaitingIntegration": {"percentage": 50.0},
-                            "integrated": {
-                                "within3DaysPercentage": 50.0,
-                                "within8DaysPercentage": 0.0,
-                                "beyond8DaysPercentage": 0.0,
-                            },
-                        },
+                    "requestedTransfers": {
+                        "requestedCount": 9,
+                        "receivedCount": 3,
+                        "integratedCount": 2,
+                        "integratedWithin3DaysCount": 1,
+                        "integratedWithin8DaysCount": 0,
+                        "integratedBeyond8DaysCount": 1,
+                        "awaitingIntegrationCount": 1,
+                        "technicalFailuresCount": 3,
+                        "unclassifiedFailureCount": 4,
                     },
                 }
             ],
