@@ -1,10 +1,10 @@
 from datetime import datetime
 from unittest.mock import Mock
 
-from prmcalculator.domain.practice.calculate_practice_metrics_v6 import (
+from prmcalculator.domain.practice.calculate_practice_metrics import (
     PracticeMetricsPresentation,
 )
-from prmcalculator.domain.practice.construct_practice_summary_v6 import (
+from prmcalculator.domain.practice.construct_practice_summary import (
     PracticeSummary,
     MonthlyMetricsPresentation,
     RequestedTransferMetrics,
@@ -80,7 +80,7 @@ def test_given_practice_metrics_object_will_generate_json():
     s3_manager = Mock()
 
     data_platform_metrics_bucket = a_string()
-    s3_key = f"v5/{_METRIC_YEAR}/{_METRIC_MONTH}/practiceMetrics.json"
+    s3_key = f"v6/{_METRIC_YEAR}/{_METRIC_MONTH}/practiceMetrics.json"
     s3_uri = f"s3://{data_platform_metrics_bucket}/{s3_key}"
 
     output_metadata = {"metadata-field": "metadata_value"}

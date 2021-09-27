@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from prmcalculator.domain.practice.construct_practice_summary_v6 import (
+from prmcalculator.domain.practice.construct_practice_summary import (
     construct_practice_summary,
     MonthlyMetricsPresentation,
     RequestedTransferMetrics,

@@ -59,25 +59,6 @@ def test_resolver_returns_correct_national_metrics_uri():
     assert actual == expected
 
 
-def test_resolver_returns_correct_national_metrics_uri_with_v6_override():
-    data_platform_metrics_bucket = a_string()
-    date_anchor = a_datetime()
-    year = date_anchor.year
-    month = date_anchor.month
-
-    uri_resolver = PlatformMetricsS3UriResolver(
-        ods_bucket=a_string(),
-        data_platform_metrics_bucket=data_platform_metrics_bucket,
-        transfer_data_bucket=a_string(),
-    )
-
-    actual = uri_resolver.national_metrics((year, month))
-
-    expected = f"s3://{data_platform_metrics_bucket}/v6/{year}/{month}/nationalMetrics.json"
-
-    assert actual == expected
-
-
 def test_resolver_returns_correct_transfer_data_uris():
     transfer_data_bucket = a_string()
 
