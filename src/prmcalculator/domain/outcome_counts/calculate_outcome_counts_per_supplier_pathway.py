@@ -1,9 +1,12 @@
+from typing import List, Optional
+
 import polars as pl
 from polars import col
 
 
-def _unique_errors(errors):
-    return ",".join([str(e) for e in sorted(set(errors))])
+def _unique_errors(errors: List[Optional[int]]):
+    unique_error_codes = {error_code for error_code in errors if error_code is not None}
+    return ",".join([str(e) for e in sorted(unique_error_codes)])
 
 
 def calculate_outcome_counts_per_supplier_pathway(dataframe: pl.DataFrame) -> pl.DataFrame:

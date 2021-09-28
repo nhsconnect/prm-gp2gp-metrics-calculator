@@ -1,4 +1,5 @@
 import polars as pl
+import pytest
 
 from prmcalculator.domain.gp2gp.transfer import TransferStatus, TransferFailureReason
 from prmcalculator.domain.outcome_counts.calculate_outcome_counts_per_supplier_pathway import (
@@ -40,10 +41,20 @@ def test_returns_dataframe_with_select_columns():
     assert actual.frame_equal(expected, null_equal=True)
 
 
-def test_returns_dataframe_with_unique_final_error_codes():
-    df = TransferDataFrame().with_row(final_error_codes=[4, 5, 3, 4, 4]).build()
+@pytest.mark.parametrize(
+    "error_codes, expected",
+    [
+        ([4, 5, 3, 4, 4], "3,4,5"),
+        ([4, 5, 5, 3, 4, 4, 5], "3,4,5"),
+        ([None, None, 5], "5"),
+        ([None], ""),
+        ([], ""),
+    ],
+)
+def test_returns_dataframe_with_unique_final_error_codes(error_codes, expected):
+    df = TransferDataFrame().with_row(final_error_codes=error_codes).build()
 
     actual = calculate_outcome_counts_per_supplier_pathway(df)
-    expected_unique_final_errors = pl.Series("unique_final_errors", ["3,4,5"])
+    expected_unique_final_errors = pl.Series("unique_final_errors", [expected])
 
     assert actual["unique_final_errors"].series_equal(expected_unique_final_errors, null_equal=True)
