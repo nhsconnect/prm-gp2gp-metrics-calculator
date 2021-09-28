@@ -5,7 +5,7 @@ from prmcalculator.domain.outcome_counts.calculate_outcome_counts_per_supplier_p
     calculate_outcome_counts_per_supplier_pathway,
 )
 from tests.builders.common import a_string
-from tests.builders.outcome_counts import build_transfer_dataframe
+from tests.builders.outcome_counts import TransferDataFrame
 
 
 def test_returns_dataframe_with_select_columns():
@@ -13,11 +13,15 @@ def test_returns_dataframe_with_select_columns():
     sending_supplier = a_string(6)
     status = TransferStatus.TECHNICAL_FAILURE.value
     failure_reason = TransferFailureReason.FINAL_ERROR.value
-    df = build_transfer_dataframe(
-        requesting_supplier=requesting_supplier,
-        sending_supplier=sending_supplier,
-        status=status,
-        failure_reason=failure_reason,
+    df = (
+        TransferDataFrame()
+        .with_row(
+            requesting_supplier=requesting_supplier,
+            sending_supplier=sending_supplier,
+            status=status,
+            failure_reason=failure_reason,
+        )
+        .build()
     )
 
     actual = calculate_outcome_counts_per_supplier_pathway(df)
