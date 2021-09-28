@@ -2,8 +2,8 @@ import polars as pl
 import pytest
 
 from prmcalculator.domain.gp2gp.transfer import TransferStatus, TransferFailureReason
-from prmcalculator.domain.outcome_counts.calculate_outcome_counts_per_supplier_pathway import (
-    calculate_outcome_counts_per_supplier_pathway,
+from prmcalculator.domain.outcome_counts.count_outcomes_per_supplier_pathway import (
+    count_outcomes_per_supplier_pathway,
 )
 from tests.builders.common import a_string
 from tests.builders.outcome_counts import TransferDataFrame
@@ -26,7 +26,7 @@ def test_returns_dataframe_with_supplier_and_transfer_outcome_columns():
         .build()
     )
 
-    actual_dataframe = calculate_outcome_counts_per_supplier_pathway(df)
+    actual_dataframe = count_outcomes_per_supplier_pathway(df)
     actual = actual_dataframe[
         ["requesting_supplier", "sending_supplier", "status", "failure_reason"]
     ]
@@ -57,7 +57,7 @@ def test_returns_dataframe_with_supplier_and_transfer_outcome_columns():
 def test_returns_dataframe_with_unique_final_error_codes(error_codes, expected):
     df = TransferDataFrame().with_row(final_error_codes=error_codes).build()
 
-    actual = calculate_outcome_counts_per_supplier_pathway(df)
+    actual = count_outcomes_per_supplier_pathway(df)
     expected_unique_final_errors = pl.Series("unique_final_errors", [expected])
 
     assert actual["unique_final_errors"].series_equal(expected_unique_final_errors, null_equal=True)
@@ -77,7 +77,7 @@ def test_returns_dataframe_with_unique_final_error_codes(error_codes, expected):
 def test_returns_dataframe_with_unique_sender_error_codes(error_codes, expected):
     df = TransferDataFrame().with_row(sender_error_codes=error_codes).build()
 
-    actual = calculate_outcome_counts_per_supplier_pathway(df)
+    actual = count_outcomes_per_supplier_pathway(df)
     expected_unique_sender_errors = pl.Series("unique_sender_errors", [expected])
 
     assert actual["unique_sender_errors"].series_equal(
@@ -97,7 +97,7 @@ def test_returns_dataframe_with_unique_sender_error_codes(error_codes, expected)
 def test_returns_dataframe_with_unique_intermediate_error_codes(error_codes, expected):
     df = TransferDataFrame().with_row(intermediate_error_codes=error_codes).build()
 
-    actual = calculate_outcome_counts_per_supplier_pathway(df)
+    actual = count_outcomes_per_supplier_pathway(df)
     expected_unique_intermediate_errors = pl.Series("unique_intermediate_errors", [expected])
 
     assert actual["unique_intermediate_errors"].series_equal(
@@ -126,7 +126,7 @@ def test_returns_sorted_count_per_supplier_pathway():
         .build()
     )
 
-    actual_dataframe = calculate_outcome_counts_per_supplier_pathway(df)
+    actual_dataframe = count_outcomes_per_supplier_pathway(df)
     actual = actual_dataframe[["requesting_supplier", "sending_supplier", "count"]]
     expected = pl.from_dict(
         {

@@ -8,7 +8,7 @@ def _unique_errors(errors: List[Optional[int]]):
     return ",".join([str(e) for e in sorted(unique_error_codes)])
 
 
-def calculate_outcome_counts_per_supplier_pathway(dataframe: pl.DataFrame):
+def count_outcomes_per_supplier_pathway(dataframe: pl.DataFrame):
     return (
         dataframe.with_columns(
             [
