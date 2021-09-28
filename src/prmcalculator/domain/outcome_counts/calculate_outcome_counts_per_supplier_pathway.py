@@ -14,6 +14,9 @@ def calculate_outcome_counts_per_supplier_pathway(dataframe: pl.DataFrame) -> pl
         [
             col("final_error_codes").apply(_unique_errors).alias("unique_final_errors"),
             col("sender_error_codes").apply(_unique_errors).alias("unique_sender_errors"),
+            col("intermediate_error_codes")
+            .apply(_unique_errors)
+            .alias("unique_intermediate_errors"),
         ]
     ).select(
         [
@@ -23,5 +26,6 @@ def calculate_outcome_counts_per_supplier_pathway(dataframe: pl.DataFrame) -> pl
             pl.col("failure_reason"),
             pl.col("unique_final_errors"),
             pl.col("unique_sender_errors"),
+            pl.col("unique_intermediate_errors"),
         ]
     )

@@ -9,6 +9,7 @@ from tests.builders.common import a_string
 from tests.builders.outcome_counts import TransferDataFrame
 
 
+@pytest.mark.filterwarnings("ignore:Conversion of")
 def test_returns_dataframe_with_supplier_and_transfer_outcome_columns():
     requesting_supplier = a_string(6)
     sending_supplier = a_string(6)
@@ -42,6 +43,7 @@ def test_returns_dataframe_with_supplier_and_transfer_outcome_columns():
     assert actual.frame_equal(expected, null_equal=True)
 
 
+@pytest.mark.filterwarnings("ignore:Conversion of")
 @pytest.mark.parametrize(
     "error_codes, expected",
     [
@@ -61,6 +63,7 @@ def test_returns_dataframe_with_unique_final_error_codes(error_codes, expected):
     assert actual["unique_final_errors"].series_equal(expected_unique_final_errors, null_equal=True)
 
 
+@pytest.mark.filterwarnings("ignore:Conversion of")
 @pytest.mark.parametrize(
     "error_codes, expected",
     [
@@ -79,4 +82,24 @@ def test_returns_dataframe_with_unique_sender_error_codes(error_codes, expected)
 
     assert actual["unique_sender_errors"].series_equal(
         expected_unique_sender_errors, null_equal=True
+    )
+
+
+@pytest.mark.filterwarnings("ignore:Conversion of")
+@pytest.mark.parametrize(
+    "error_codes, expected",
+    [
+        ([4, 5, 3, 4, 4], "3,4,5"),
+        ([4, 5, 5, 3, 4, 4, 5], "3,4,5"),
+        ([], ""),
+    ],
+)
+def test_returns_dataframe_with_unique_intermediate_error_codes(error_codes, expected):
+    df = TransferDataFrame().with_row(intermediate_error_codes=error_codes).build()
+
+    actual = calculate_outcome_counts_per_supplier_pathway(df)
+    expected_unique_intermediate_errors = pl.Series("unique_intermediate_errors", [expected])
+
+    assert actual["unique_intermediate_errors"].series_equal(
+        expected_unique_intermediate_errors, null_equal=True
     )
