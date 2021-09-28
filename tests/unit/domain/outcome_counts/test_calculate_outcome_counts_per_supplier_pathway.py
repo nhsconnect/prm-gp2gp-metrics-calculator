@@ -103,3 +103,36 @@ def test_returns_dataframe_with_unique_intermediate_error_codes(error_codes, exp
     assert actual["unique_intermediate_errors"].series_equal(
         expected_unique_intermediate_errors, null_equal=True
     )
+
+
+@pytest.mark.filterwarnings("ignore:Conversion of")
+def test_returns_sorted_count_per_supplier_pathway():
+    supplier_a = a_string(6)
+    supplier_b = a_string(6)
+    df = (
+        TransferDataFrame()
+        .with_row(
+            requesting_supplier=supplier_b,
+            sending_supplier=supplier_a,
+        )
+        .with_row(
+            requesting_supplier=supplier_a,
+            sending_supplier=supplier_b,
+        )
+        .with_row(
+            requesting_supplier=supplier_a,
+            sending_supplier=supplier_b,
+        )
+        .build()
+    )
+
+    actual_dataframe = calculate_outcome_counts_per_supplier_pathway(df)
+    actual = actual_dataframe[["requesting_supplier", "sending_supplier", "count"]]
+    expected = pl.from_dict(
+        {
+            "requesting_supplier": [supplier_a, supplier_b],
+            "sending_supplier": [supplier_b, supplier_a],
+            "count": [2, 1],
+        }
+    )
+    assert actual.frame_equal(expected, null_equal=True)
