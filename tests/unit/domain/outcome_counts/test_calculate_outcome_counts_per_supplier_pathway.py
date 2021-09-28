@@ -9,7 +9,7 @@ from tests.builders.common import a_string
 from tests.builders.outcome_counts import TransferDataFrame
 
 
-def test_returns_dataframe_with_select_columns():
+def test_returns_dataframe_with_supplier_and_transfer_outcome_columns():
     requesting_supplier = a_string(6)
     sending_supplier = a_string(6)
     status = TransferStatus.TECHNICAL_FAILURE.value
@@ -21,20 +21,21 @@ def test_returns_dataframe_with_select_columns():
             sending_supplier=sending_supplier,
             status=status,
             failure_reason=failure_reason,
-            final_error_codes=[1],
         )
         .build()
     )
 
-    actual = calculate_outcome_counts_per_supplier_pathway(df)
+    actual_dataframe = calculate_outcome_counts_per_supplier_pathway(df)
+    actual = actual_dataframe[
+        ["requesting_supplier", "sending_supplier", "status", "failure_reason"]
+    ]
+
     expected = pl.from_dict(
         {
             "requesting_supplier": [requesting_supplier],
             "sending_supplier": [sending_supplier],
             "status": [status],
             "failure_reason": [failure_reason],
-            "final_error_codes": [[1]],
-            "unique_final_errors": ["1"],
         }
     )
 
@@ -58,3 +59,24 @@ def test_returns_dataframe_with_unique_final_error_codes(error_codes, expected):
     expected_unique_final_errors = pl.Series("unique_final_errors", [expected])
 
     assert actual["unique_final_errors"].series_equal(expected_unique_final_errors, null_equal=True)
+
+
+@pytest.mark.parametrize(
+    "error_codes, expected",
+    [
+        ([4, 5, 3, 4, 4], "3,4,5"),
+        ([4, 5, 5, 3, 4, 4, 5], "3,4,5"),
+        ([None, None, 5], "5"),
+        ([None], ""),
+        ([], ""),
+    ],
+)
+def test_returns_dataframe_with_unique_sender_error_codes(error_codes, expected):
+    df = TransferDataFrame().with_row(sender_error_codes=error_codes).build()
+
+    actual = calculate_outcome_counts_per_supplier_pathway(df)
+    expected_unique_sender_errors = pl.Series("unique_sender_errors", [expected])
+
+    assert actual["unique_sender_errors"].series_equal(
+        expected_unique_sender_errors, null_equal=True
+    )
