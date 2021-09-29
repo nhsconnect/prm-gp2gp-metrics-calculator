@@ -127,5 +127,7 @@ class PlatformMetricsIO:
             [self._s3_manager.read_parquet(s3_path) for s3_path in s3_uris],
             promote=True,
         )
-
         return convert_table_to_transfers(transfer_table)
+
+    def read_transfer_table(self, s3_uri: str) -> pa.Table:
+        return self._s3_manager.read_parquet(s3_uri)
