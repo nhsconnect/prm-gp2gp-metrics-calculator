@@ -2,6 +2,7 @@ from dataclasses import asdict
 from typing import List, Dict
 import logging
 import pyarrow as pa
+import polars as pl
 
 from prmcalculator.domain.gp2gp.transfer import Transfer, convert_table_to_transfers
 from prmcalculator.domain.national.construct_national_metrics_presentation import (
@@ -106,6 +107,16 @@ class PlatformMetricsIO:
         ods_metadata_dict = self._s3_manager.read_json(s3_uri)
         return OrganisationMetadata.from_dict(ods_metadata_dict)
 
+    def read_transfer_data(self, s3_uris: List[str]) -> List[Transfer]:
+        transfer_table = pa.concat_tables(
+            [self._s3_manager.read_parquet(s3_path) for s3_path in s3_uris],
+            promote=True,
+        )
+        return convert_table_to_transfers(transfer_table)
+
+    def read_transfer_table(self, s3_uri: str) -> pa.Table:
+        return self._s3_manager.read_parquet(s3_uri)
+
     def write_national_metrics(
         self, national_metrics_presentation_data: NationalMetricsPresentation, s3_uri: str
     ):
@@ -122,12 +133,7 @@ class PlatformMetricsIO:
             metadata=self._output_metadata,
         )
 
-    def read_transfer_data(self, s3_uris: List[str]) -> List[Transfer]:
-        transfer_table = pa.concat_tables(
-            [self._s3_manager.read_parquet(s3_path) for s3_path in s3_uris],
-            promote=True,
+    def write_outcome_count(self, dataframe: pl.DataFrame, s3_uri: str):
+        self._s3_manager.write_csv(
+            object_uri=s3_uri, dataframe=dataframe, metadata=self._output_metadata
         )
-        return convert_table_to_transfers(transfer_table)
-
-    def read_transfer_table(self, s3_uri: str) -> pa.Table:
-        return self._s3_manager.read_parquet(s3_uri)
