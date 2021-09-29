@@ -6,6 +6,8 @@ from typing import Dict
 from urllib.parse import urlparse
 import pyarrow.parquet as pq
 from pyarrow.lib import Table
+import pyarrow.csv as csv
+import polars as pl
 
 logger = logging.getLogger(__name__)
 
@@ -58,3 +60,10 @@ class S3DataManager:
         response = s3_object.get()
         body = BytesIO(response["Body"].read())
         return pq.read_table(body)
+
+    def write_csv(self, object_uri: str, dataframe: pl.DataFrame, metadata: Dict[str, str]):
+        s3_object = self._object_from_uri(object_uri)
+        csv_buffer = BytesIO()
+        csv.write_csv(dataframe.to_arrow(), csv_buffer)
+        csv_buffer.seek(0)
+        s3_object.put(Body=csv_buffer.getvalue(), ContentType="text/csv", Metadata=metadata)
