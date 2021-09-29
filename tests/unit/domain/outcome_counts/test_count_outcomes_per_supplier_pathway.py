@@ -136,3 +136,30 @@ def test_returns_sorted_count_per_supplier_pathway():
         }
     )
     assert actual.frame_equal(expected, null_equal=True)
+
+
+@pytest.mark.filterwarnings("ignore:Conversion of")
+def test_returns_sorted_count_per_transfer_outcome():
+    integrated_status = TransferStatus.INTEGRATED_ON_TIME.value
+    integrated_failure_reason = None
+    failed_status = TransferStatus.TECHNICAL_FAILURE.value
+    failed_failure_reason = TransferFailureReason.FINAL_ERROR.value
+    df = (
+        TransferDataFrame()
+        .with_row(status=integrated_status, failure_reason=integrated_failure_reason)
+        .with_row(status=integrated_status, failure_reason=integrated_failure_reason)
+        .with_row(status=failed_status, failure_reason=failed_failure_reason)
+        .build()
+    )
+
+    actual_dataframe = count_outcomes_per_supplier_pathway(df)
+    actual = actual_dataframe[["status", "failure_reason", "count"]]
+
+    expected = pl.from_dict(
+        {
+            "status": [integrated_status, failed_status],
+            "failure_reason": [integrated_failure_reason, failed_failure_reason],
+            "count": [2, 1],
+        }
+    )
+    assert actual.frame_equal(expected, null_equal=True)

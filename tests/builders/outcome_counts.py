@@ -4,6 +4,9 @@ from dateutil.tz import UTC
 from prmcalculator.domain.gp2gp.transfer import TransferStatus
 from tests.builders.common import a_string, a_datetime, an_integer
 
+requesting_supplier = a_string(5)
+sending_supplier = a_string(5)
+
 
 class TransferDataFrame:
     def __init__(self):
@@ -28,8 +31,10 @@ class TransferDataFrame:
             kwargs.get("requesting_practice_asid", a_string(12))
         )
         self._sending_practice_asid_list.append(kwargs.get("sending_practice_asid", a_string(12)))
-        self._requesting_supplier_list.append(kwargs.get("requesting_supplier", a_string(5)))
-        self._sending_supplier_list.append(kwargs.get("sending_supplier", a_string(5)))
+        self._requesting_supplier_list.append(
+            kwargs.get("requesting_supplier", requesting_supplier)
+        )
+        self._sending_supplier_list.append(kwargs.get("sending_supplier", sending_supplier))
         self._sender_error_codes_list.append(kwargs.get("sender_error_codes", []))
         self._final_error_codes_list.append(kwargs.get("final_error_codes", []))
         self._intermediate_error_codes_list.append(kwargs.get("intermediate_error_codes", []))
