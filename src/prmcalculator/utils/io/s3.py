@@ -62,8 +62,16 @@ class S3DataManager:
         return pq.read_table(body)
 
     def write_csv(self, object_uri: str, dataframe: pl.DataFrame, metadata: Dict[str, str]):
+        logger.info(
+            "Attempting to upload: " + object_uri,
+            extra={"event": "ATTEMPTING_UPLOAD_CSV_TO_S3", "object_uri": object_uri},
+        )
         s3_object = self._object_from_uri(object_uri)
         csv_buffer = BytesIO()
         csv.write_csv(dataframe.to_arrow(), csv_buffer)
         csv_buffer.seek(0)
         s3_object.put(Body=csv_buffer.getvalue(), ContentType="text/csv", Metadata=metadata)
+        logger.info(
+            "Successfully uploaded to: " + object_uri,
+            extra={"event": "UPLOADED_CSV_TO_S3", "object_uri": object_uri},
+        )

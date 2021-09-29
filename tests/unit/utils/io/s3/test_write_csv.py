@@ -1,8 +1,10 @@
+from unittest import mock
+
 import boto3
 from moto import mock_s3
 import polars as pl
 
-from prmcalculator.utils.io.s3 import S3DataManager
+from prmcalculator.utils.io.s3 import S3DataManager, logger
 from tests.unit.utils.io.s3 import MOTO_MOCK_REGION
 
 SOME_METADATA = {"metadata_field": "metadata_value"}
@@ -67,3 +69,29 @@ def test_writes_metadata_when_supplied():
     actual = bucket.Object("test_object.csv").get()["Metadata"]
 
     assert actual == expected
+
+
+@mock_s3
+def test_logs_writing_file_events():
+    conn = boto3.resource("s3", region_name=MOTO_MOCK_REGION)
+    conn.create_bucket(Bucket="test_bucket")
+    data = {"Fruit": ["Banana"]}
+    df = pl.DataFrame(data)
+
+    s3_manager = S3DataManager(conn)
+    object_uri = "s3://test_bucket/test_object.csv"
+
+    with mock.patch.object(logger, "info") as mock_log_info:
+        s3_manager.write_csv(object_uri=object_uri, dataframe=df, metadata=SOME_METADATA)
+        mock_log_info.assert_has_calls(
+            [
+                mock.call(
+                    f"Attempting to upload: {object_uri}",
+                    extra={"event": "ATTEMPTING_UPLOAD_CSV_TO_S3", "object_uri": object_uri},
+                ),
+                mock.call(
+                    f"Successfully uploaded to: {object_uri}",
+                    extra={"event": "UPLOADED_CSV_TO_S3", "object_uri": object_uri},
+                ),
+            ]
+        )
