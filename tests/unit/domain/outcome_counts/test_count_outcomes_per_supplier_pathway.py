@@ -163,3 +163,42 @@ def test_returns_sorted_count_per_transfer_outcome():
         }
     )
     assert actual.frame_equal(expected, null_equal=True)
+
+
+@pytest.mark.filterwarnings("ignore:Conversion of")
+@pytest.mark.parametrize(
+    "scenario_a_sender_error_codes, scenario_a_unique_sender_errors,\
+     scenario_b_sender_error_codes, scenario_b_unique_sender_errors",
+    [
+        ([15], "15", [], ""),
+        ([5, 3, 15, 5], "3,5,15", [43, 43], "43"),
+        ([5], "5", [None], ""),
+    ],
+)
+def test_returns_sorted_count_per_unique_sender_errors(
+    scenario_a_sender_error_codes,
+    scenario_a_unique_sender_errors,
+    scenario_b_sender_error_codes,
+    scenario_b_unique_sender_errors,
+):
+    df = (
+        TransferDataFrame()
+        .with_row(sender_error_codes=scenario_a_sender_error_codes)
+        .with_row(sender_error_codes=scenario_b_sender_error_codes)
+        .with_row(sender_error_codes=scenario_b_sender_error_codes)
+        .build()
+    )
+
+    actual_dataframe = count_outcomes_per_supplier_pathway(df)
+    actual = actual_dataframe[["unique_sender_errors", "count"]]
+
+    expected = pl.from_dict(
+        {
+            "unique_sender_errors": [
+                scenario_b_unique_sender_errors,
+                scenario_a_unique_sender_errors,
+            ],
+            "count": [2, 1],
+        }
+    )
+    assert actual.frame_equal(expected, null_equal=True)
