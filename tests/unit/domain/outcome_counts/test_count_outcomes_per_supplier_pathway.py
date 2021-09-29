@@ -167,36 +167,51 @@ def test_returns_sorted_count_per_transfer_outcome():
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
 @pytest.mark.parametrize(
-    "scenario_a_sender_error_codes, scenario_a_unique_sender_errors,\
-     scenario_b_sender_error_codes, scenario_b_unique_sender_errors",
+    "error_codes_field_name, unique_error_codes_field_name, scenario_a_error_codes, \
+     scenario_a_unique_errors, scenario_b_error_codes, scenario_b_unique_errors",
     [
-        ([15], "15", [], ""),
-        ([5, 3, 15, 5], "3,5,15", [43, 43], "43"),
-        ([5], "5", [None], ""),
+        ("sender_error_codes", "unique_sender_errors", [15], "15", [], ""),
+        ("sender_error_codes", "unique_sender_errors", [5, 3, 15, 5], "3,5,15", [43, 43], "43"),
+        ("sender_error_codes", "unique_sender_errors", [5], "5", [None], ""),
+        ("intermediate_error_codes", "unique_intermediate_errors", [23], "23", [], ""),
+        (
+            "intermediate_error_codes",
+            "unique_intermediate_errors",
+            [1, 4, 30, 1],
+            "1,4,30",
+            [34, 34],
+            "34",
+        ),
+        ("final_error_codes", "unique_final_errors", [23], "23", [], ""),
+        ("final_error_codes", "unique_final_errors", [6, 9, 10, 6], "6,9,10", [10, 10], "10"),
+        ("final_error_codes", "unique_final_errors", [1], "1", [None], ""),
     ],
 )
-def test_returns_sorted_count_per_unique_sender_errors(
-    scenario_a_sender_error_codes,
-    scenario_a_unique_sender_errors,
-    scenario_b_sender_error_codes,
-    scenario_b_unique_sender_errors,
+def test_returns_sorted_count_per_unique_error_combinations(
+    error_codes_field_name,
+    unique_error_codes_field_name,
+    scenario_a_error_codes,
+    scenario_a_unique_errors,
+    scenario_b_error_codes,
+    scenario_b_unique_errors,
 ):
+
     df = (
         TransferDataFrame()
-        .with_row(sender_error_codes=scenario_a_sender_error_codes)
-        .with_row(sender_error_codes=scenario_b_sender_error_codes)
-        .with_row(sender_error_codes=scenario_b_sender_error_codes)
+        .with_row(**{error_codes_field_name: scenario_a_error_codes})
+        .with_row(**{error_codes_field_name: scenario_a_error_codes})
+        .with_row(**{error_codes_field_name: scenario_b_error_codes})
         .build()
     )
 
     actual_dataframe = count_outcomes_per_supplier_pathway(df)
-    actual = actual_dataframe[["unique_sender_errors", "count"]]
+    actual = actual_dataframe[[unique_error_codes_field_name, "count"]]
 
     expected = pl.from_dict(
         {
-            "unique_sender_errors": [
-                scenario_b_unique_sender_errors,
-                scenario_a_unique_sender_errors,
+            unique_error_codes_field_name: [
+                scenario_a_unique_errors,
+                scenario_b_unique_errors,
             ],
             "count": [2, 1],
         }
