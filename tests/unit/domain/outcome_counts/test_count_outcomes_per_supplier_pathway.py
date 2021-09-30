@@ -220,9 +220,10 @@ def test_returns_sorted_count_per_unique_error_combinations(
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
-def test_returns_sorted_count_by_count_and_supplier_per_scenario():
+def test_returns_sorted_count_by_count_and_supplier_and_status_per_scenario():
     integrated_status = TransferStatus.INTEGRATED_ON_TIME.value
     failed_status = TransferStatus.TECHNICAL_FAILURE.value
+    process_failure_status = TransferStatus.PROCESS_FAILURE.value
     supplier_a = "SupplierA"
     supplier_b = "SupplierB"
 
@@ -249,18 +250,28 @@ def test_returns_sorted_count_by_count_and_supplier_per_scenario():
             requesting_supplier=supplier_a,
             sending_supplier=supplier_b,
         )
+        .with_row(
+            status=process_failure_status,
+            requesting_supplier=supplier_b,
+            sending_supplier=supplier_a,
+        )
         .build()
     )
 
     actual_dataframe = count_outcomes_per_supplier_pathway(df)
     actual = actual_dataframe[["status", "requesting_supplier", "sending_supplier", "count"]]
-
     expected = pl.from_dict(
         {
-            "status": [integrated_status, integrated_status, failed_status, failed_status],
-            "requesting_supplier": [supplier_b, supplier_a, supplier_a, supplier_b],
-            "sending_supplier": [supplier_a, supplier_b, supplier_b, supplier_a],
-            "count": [3, 2, 1, 1],
+            "status": [
+                integrated_status,
+                integrated_status,
+                failed_status,
+                process_failure_status,
+                failed_status,
+            ],
+            "requesting_supplier": [supplier_b, supplier_a, supplier_a, supplier_b, supplier_b],
+            "sending_supplier": [supplier_a, supplier_b, supplier_b, supplier_a, supplier_a],
+            "count": [3, 2, 1, 1, 1],
         }
     )
     assert actual.frame_equal(expected, null_equal=True)
