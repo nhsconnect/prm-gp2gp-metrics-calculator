@@ -31,5 +31,8 @@ def count_outcomes_per_supplier_pathway(dataframe: pl.DataFrame):
             ]
         )
         .agg([count("conversation_id").alias("count")])
-        .sort("count", reverse=True)
+        .sort(
+            [col("count"), col("requesting_supplier"), col("sending_supplier")],
+            reverse=[True, False, False],
+        )
     )
