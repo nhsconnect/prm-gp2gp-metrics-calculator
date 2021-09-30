@@ -52,6 +52,7 @@ def test_returns_dataframe_with_supplier_and_transfer_outcome_columns():
         ([None, None, 9], "9 - Unexpected EHR"),
         ([None], ""),
         ([], ""),
+        ([1], "1 - Unknown error code"),
     ],
 )
 def test_returns_dataframe_with_unique_final_error_codes(error_codes, expected):
@@ -72,6 +73,7 @@ def test_returns_dataframe_with_unique_final_error_codes(error_codes, expected):
         ([None, None, 9], "9 - Unexpected EHR"),
         ([None], ""),
         ([], ""),
+        ([1], "1 - Unknown error code"),
     ],
 )
 def test_returns_dataframe_with_unique_sender_errors(error_codes, expected):
@@ -92,6 +94,7 @@ def test_returns_dataframe_with_unique_sender_errors(error_codes, expected):
         ([7, 9, 6, 7, 7], "6 - Not at surgery, 7 - GP2GP disabled, 9 - Unexpected EHR"),
         ([7, 9, 9, 6, 7, 7, 9], "6 - Not at surgery, 7 - GP2GP disabled, 9 - Unexpected EHR"),
         ([], ""),
+        ([1], "1 - Unknown error code"),
     ],
 )
 def test_returns_dataframe_with_unique_intermediate_error_codes(error_codes, expected):
