@@ -6,6 +6,7 @@ from io import BytesIO, StringIO
 from os import environ
 from threading import Thread
 import boto3
+import pytest
 from botocore.config import Config
 from moto.server import DomainDispatcherApplication, create_backend_app
 from pyarrow._s3fs import S3FileSystem
@@ -100,6 +101,7 @@ fake_s3_port = 8887
 fake_s3_url = f"http://{fake_s3_host}:{fake_s3_port}"
 
 
+@pytest.mark.filterwarnings("ignore:Conversion of")
 def test_end_to_end_with_fake_s3(datadir):
     fake_s3_access_key = "testing"
     fake_s3_secret_key = "testing"

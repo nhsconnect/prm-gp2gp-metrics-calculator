@@ -37,7 +37,6 @@ def _error_description(error_code: int) -> str:
 
 def _unique_errors(errors: List[Optional[int]]):
     unique_error_codes = {error_code for error_code in errors if error_code is not None}
-
     return ", ".join([f"{e} - {_error_description(e)}" for e in sorted(unique_error_codes)])
 
 

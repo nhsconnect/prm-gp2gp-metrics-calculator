@@ -67,7 +67,7 @@ class MetricsPipeline:
         transfers_data_s3_uris = self._uris.transfer_data(months)
         return self._io.read_transfer_data(transfers_data_s3_uris)
 
-    def _read_transfer_table(self, months):
+    def _read_transfer_table(self, months) -> pa.Table:
         transfer_table_s3_uri = self._uris.transfer_data(months)[0]
         return self._io.read_transfer_table(transfer_table_s3_uri)
 
@@ -86,7 +86,8 @@ class MetricsPipeline:
             observability_probe=PracticeMetricsObservabilityProbe(),
         )
 
-    def _count_outcomes_per_supplier_pathway(self, transfer_table: pa.Table):
+    @staticmethod
+    def _count_outcomes_per_supplier_pathway(transfer_table: pa.Table):
         dataframe = pl.from_arrow(transfer_table)
         return count_outcomes_per_supplier_pathway(dataframe)
 
