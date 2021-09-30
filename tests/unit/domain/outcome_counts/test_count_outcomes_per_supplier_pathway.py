@@ -299,3 +299,33 @@ def test_returns_sorted_count_by_count_and_supplier_and_status_per_scenario():
         }
     )
     assert actual.frame_equal(expected, null_equal=True)
+
+
+@pytest.mark.filterwarnings("ignore:Conversion of")
+def test_returns_dataframe_with_percentage_of_transfers_rounded_to_3_decimal_places():
+    integrated_status = TransferStatus.INTEGRATED_ON_TIME.value
+    failed_status = TransferStatus.TECHNICAL_FAILURE.value
+    process_failure_status = TransferStatus.PROCESS_FAILURE.value
+
+    df = (
+        TransferDataFrame()
+        .with_row(status=integrated_status)
+        .with_row(status=integrated_status)
+        .with_row(status=integrated_status)
+        .with_row(status=integrated_status)
+        .with_row(status=failed_status)
+        .with_row(status=failed_status)
+        .with_row(status=process_failure_status)
+        .build()
+    )
+
+    actual_dataframe = count_outcomes_per_supplier_pathway(df)
+    actual = actual_dataframe[["status", "%_of_transfers"]]
+
+    expected = pl.from_dict(
+        {
+            "status": [integrated_status, failed_status, process_failure_status],
+            "%_of_transfers": [57.143, 28.571, 14.286],
+        }
+    )
+    assert actual.frame_equal(expected, null_equal=True)

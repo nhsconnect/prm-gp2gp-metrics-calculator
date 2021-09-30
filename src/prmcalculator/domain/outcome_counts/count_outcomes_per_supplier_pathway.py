@@ -40,8 +40,14 @@ def _unique_errors(errors: List[Optional[int]]):
     return ", ".join([f"{e} - {_error_description(e)}" for e in sorted(unique_error_codes)])
 
 
+def _add_percentage_column(dataframe, count_column_name, new_column_name):
+    total = dataframe[count_column_name].sum()
+    dataframe[new_column_name] = ((dataframe[count_column_name] / total) * 100).round(3)
+    return dataframe
+
+
 def count_outcomes_per_supplier_pathway(dataframe):
-    return (
+    outcome_counts_dataframe = (
         dataframe.with_columns(
             [
                 col("final_error_codes").apply(_unique_errors).alias("unique_final_errors"),
@@ -68,3 +74,5 @@ def count_outcomes_per_supplier_pathway(dataframe):
             reverse=[True, False, False, False],
         )
     )
+
+    return _add_percentage_column(outcome_counts_dataframe, "count", "%_of_transfers")
