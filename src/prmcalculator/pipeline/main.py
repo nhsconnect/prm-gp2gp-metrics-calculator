@@ -1,10 +1,15 @@
 from os import environ
 import boto3
 import logging
+import pyarrow as pa
+import polars as pl
 
 from prmcalculator.domain.national.calculate_national_metrics_data import (
     calculate_national_metrics_data,
     NationalMetricsObservabilityProbe,
+)
+from prmcalculator.domain.outcome_counts.count_outcomes_per_supplier_pathway import (
+    count_outcomes_per_supplier_pathway,
 )
 from prmcalculator.domain.practice.calculate_practice_metrics import (
     calculate_practice_metrics,
@@ -62,6 +67,10 @@ class MetricsPipeline:
         transfers_data_s3_uris = self._uris.transfer_data(months)
         return self._io.read_transfer_data(transfers_data_s3_uris)
 
+    def _read_transfer_table(self, months):
+        transfer_table_s3_uri = self._uris.transfer_data(months)[0]
+        return self._io.read_transfer_table(transfer_table_s3_uri)
+
     def _calculate_national_metrics(self, transfers):
         return calculate_national_metrics_data(
             transfers=transfers,
@@ -77,6 +86,10 @@ class MetricsPipeline:
             observability_probe=PracticeMetricsObservabilityProbe(),
         )
 
+    def _count_outcomes_per_supplier_pathway(self, transfer_table: pa.Table):
+        dataframe = pl.from_arrow(transfer_table)
+        return count_outcomes_per_supplier_pathway(dataframe)
+
     def _write_practice_metrics(self, practice_metrics, month):
         self._io.write_practice_metrics(
             practice_metrics_presentation_data=practice_metrics,
@@ -89,16 +102,27 @@ class MetricsPipeline:
             s3_uri=self._uris.national_metrics(month),
         )
 
+    def _write_supplier_pathway_outcome_counts(
+        self, supplier_pathway_outcome_counts: pl.DataFrame, month
+    ):
+        self._io.write_outcome_counts(
+            dataframe=supplier_pathway_outcome_counts,
+            s3_uri=self._uris.supplier_pathway_outcome_counts(month),
+        )
+
     def run(self):
         date_anchor_month = self._reporting_window.date_anchor_month
         metric_months = self._reporting_window.metric_months
         last_month = self._reporting_window.last_metric_month
         ods_metadata = self._read_ods_metadata(date_anchor_month)
         transfers = self._read_transfer_data(metric_months)
+        transfer_table = self._read_transfer_table(metric_months)
         national_metrics = self._calculate_national_metrics(transfers)
         practice_metrics = self._calculate_practice_metrics(transfers, ods_metadata)
+        supplier_pathway_outcome_counts = self._count_outcomes_per_supplier_pathway(transfer_table)
         self._write_national_metrics(national_metrics, last_month)
         self._write_practice_metrics(practice_metrics, last_month)
+        self._write_supplier_pathway_outcome_counts(supplier_pathway_outcome_counts, last_month)
 
 
 def main():

@@ -51,6 +51,19 @@
     "SupplierC",
     "SupplierC"
   ],
+  "sending_supplier": [
+    "",
+    "SupplierB",
+    "SupplierA",
+    "SupplierC",
+    "SupplierB",
+    "SupplierB",
+    "SupplierC",
+    "SupplierB",
+    "SupplierB",
+    "SupplierA",
+    "SupplierB"
+  ],
   "sla_duration": [
     398306,
     830306,
@@ -89,6 +102,45 @@
     null,
     null,
     "Transferred, not integrated, with error"
+  ],
+  "final_error_codes": [
+    [],
+    [],
+    [],
+    [2, 2],
+    [2],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ],
+  "sender_error_codes": [
+    [8],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ],
+  "intermediate_error_codes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [1]
   ]
 }
 

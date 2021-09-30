@@ -9,10 +9,14 @@
         "123456789123"
     ],
     "requesting_supplier": [""],
+    "sending_supplier": ["SupplierA"],
     "sla_duration": [398306],
     "status": [
         "INTEGRATED_ON_TIME"
     ],
-    "failure_reason": [null]
+    "failure_reason": [""],
+    "final_error_codes": [[0]],
+    "sender_error_codes": [[0]],
+    "intermediate_error_codes": [[0]]
 }
 

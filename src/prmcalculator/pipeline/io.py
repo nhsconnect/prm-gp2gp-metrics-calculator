@@ -25,6 +25,7 @@ class PlatformMetricsS3UriResolver:
     _ORG_METADATA_FILE_NAME = "organisationMetadata.json"
     _PRACTICE_METRICS_FILE_NAME = "practiceMetrics.json"
     _NATIONAL_METRICS_FILE_NAME = "nationalMetrics.json"
+    _SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME = "supplier_pathway_outcome_counts.csv"
     _TRANSFER_DATA_FILE_NAME = "transfers.parquet"
 
     def __init__(
@@ -70,6 +71,18 @@ class PlatformMetricsS3UriResolver:
                 self._data_platform_metrics_version,
                 f"{year}/{month}",
                 self._NATIONAL_METRICS_FILE_NAME,
+            ]
+        )
+        return f"s3://{s3_key}"
+
+    def supplier_pathway_outcome_counts(self, year_month: YearMonth) -> str:
+        year, month = year_month
+        s3_key = "/".join(
+            [
+                self._data_platform_metrics_bucket,
+                self._data_platform_metrics_version,
+                f"{year}/{month}",
+                self._SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME,
             ]
         )
         return f"s3://{s3_key}"
@@ -133,7 +146,7 @@ class PlatformMetricsIO:
             metadata=self._output_metadata,
         )
 
-    def write_outcome_count(self, dataframe: pl.DataFrame, s3_uri: str):
+    def write_outcome_counts(self, dataframe: pl.DataFrame, s3_uri: str):
         self._s3_manager.write_csv(
             object_uri=s3_uri, dataframe=dataframe, metadata=self._output_metadata
         )

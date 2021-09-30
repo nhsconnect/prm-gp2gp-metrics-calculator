@@ -1,5 +1,4 @@
 from typing import List, Optional
-import polars as pl
 from polars import col, count  # type: ignore
 
 
@@ -8,7 +7,7 @@ def _unique_errors(errors: List[Optional[int]]):
     return ",".join([str(e) for e in sorted(unique_error_codes)])
 
 
-def count_outcomes_per_supplier_pathway(dataframe: pl.DataFrame):
+def count_outcomes_per_supplier_pathway(dataframe):
     return (
         dataframe.with_columns(
             [

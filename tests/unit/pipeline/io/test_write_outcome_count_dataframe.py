@@ -23,7 +23,7 @@ def test_given_dataframe_will_write_csv():
     data = {"Fruit": ["Banana"]}
     df = pl.DataFrame(data)
 
-    metrics_io.write_outcome_count(dataframe=df, s3_uri=s3_uri)
+    metrics_io.write_outcome_counts(dataframe=df, s3_uri=s3_uri)
 
     expected_dataframe = df
 

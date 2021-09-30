@@ -1,0 +1,10 @@
+requesting_supplier,sending_supplier,status,failure_reason,unique_final_errors,unique_sender_errors,unique_intermediate_errors,count
+"SupplierA","SupplierB","PROCESS_FAILURE","Transferred, not integrated","","","",2
+"SupplierC","SupplierA","INTEGRATED_ON_TIME",,"","","",2
+"","","INTEGRATED_ON_TIME",,"","8","",1
+"","SupplierB","INTEGRATED_ON_TIME",,"","","",1
+"SupplierA","SupplierB","TECHNICAL_FAILURE","Final Error","2","","",1
+"SupplierA","SupplierC","PROCESS_FAILURE","Transferred, not integrated","","","",1
+"SupplierB","SupplierC","TECHNICAL_FAILURE","Final Error","2","","",1
+"SupplierC","SupplierB","PROCESS_FAILURE","Integrated Late","","","",1
+"SupplierC","SupplierB","UNCLASSIFIED_FAILURE","Transferred, not integrated, with error","","","1",1
