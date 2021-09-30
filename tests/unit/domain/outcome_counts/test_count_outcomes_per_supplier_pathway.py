@@ -47,9 +47,9 @@ def test_returns_dataframe_with_supplier_and_transfer_outcome_columns():
 @pytest.mark.parametrize(
     "error_codes, expected",
     [
-        ([4, 5, 3, 4, 4], "3,4,5"),
-        ([4, 5, 5, 3, 4, 4, 5], "3,4,5"),
-        ([None, None, 5], "5"),
+        ([7, 9, 6, 7, 7], "6 - Not at surgery, 7 - GP2GP disabled, 9 - Unexpected EHR"),
+        ([7, 9, 9, 6, 7, 7, 9], "6 - Not at surgery, 7 - GP2GP disabled, 9 - Unexpected EHR"),
+        ([None, None, 9], "9 - Unexpected EHR"),
         ([None], ""),
         ([], ""),
     ],
@@ -67,14 +67,14 @@ def test_returns_dataframe_with_unique_final_error_codes(error_codes, expected):
 @pytest.mark.parametrize(
     "error_codes, expected",
     [
-        ([4, 5, 3, 4, 4], "3,4,5"),
-        ([4, 5, 5, 3, 4, 4, 5], "3,4,5"),
-        ([None, None, 5], "5"),
+        ([7, 9, 6, 7, 7], "6 - Not at surgery, 7 - GP2GP disabled, 9 - Unexpected EHR"),
+        ([7, 9, 9, 6, 7, 7, 9], "6 - Not at surgery, 7 - GP2GP disabled, 9 - Unexpected EHR"),
+        ([None, None, 9], "9 - Unexpected EHR"),
         ([None], ""),
         ([], ""),
     ],
 )
-def test_returns_dataframe_with_unique_sender_error_codes(error_codes, expected):
+def test_returns_dataframe_with_unique_sender_errors(error_codes, expected):
     df = TransferDataFrame().with_row(sender_error_codes=error_codes).build()
 
     actual = count_outcomes_per_supplier_pathway(df)
@@ -89,8 +89,8 @@ def test_returns_dataframe_with_unique_sender_error_codes(error_codes, expected)
 @pytest.mark.parametrize(
     "error_codes, expected",
     [
-        ([4, 5, 3, 4, 4], "3,4,5"),
-        ([4, 5, 5, 3, 4, 4, 5], "3,4,5"),
+        ([7, 9, 6, 7, 7], "6 - Not at surgery, 7 - GP2GP disabled, 9 - Unexpected EHR"),
+        ([7, 9, 9, 6, 7, 7, 9], "6 - Not at surgery, 7 - GP2GP disabled, 9 - Unexpected EHR"),
         ([], ""),
     ],
 )
@@ -170,21 +170,42 @@ def test_returns_sorted_count_per_transfer_outcome():
     "error_codes_field_name, unique_error_codes_field_name, scenario_a_error_codes, \
      scenario_a_unique_errors, scenario_b_error_codes, scenario_b_unique_errors",
     [
-        ("sender_error_codes", "unique_sender_errors", [15], "15", [], ""),
-        ("sender_error_codes", "unique_sender_errors", [5, 3, 15, 5], "3,5,15", [43, 43], "43"),
-        ("sender_error_codes", "unique_sender_errors", [5], "5", [None], ""),
-        ("intermediate_error_codes", "unique_intermediate_errors", [23], "23", [], ""),
+        ("sender_error_codes", "unique_sender_errors", [15], "15 - ABA suppressed", [], ""),
+        (
+            "sender_error_codes",
+            "unique_sender_errors",
+            [7, 6, 15, 7],
+            "6 - Not at surgery, 7 - GP2GP disabled, 15 - ABA suppressed",
+            [99, 99],
+            "99 - Unexpected",
+        ),
+        ("sender_error_codes", "unique_sender_errors", [10], "10 - Failed to generate", [None], ""),
         (
             "intermediate_error_codes",
             "unique_intermediate_errors",
-            [1, 4, 30, 1],
-            "1,4,30",
-            [34, 34],
-            "34",
+            [13],
+            "13 - Config issue",
+            [],
+            "",
         ),
-        ("final_error_codes", "unique_final_errors", [23], "23", [], ""),
-        ("final_error_codes", "unique_final_errors", [6, 9, 10, 6], "6,9,10", [10, 10], "10"),
-        ("final_error_codes", "unique_final_errors", [1], "1", [None], ""),
+        (
+            "intermediate_error_codes",
+            "unique_intermediate_errors",
+            [9, 13, 24, 9],
+            "9 - Unexpected EHR, 13 - Config issue, 24 - SDS lookup",
+            [20, 20],
+            "20 - Spine error",
+        ),
+        ("final_error_codes", "unique_final_errors", [23], "23 - Sender not LM compliant", [], ""),
+        (
+            "final_error_codes",
+            "unique_final_errors",
+            [6, 9, 10, 6],
+            "6 - Not at surgery, 9 - Unexpected EHR, 10 - Failed to generate",
+            [11, 11],
+            "11 - Failed to integrate",
+        ),
+        ("final_error_codes", "unique_final_errors", [17], "17 - ABA wrong patient", [None], ""),
     ],
 )
 def test_returns_sorted_count_per_unique_error_combinations(
