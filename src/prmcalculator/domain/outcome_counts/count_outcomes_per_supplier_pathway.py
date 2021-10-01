@@ -1,6 +1,8 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 import polars as pl
-from polars import col, count  # type: ignore
+from polars import col, count, when  # type: ignore
+
+from prmcalculator.domain.gp2gp.transfer import TransferStatus
 
 default_error_description_mapping = {
     6: "Not at surgery",
@@ -41,8 +43,39 @@ def _unique_errors(errors: List[Optional[int]]):
     return ", ".join([f"{e} - {_error_description(e)}" for e in sorted(unique_error_codes)])
 
 
-def _calculate_percentage(count_column: pl.Series, total: int) -> pl.Series:
+def _calculate_percentage(count_column: pl.Series, total: int) -> Union[pl.Series, float]:
     return ((count_column / total) * 100).round(3)
+
+
+def _add_percentage_of_transfers_column(dataframe: pl.DataFrame) -> pl.DataFrame:
+    total_number_of_transfers = dataframe["count"].sum()
+    dataframe["%_of_transfers"] = _calculate_percentage(
+        dataframe["count"], total_number_of_transfers
+    )
+    return dataframe
+
+
+def _add_percentage_of_technical_failures_column(dataframe: pl.DataFrame) -> pl.DataFrame:
+    total_number_of_failed_transfers = dataframe.filter(
+        col("status") == TransferStatus.TECHNICAL_FAILURE.value
+    )["count"].sum()
+
+    if total_number_of_failed_transfers is not None:
+        dataframe = dataframe[
+            [
+                col("*"),
+                (
+                    when(col("status") == TransferStatus.TECHNICAL_FAILURE.value)
+                    .then(
+                        _calculate_percentage(dataframe["count"], total_number_of_failed_transfers)
+                    )
+                    .otherwise(None)
+                    .alias("%_of_technical_failures")
+                ),
+            ]
+        ]
+
+    return dataframe
 
 
 def count_outcomes_per_supplier_pathway(dataframe):
@@ -74,9 +107,9 @@ def count_outcomes_per_supplier_pathway(dataframe):
         )
     )
 
-    total_number_of_transfers = outcome_counts_dataframe["count"].sum()
-    outcome_counts_dataframe["%_of_transfers"] = _calculate_percentage(
-        outcome_counts_dataframe["count"], total_number_of_transfers
+    outcome_counts_dataframe = _add_percentage_of_transfers_column(outcome_counts_dataframe)
+    outcome_counts_dataframe = _add_percentage_of_technical_failures_column(
+        outcome_counts_dataframe
     )
 
     return outcome_counts_dataframe

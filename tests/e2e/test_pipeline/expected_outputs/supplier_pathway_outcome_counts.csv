@@ -1,10 +1,10 @@
-requesting_supplier,sending_supplier,status,failure_reason,unique_final_errors,unique_sender_errors,unique_intermediate_errors,count,%_of_transfers
-"SupplierA","SupplierB","PROCESS_FAILURE","Transferred, not integrated","","","",2,18.182
-"SupplierC","SupplierA","INTEGRATED_ON_TIME",,"","","",2,18.182
-"","","INTEGRATED_ON_TIME",,"","25 - Timeout","",1,9.091
-"","SupplierB","INTEGRATED_ON_TIME",,"","","",1,9.091
-"SupplierA","SupplierB","TECHNICAL_FAILURE","Final Error","19 - Unauthorised req","","",1,9.091
-"SupplierA","SupplierC","PROCESS_FAILURE","Transferred, not integrated","","","",1,9.091
-"SupplierB","SupplierC","TECHNICAL_FAILURE","Final Error","26 - Filed as attachment","","",1,9.091
-"SupplierC","SupplierB","PROCESS_FAILURE","Integrated Late","","","",1,9.091
-"SupplierC","SupplierB","UNCLASSIFIED_FAILURE","Transferred, not integrated, with error","","","99 - Unexpected",1,9.091
+requesting_supplier,sending_supplier,status,failure_reason,unique_final_errors,unique_sender_errors,unique_intermediate_errors,count,%_of_transfers,%_of_technical_failures
+"SupplierA","SupplierB","PROCESS_FAILURE","Transferred, not integrated","","","",2,18.182,
+"SupplierC","SupplierA","INTEGRATED_ON_TIME",,"","","",2,18.182,
+"","","INTEGRATED_ON_TIME",,"","25 - Timeout","",1,9.091,
+"","SupplierB","INTEGRATED_ON_TIME",,"","","",1,9.091,
+"SupplierA","SupplierB","TECHNICAL_FAILURE","Final Error","19 - Unauthorised req","","",1,9.091,50
+"SupplierA","SupplierC","PROCESS_FAILURE","Transferred, not integrated","","","",1,9.091,
+"SupplierB","SupplierC","TECHNICAL_FAILURE","Final Error","26 - Filed as attachment","","",1,9.091,50
+"SupplierC","SupplierB","PROCESS_FAILURE","Integrated Late","","","",1,9.091,
+"SupplierC","SupplierB","UNCLASSIFIED_FAILURE","Transferred, not integrated, with error","","","99 - Unexpected",1,9.091,

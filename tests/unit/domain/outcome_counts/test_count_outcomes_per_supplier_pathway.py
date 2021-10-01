@@ -329,3 +329,42 @@ def test_returns_dataframe_with_percentage_of_transfers_rounded_to_3_decimal_pla
         }
     )
     assert actual.frame_equal(expected, null_equal=True)
+
+
+@pytest.mark.filterwarnings("ignore:Conversion of")
+def test_returns_dataframe_with_percentage_of_technical_failures_rounded_to_3_decimal_places():
+    integrated_status = TransferStatus.INTEGRATED_ON_TIME.value
+    failed_status = TransferStatus.TECHNICAL_FAILURE.value
+    final_error_failure_reason = TransferFailureReason.FINAL_ERROR.value
+    sender_error_failure_reason = TransferFailureReason.FATAL_SENDER_ERROR.value
+    copc_not_sent_failure_reason = TransferFailureReason.COPC_NOT_SENT.value
+
+    df = (
+        TransferDataFrame()
+        .with_row(status=integrated_status, failure_reason=None)
+        .with_row(status=failed_status, failure_reason=final_error_failure_reason)
+        .with_row(status=failed_status, failure_reason=final_error_failure_reason)
+        .with_row(status=failed_status, failure_reason=final_error_failure_reason)
+        .with_row(status=failed_status, failure_reason=final_error_failure_reason)
+        .with_row(status=failed_status, failure_reason=sender_error_failure_reason)
+        .with_row(status=failed_status, failure_reason=sender_error_failure_reason)
+        .with_row(status=failed_status, failure_reason=copc_not_sent_failure_reason)
+        .build()
+    )
+
+    actual_dataframe = count_outcomes_per_supplier_pathway(df)
+    actual = actual_dataframe[["status", "failure_reason", "%_of_technical_failures"]]
+
+    expected = pl.from_dict(
+        {
+            "status": [failed_status, failed_status, integrated_status, failed_status],
+            "failure_reason": [
+                final_error_failure_reason,
+                sender_error_failure_reason,
+                None,
+                copc_not_sent_failure_reason,
+            ],
+            "%_of_technical_failures": [57.143, 28.571, None, 14.286],
+        }
+    )
+    assert actual.frame_equal(expected, null_equal=True)
