@@ -49,7 +49,7 @@ def _calculate_percentage(count_column: pl.Series, total: int) -> Union[pl.Serie
 
 def _add_percentage_of_transfers_column(dataframe: pl.DataFrame) -> pl.DataFrame:
     total_number_of_transfers = dataframe["count"].sum()
-    dataframe["%_of_transfers"] = _calculate_percentage(
+    dataframe["% of transfers"] = _calculate_percentage(
         dataframe["count"], total_number_of_transfers
     )
     return dataframe
@@ -70,7 +70,7 @@ def _add_percentage_of_technical_failures_column(dataframe: pl.DataFrame) -> pl.
                         _calculate_percentage(dataframe["count"], total_number_of_failed_transfers)
                     )
                     .otherwise(None)
-                    .alias("%_of_technical_failures")
+                    .alias("% of technical failures")
                 ),
             ]
         ]
@@ -82,16 +82,16 @@ def _get_supplier_pathway_count(
     requesting_supplier: str, sending_supplier: str, supplier_pathway_counts: pl.DataFrame
 ) -> int:
     count_df = supplier_pathway_counts.filter(
-        col("requesting_supplier") == requesting_supplier
-    ).filter(col("sending_supplier") == sending_supplier)
-    return first(count_df["supplier_pathway_count"])
+        col("requesting supplier") == requesting_supplier
+    ).filter(col("sending supplier") == sending_supplier)
+    return first(count_df["supplier pathway count"])
 
 
 def _add_percentage_of_supplier_pathway_column(dataframe) -> pl.DataFrame:
-    supplier_pathway_counts = dataframe.groupby(["requesting_supplier", "sending_supplier"]).agg(
-        [sum("count").alias("supplier_pathway_count")]
+    supplier_pathway_counts = dataframe.groupby(["requesting supplier", "sending supplier"]).agg(
+        [sum("count").alias("supplier pathway count")]
     )
-    dataframe["%_of_supplier_pathway"] = dataframe.apply(
+    dataframe["% of supplier pathway"] = dataframe.apply(
         lambda row: round(
             row[7] / _get_supplier_pathway_count(row[0], row[1], supplier_pathway_counts) * 100, 3
         )
@@ -103,27 +103,30 @@ def count_outcomes_per_supplier_pathway(dataframe):
     outcome_counts_dataframe = (
         dataframe.with_columns(
             [
-                col("final_error_codes").apply(_unique_errors).alias("unique_final_errors"),
-                col("sender_error_codes").apply(_unique_errors).alias("unique_sender_errors"),
+                col("requesting_supplier").alias("requesting supplier"),
+                col("sending_supplier").alias("sending supplier"),
+                col("failure_reason").alias("failure reason"),
+                col("final_error_codes").apply(_unique_errors).alias("unique final errors"),
+                col("sender_error_codes").apply(_unique_errors).alias("unique sender errors"),
                 col("intermediate_error_codes")
                 .apply(_unique_errors)
-                .alias("unique_intermediate_errors"),
+                .alias("unique intermediate errors"),
             ]
         )
         .groupby(
             [
-                "requesting_supplier",
-                "sending_supplier",
+                "requesting supplier",
+                "sending supplier",
                 "status",
-                "failure_reason",
-                "unique_final_errors",
-                "unique_sender_errors",
-                "unique_intermediate_errors",
+                "failure reason",
+                "unique final errors",
+                "unique sender errors",
+                "unique intermediate errors",
             ]
         )
         .agg([count("conversation_id").alias("count")])
         .sort(
-            [col("count"), col("requesting_supplier"), col("sending_supplier"), col("status")],
+            [col("count"), col("requesting supplier"), col("sending supplier"), col("status")],
             reverse=[True, False, False, False],
         )
     )

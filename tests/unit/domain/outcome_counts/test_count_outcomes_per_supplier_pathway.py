@@ -28,15 +28,15 @@ def test_returns_dataframe_with_supplier_and_transfer_outcome_columns():
 
     actual_dataframe = count_outcomes_per_supplier_pathway(df)
     actual = actual_dataframe[
-        ["requesting_supplier", "sending_supplier", "status", "failure_reason"]
+        ["requesting supplier", "sending supplier", "status", "failure reason"]
     ]
 
     expected = pl.from_dict(
         {
-            "requesting_supplier": [requesting_supplier],
-            "sending_supplier": [sending_supplier],
+            "requesting supplier": [requesting_supplier],
+            "sending supplier": [sending_supplier],
             "status": [status],
-            "failure_reason": [failure_reason],
+            "failure reason": [failure_reason],
         }
     )
 
@@ -59,9 +59,9 @@ def test_returns_dataframe_with_unique_final_error_codes(error_codes, expected):
     df = TransferDataFrame().with_row(final_error_codes=error_codes).build()
 
     actual = count_outcomes_per_supplier_pathway(df)
-    expected_unique_final_errors = pl.Series("unique_final_errors", [expected])
+    expected_unique_final_errors = pl.Series("unique final errors", [expected])
 
-    assert actual["unique_final_errors"].series_equal(expected_unique_final_errors, null_equal=True)
+    assert actual["unique final errors"].series_equal(expected_unique_final_errors, null_equal=True)
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
@@ -80,9 +80,9 @@ def test_returns_dataframe_with_unique_sender_errors(error_codes, expected):
     df = TransferDataFrame().with_row(sender_error_codes=error_codes).build()
 
     actual = count_outcomes_per_supplier_pathway(df)
-    expected_unique_sender_errors = pl.Series("unique_sender_errors", [expected])
+    expected_unique_sender_errors = pl.Series("unique sender errors", [expected])
 
-    assert actual["unique_sender_errors"].series_equal(
+    assert actual["unique sender errors"].series_equal(
         expected_unique_sender_errors, null_equal=True
     )
 
@@ -101,9 +101,9 @@ def test_returns_dataframe_with_unique_intermediate_error_codes(error_codes, exp
     df = TransferDataFrame().with_row(intermediate_error_codes=error_codes).build()
 
     actual = count_outcomes_per_supplier_pathway(df)
-    expected_unique_intermediate_errors = pl.Series("unique_intermediate_errors", [expected])
+    expected_unique_intermediate_errors = pl.Series("unique intermediate errors", [expected])
 
-    assert actual["unique_intermediate_errors"].series_equal(
+    assert actual["unique intermediate errors"].series_equal(
         expected_unique_intermediate_errors, null_equal=True
     )
 
@@ -130,11 +130,11 @@ def test_returns_sorted_count_per_supplier_pathway():
     )
 
     actual_dataframe = count_outcomes_per_supplier_pathway(df)
-    actual = actual_dataframe[["requesting_supplier", "sending_supplier", "count"]]
+    actual = actual_dataframe[["requesting supplier", "sending supplier", "count"]]
     expected = pl.from_dict(
         {
-            "requesting_supplier": [supplier_a, supplier_b],
-            "sending_supplier": [supplier_b, supplier_a],
+            "requesting supplier": [supplier_a, supplier_b],
+            "sending supplier": [supplier_b, supplier_a],
             "count": [2, 1],
         }
     )
@@ -156,12 +156,12 @@ def test_returns_sorted_count_per_transfer_outcome():
     )
 
     actual_dataframe = count_outcomes_per_supplier_pathway(df)
-    actual = actual_dataframe[["status", "failure_reason", "count"]]
+    actual = actual_dataframe[["status", "failure reason", "count"]]
 
     expected = pl.from_dict(
         {
             "status": [integrated_status, failed_status],
-            "failure_reason": [integrated_failure_reason, failed_failure_reason],
+            "failure reason": [integrated_failure_reason, failed_failure_reason],
             "count": [2, 1],
         }
     )
@@ -173,19 +173,19 @@ def test_returns_sorted_count_per_transfer_outcome():
     "error_codes_field_name, unique_error_codes_field_name, scenario_a_error_codes, \
      scenario_a_unique_errors, scenario_b_error_codes, scenario_b_unique_errors",
     [
-        ("sender_error_codes", "unique_sender_errors", [15], "15 - ABA suppressed", [], ""),
+        ("sender_error_codes", "unique sender errors", [15], "15 - ABA suppressed", [], ""),
         (
             "sender_error_codes",
-            "unique_sender_errors",
+            "unique sender errors",
             [7, 6, 15, 7],
             "6 - Not at surgery, 7 - GP2GP disabled, 15 - ABA suppressed",
             [99, 99],
             "99 - Unexpected",
         ),
-        ("sender_error_codes", "unique_sender_errors", [10], "10 - Failed to generate", [None], ""),
+        ("sender_error_codes", "unique sender errors", [10], "10 - Failed to generate", [None], ""),
         (
             "intermediate_error_codes",
-            "unique_intermediate_errors",
+            "unique intermediate errors",
             [13],
             "13 - Config issue",
             [],
@@ -193,22 +193,22 @@ def test_returns_sorted_count_per_transfer_outcome():
         ),
         (
             "intermediate_error_codes",
-            "unique_intermediate_errors",
+            "unique intermediate errors",
             [9, 13, 24, 9],
             "9 - Unexpected EHR, 13 - Config issue, 24 - SDS lookup",
             [20, 20],
             "20 - Spine error",
         ),
-        ("final_error_codes", "unique_final_errors", [23], "23 - Sender not LM compliant", [], ""),
+        ("final_error_codes", "unique final errors", [23], "23 - Sender not LM compliant", [], ""),
         (
             "final_error_codes",
-            "unique_final_errors",
+            "unique final errors",
             [6, 9, 10, 6],
             "6 - Not at surgery, 9 - Unexpected EHR, 10 - Failed to generate",
             [11, 11],
             "11 - Failed to integrate",
         ),
-        ("final_error_codes", "unique_final_errors", [17], "17 - ABA wrong patient", [None], ""),
+        ("final_error_codes", "unique final errors", [17], "17 - ABA wrong patient", [None], ""),
     ],
 )
 def test_returns_sorted_count_per_unique_error_combinations(
@@ -283,7 +283,7 @@ def test_returns_sorted_count_by_count_and_supplier_and_status_per_scenario():
     )
 
     actual_dataframe = count_outcomes_per_supplier_pathway(df)
-    actual = actual_dataframe[["status", "requesting_supplier", "sending_supplier", "count"]]
+    actual = actual_dataframe[["status", "requesting supplier", "sending supplier", "count"]]
     expected = pl.from_dict(
         {
             "status": [
@@ -293,8 +293,8 @@ def test_returns_sorted_count_by_count_and_supplier_and_status_per_scenario():
                 process_failure_status,
                 failed_status,
             ],
-            "requesting_supplier": [supplier_b, supplier_a, supplier_a, supplier_b, supplier_b],
-            "sending_supplier": [supplier_a, supplier_b, supplier_b, supplier_a, supplier_a],
+            "requesting supplier": [supplier_b, supplier_a, supplier_a, supplier_b, supplier_b],
+            "sending supplier": [supplier_a, supplier_b, supplier_b, supplier_a, supplier_a],
             "count": [3, 2, 1, 1, 1],
         }
     )
@@ -320,12 +320,12 @@ def test_returns_dataframe_with_percentage_of_transfers_rounded_to_3_decimal_pla
     )
 
     actual_dataframe = count_outcomes_per_supplier_pathway(df)
-    actual = actual_dataframe[["status", "%_of_transfers"]]
+    actual = actual_dataframe[["status", "% of transfers"]]
 
     expected = pl.from_dict(
         {
             "status": [integrated_status, failed_status, process_failure_status],
-            "%_of_transfers": [57.143, 28.571, 14.286],
+            "% of transfers": [57.143, 28.571, 14.286],
         }
     )
     assert actual.frame_equal(expected, null_equal=True)
@@ -353,18 +353,18 @@ def test_returns_dataframe_with_percentage_of_technical_failures_rounded_to_3_de
     )
 
     actual_dataframe = count_outcomes_per_supplier_pathway(df)
-    actual = actual_dataframe[["status", "failure_reason", "%_of_technical_failures"]]
+    actual = actual_dataframe[["status", "failure reason", "% of technical failures"]]
 
     expected = pl.from_dict(
         {
             "status": [failed_status, failed_status, integrated_status, failed_status],
-            "failure_reason": [
+            "failure reason": [
                 final_error_failure_reason,
                 sender_error_failure_reason,
                 None,
                 copc_not_sent_failure_reason,
             ],
-            "%_of_technical_failures": [57.143, 28.571, None, 14.286],
+            "% of technical failures": [57.143, 28.571, None, 14.286],
         }
     )
     assert actual.frame_equal(expected, null_equal=True)
@@ -413,13 +413,13 @@ def test_returns_dataframe_with_percentage_of_supplier_pathway_rounded_to_3_deci
 
     actual_dataframe = count_outcomes_per_supplier_pathway(df)
     actual = actual_dataframe[
-        ["requesting_supplier", "sending_supplier", "status", "%_of_supplier_pathway"]
+        ["requesting supplier", "sending supplier", "status", "% of supplier pathway"]
     ]
 
     expected = pl.from_dict(
         {
-            "requesting_supplier": [supplier_a, supplier_a, supplier_a, supplier_a, supplier_b],
-            "sending_supplier": [supplier_b, supplier_a, supplier_b, supplier_b, supplier_a],
+            "requesting supplier": [supplier_a, supplier_a, supplier_a, supplier_a, supplier_b],
+            "sending supplier": [supplier_b, supplier_a, supplier_b, supplier_b, supplier_a],
             "status": [
                 integrated_status,
                 integrated_status,
@@ -427,7 +427,7 @@ def test_returns_dataframe_with_percentage_of_supplier_pathway_rounded_to_3_deci
                 process_failure_status,
                 integrated_status,
             ],
-            "%_of_supplier_pathway": [57.143, 100, 28.571, 14.286, 100],
+            "% of supplier pathway": [57.143, 100, 28.571, 14.286, 100],
         }
     )
     assert actual.frame_equal(expected, null_equal=True)

@@ -1,4 +1,4 @@
-requesting_supplier,sending_supplier,status,failure_reason,unique_final_errors,unique_sender_errors,unique_intermediate_errors,count,%_of_transfers,%_of_technical_failures,%_of_supplier_pathway
+requesting supplier,sending supplier,status,failure reason,unique final errors,unique sender errors,unique intermediate errors,count,% of transfers,% of technical failures,% of supplier pathway
 "SupplierA","SupplierB","PROCESS_FAILURE","Transferred, not integrated","","","",2,18.182,,66.667
 "SupplierC","SupplierA","INTEGRATED_ON_TIME",,"","","",2,18.182,,100
 "","","INTEGRATED_ON_TIME",,"","25 - Timeout","",1,9.091,,100
