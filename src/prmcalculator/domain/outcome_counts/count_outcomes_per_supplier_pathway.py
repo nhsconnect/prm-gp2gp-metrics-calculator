@@ -1,4 +1,5 @@
 from typing import List, Optional
+import polars as pl
 from polars import col, count  # type: ignore
 
 default_error_description_mapping = {
@@ -40,10 +41,8 @@ def _unique_errors(errors: List[Optional[int]]):
     return ", ".join([f"{e} - {_error_description(e)}" for e in sorted(unique_error_codes)])
 
 
-def _add_percentage_column(dataframe, count_column_name, new_column_name):
-    total = dataframe[count_column_name].sum()
-    dataframe[new_column_name] = ((dataframe[count_column_name] / total) * 100).round(3)
-    return dataframe
+def _calculate_percentage(count_column: pl.Series, total: int) -> pl.Series:
+    return ((count_column / total) * 100).round(3)
 
 
 def count_outcomes_per_supplier_pathway(dataframe):
@@ -75,4 +74,9 @@ def count_outcomes_per_supplier_pathway(dataframe):
         )
     )
 
-    return _add_percentage_column(outcome_counts_dataframe, "count", "%_of_transfers")
+    total_number_of_transfers = outcome_counts_dataframe["count"].sum()
+    outcome_counts_dataframe["%_of_transfers"] = _calculate_percentage(
+        outcome_counts_dataframe["count"], total_number_of_transfers
+    )
+
+    return outcome_counts_dataframe
