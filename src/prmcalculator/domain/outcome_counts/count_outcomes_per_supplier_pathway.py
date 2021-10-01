@@ -48,9 +48,9 @@ def _calculate_percentage(count_column: pl.Series, total: int) -> Union[pl.Serie
 
 
 def _add_percentage_of_transfers_column(dataframe: pl.DataFrame) -> pl.DataFrame:
-    total_number_of_transfers = dataframe["count"].sum()
+    total_number_of_transfers = dataframe["number of transfers"].sum()
     dataframe["% of transfers"] = _calculate_percentage(
-        dataframe["count"], total_number_of_transfers
+        dataframe["number of transfers"], total_number_of_transfers
     )
     return dataframe
 
@@ -58,7 +58,7 @@ def _add_percentage_of_transfers_column(dataframe: pl.DataFrame) -> pl.DataFrame
 def _add_percentage_of_technical_failures_column(dataframe: pl.DataFrame) -> pl.DataFrame:
     total_number_of_failed_transfers = dataframe.filter(
         col("status") == TransferStatus.TECHNICAL_FAILURE.value
-    )["count"].sum()
+    )["number of transfers"].sum()
 
     if total_number_of_failed_transfers is not None:
         dataframe = dataframe[
@@ -67,7 +67,9 @@ def _add_percentage_of_technical_failures_column(dataframe: pl.DataFrame) -> pl.
                 (
                     when(col("status") == TransferStatus.TECHNICAL_FAILURE.value)
                     .then(
-                        _calculate_percentage(dataframe["count"], total_number_of_failed_transfers)
+                        _calculate_percentage(
+                            dataframe["number of transfers"], total_number_of_failed_transfers
+                        )
                     )
                     .otherwise(None)
                     .alias("% of technical failures")
@@ -89,7 +91,7 @@ def _get_supplier_pathway_count(
 
 def _add_percentage_of_supplier_pathway_column(dataframe) -> pl.DataFrame:
     supplier_pathway_counts = dataframe.groupby(["requesting supplier", "sending supplier"]).agg(
-        [sum("count").alias("supplier pathway count")]
+        [sum("number of transfers").alias("supplier pathway count")]
     )
     dataframe["% of supplier pathway"] = dataframe.apply(
         lambda row: round(
@@ -124,9 +126,14 @@ def count_outcomes_per_supplier_pathway(dataframe):
                 "unique intermediate errors",
             ]
         )
-        .agg([count("conversation_id").alias("count")])
+        .agg([count("conversation_id").alias("number of transfers")])
         .sort(
-            [col("count"), col("requesting supplier"), col("sending supplier"), col("status")],
+            [
+                col("number of transfers"),
+                col("requesting supplier"),
+                col("sending supplier"),
+                col("status"),
+            ],
             reverse=[True, False, False, False],
         )
     )

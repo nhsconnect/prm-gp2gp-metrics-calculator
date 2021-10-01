@@ -130,12 +130,12 @@ def test_returns_sorted_count_per_supplier_pathway():
     )
 
     actual_dataframe = count_outcomes_per_supplier_pathway(df)
-    actual = actual_dataframe[["requesting supplier", "sending supplier", "count"]]
+    actual = actual_dataframe[["requesting supplier", "sending supplier", "number of transfers"]]
     expected = pl.from_dict(
         {
             "requesting supplier": [supplier_a, supplier_b],
             "sending supplier": [supplier_b, supplier_a],
-            "count": [2, 1],
+            "number of transfers": [2, 1],
         }
     )
     assert actual.frame_equal(expected, null_equal=True)
@@ -156,13 +156,13 @@ def test_returns_sorted_count_per_transfer_outcome():
     )
 
     actual_dataframe = count_outcomes_per_supplier_pathway(df)
-    actual = actual_dataframe[["status", "failure reason", "count"]]
+    actual = actual_dataframe[["status", "failure reason", "number of transfers"]]
 
     expected = pl.from_dict(
         {
             "status": [integrated_status, failed_status],
             "failure reason": [integrated_failure_reason, failed_failure_reason],
-            "count": [2, 1],
+            "number of transfers": [2, 1],
         }
     )
     assert actual.frame_equal(expected, null_equal=True)
@@ -229,7 +229,7 @@ def test_returns_sorted_count_per_unique_error_combinations(
     )
 
     actual_dataframe = count_outcomes_per_supplier_pathway(df)
-    actual = actual_dataframe[[unique_error_codes_field_name, "count"]]
+    actual = actual_dataframe[[unique_error_codes_field_name, "number of transfers"]]
 
     expected = pl.from_dict(
         {
@@ -237,7 +237,7 @@ def test_returns_sorted_count_per_unique_error_combinations(
                 scenario_a_unique_errors,
                 scenario_b_unique_errors,
             ],
-            "count": [2, 1],
+            "number of transfers": [2, 1],
         }
     )
     assert actual.frame_equal(expected, null_equal=True)
@@ -283,7 +283,9 @@ def test_returns_sorted_count_by_count_and_supplier_and_status_per_scenario():
     )
 
     actual_dataframe = count_outcomes_per_supplier_pathway(df)
-    actual = actual_dataframe[["status", "requesting supplier", "sending supplier", "count"]]
+    actual = actual_dataframe[
+        ["status", "requesting supplier", "sending supplier", "number of transfers"]
+    ]
     expected = pl.from_dict(
         {
             "status": [
@@ -295,7 +297,7 @@ def test_returns_sorted_count_by_count_and_supplier_and_status_per_scenario():
             ],
             "requesting supplier": [supplier_b, supplier_a, supplier_a, supplier_b, supplier_b],
             "sending supplier": [supplier_a, supplier_b, supplier_b, supplier_a, supplier_a],
-            "count": [3, 2, 1, 1, 1],
+            "number of transfers": [3, 2, 1, 1, 1],
         }
     )
     assert actual.frame_equal(expected, null_equal=True)
