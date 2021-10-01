@@ -14,10 +14,10 @@ class UnexpectedTransferOutcome(Exception):
 
 
 class TransferStatus(Enum):
-    INTEGRATED_ON_TIME = "INTEGRATED_ON_TIME"
-    TECHNICAL_FAILURE = "TECHNICAL_FAILURE"
-    PROCESS_FAILURE = "PROCESS_FAILURE"
-    UNCLASSIFIED_FAILURE = "UNCLASSIFIED_FAILURE"
+    INTEGRATED_ON_TIME = "Integrated On Time"
+    TECHNICAL_FAILURE = "Technical Failure"
+    PROCESS_FAILURE = "Process Failure"
+    UNCLASSIFIED_FAILURE = "Unclassified Failure"
 
 
 class TransferFailureReason(Enum):

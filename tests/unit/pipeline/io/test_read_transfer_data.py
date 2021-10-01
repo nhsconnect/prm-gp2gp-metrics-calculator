@@ -51,7 +51,7 @@ _INTEGRATED_TRANSFER_DATA_DICT = {
     "sla_duration": [241241],
     "requesting_practice_asid": ["213125436412"],
     "requesting_supplier": ["SupplierA"],
-    "status": ["INTEGRATED_ON_TIME"],
+    "status": ["Integrated On Time"],
     "failure_reason": [None],
     "date_requested": [_integrated_date_requested],
 }
@@ -62,7 +62,7 @@ _INTEGRATED_LATE_TRANSFER_DATA_DICT = {
     "sla_duration": [777600],
     "requesting_practice_asid": ["121212121212"],
     "requesting_supplier": ["SupplierB"],
-    "status": ["PROCESS_FAILURE"],
+    "status": ["Process Failure"],
     "failure_reason": ["Integrated Late"],
     "date_requested": [_integrated_late_date_requested],
 }
