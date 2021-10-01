@@ -1,6 +1,6 @@
 from typing import List, Optional, Union
 import polars as pl
-from polars import col, count, when  # type: ignore
+from polars import col, count, when, first, sum  # type: ignore
 
 from prmcalculator.domain.gp2gp.transfer import TransferStatus
 
@@ -78,6 +78,27 @@ def _add_percentage_of_technical_failures_column(dataframe: pl.DataFrame) -> pl.
     return dataframe
 
 
+def _get_supplier_pathway_count(
+    requesting_supplier: str, sending_supplier: str, supplier_pathway_counts: pl.DataFrame
+) -> int:
+    count_df = supplier_pathway_counts.filter(
+        col("requesting_supplier") == requesting_supplier
+    ).filter(col("sending_supplier") == sending_supplier)
+    return first(count_df["supplier_pathway_count"])
+
+
+def _add_percentage_of_supplier_pathway_column(dataframe) -> pl.DataFrame:
+    supplier_pathway_counts = dataframe.groupby(["requesting_supplier", "sending_supplier"]).agg(
+        [sum("count").alias("supplier_pathway_count")]
+    )
+    dataframe["%_of_supplier_pathway"] = dataframe.apply(
+        lambda row: round(
+            row[7] / _get_supplier_pathway_count(row[0], row[1], supplier_pathway_counts) * 100, 3
+        )
+    )
+    return dataframe
+
+
 def count_outcomes_per_supplier_pathway(dataframe):
     outcome_counts_dataframe = (
         dataframe.with_columns(
@@ -111,5 +132,6 @@ def count_outcomes_per_supplier_pathway(dataframe):
     outcome_counts_dataframe = _add_percentage_of_technical_failures_column(
         outcome_counts_dataframe
     )
+    outcome_counts_dataframe = _add_percentage_of_supplier_pathway_column(outcome_counts_dataframe)
 
     return outcome_counts_dataframe

@@ -368,3 +368,66 @@ def test_returns_dataframe_with_percentage_of_technical_failures_rounded_to_3_de
         }
     )
     assert actual.frame_equal(expected, null_equal=True)
+
+
+@pytest.mark.filterwarnings("ignore:Conversion of")
+def test_returns_dataframe_with_percentage_of_supplier_pathway_rounded_to_3_decimal_places():
+    supplier_a = "SupplierA"
+    supplier_b = "SupplierB"
+    integrated_status = TransferStatus.INTEGRATED_ON_TIME.value
+    failed_status = TransferStatus.TECHNICAL_FAILURE.value
+    process_failure_status = TransferStatus.PROCESS_FAILURE.value
+
+    df = (
+        TransferDataFrame()
+        .with_row(
+            requesting_supplier=supplier_a, sending_supplier=supplier_b, status=integrated_status
+        )
+        .with_row(
+            requesting_supplier=supplier_a, sending_supplier=supplier_b, status=integrated_status
+        )
+        .with_row(
+            requesting_supplier=supplier_a, sending_supplier=supplier_b, status=integrated_status
+        )
+        .with_row(
+            requesting_supplier=supplier_a, sending_supplier=supplier_b, status=integrated_status
+        )
+        .with_row(requesting_supplier=supplier_a, sending_supplier=supplier_b, status=failed_status)
+        .with_row(requesting_supplier=supplier_a, sending_supplier=supplier_b, status=failed_status)
+        .with_row(
+            requesting_supplier=supplier_a,
+            sending_supplier=supplier_b,
+            status=process_failure_status,
+        )
+        .with_row(
+            requesting_supplier=supplier_b, sending_supplier=supplier_a, status=integrated_status
+        )
+        .with_row(
+            requesting_supplier=supplier_a, sending_supplier=supplier_a, status=integrated_status
+        )
+        .with_row(
+            requesting_supplier=supplier_a, sending_supplier=supplier_a, status=integrated_status
+        )
+        .build()
+    )
+
+    actual_dataframe = count_outcomes_per_supplier_pathway(df)
+    actual = actual_dataframe[
+        ["requesting_supplier", "sending_supplier", "status", "%_of_supplier_pathway"]
+    ]
+
+    expected = pl.from_dict(
+        {
+            "requesting_supplier": [supplier_a, supplier_a, supplier_a, supplier_a, supplier_b],
+            "sending_supplier": [supplier_b, supplier_a, supplier_b, supplier_b, supplier_a],
+            "status": [
+                integrated_status,
+                integrated_status,
+                failed_status,
+                process_failure_status,
+                integrated_status,
+            ],
+            "%_of_supplier_pathway": [57.143, 100, 28.571, 14.286, 100],
+        }
+    )
+    assert actual.frame_equal(expected, null_equal=True)
