@@ -73,9 +73,8 @@ def test_resolver_returns_correct_supplier_pathway_outcome_counts_uri():
 
     actual = uri_resolver.supplier_pathway_outcome_counts((year, month))
 
-    expected = (
-        f"s3://{data_platform_metrics_bucket}/v6/{year}/{month}/supplier_pathway_outcome_counts.csv"
-    )
+    s3_key = f"v6/{year}/{month}/{year}-{month}-supplier_pathway_outcome_counts.csv"
+    expected = f"s3://{data_platform_metrics_bucket}/{s3_key}"
 
     assert actual == expected
 

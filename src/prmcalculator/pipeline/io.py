@@ -82,7 +82,7 @@ class PlatformMetricsS3UriResolver:
                 self._data_platform_metrics_bucket,
                 self._data_platform_metrics_version,
                 f"{year}/{month}",
-                self._SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME,
+                f"{year}-{month}-{self._SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME}",
             ]
         )
         return f"s3://{s3_key}"

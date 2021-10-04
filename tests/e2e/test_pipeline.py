@@ -158,7 +158,9 @@ def test_end_to_end_with_fake_s3(datadir):
 
     expected_practice_metrics_output_key = "practiceMetrics.json"
     expected_national_metrics_output_key = "nationalMetrics.json"
-    expected_supplier_pathway_outcome_counts_output_key = "supplier_pathway_outcome_counts.csv"
+    expected_supplier_pathway_outcome_counts_output_key = (
+        "2019-12-supplier_pathway_outcome_counts.csv"
+    )
 
     expected_practice_metrics = _read_json(datadir / "expected_outputs" / "practiceMetrics.json")
     expected_national_metrics = _read_json(datadir / "expected_outputs" / "nationalMetrics.json")
