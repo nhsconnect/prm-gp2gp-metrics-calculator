@@ -149,11 +149,11 @@ def test_end_to_end_with_fake_s3(datadir):
 
     _write_transfer_parquet(
         datadir / "inputs" / "novTransfersParquetColumns.json",
-        f"{s3_input_transfer_data_bucket_name}/v4/2019/11/transfers.parquet",
+        f"{s3_input_transfer_data_bucket_name}/v5/2019/11/transfers.parquet",
     )
     _write_transfer_parquet(
         datadir / "inputs" / "decTransfersParquetColumns.json",
-        f"{s3_input_transfer_data_bucket_name}/v4/2019/12/transfers.parquet",
+        f"{s3_input_transfer_data_bucket_name}/v5/2019/12/transfers.parquet",
     )
 
     expected_practice_metrics_output_key = "practiceMetrics.json"

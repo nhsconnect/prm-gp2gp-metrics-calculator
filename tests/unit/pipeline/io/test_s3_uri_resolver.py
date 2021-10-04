@@ -94,9 +94,9 @@ def test_resolver_returns_correct_transfer_data_uris():
     actual = uri_resolver.transfer_data(metric_months)
 
     expected = [
-        f"s3://{transfer_data_bucket}/v4/2021/11/transfers.parquet",
-        f"s3://{transfer_data_bucket}/v4/2021/12/transfers.parquet",
-        f"s3://{transfer_data_bucket}/v4/2022/1/transfers.parquet",
+        f"s3://{transfer_data_bucket}/v5/2021/11/transfers.parquet",
+        f"s3://{transfer_data_bucket}/v5/2021/12/transfers.parquet",
+        f"s3://{transfer_data_bucket}/v5/2022/1/transfers.parquet",
     ]
 
     assert actual == expected
