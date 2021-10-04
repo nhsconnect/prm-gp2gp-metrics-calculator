@@ -12,7 +12,7 @@
     "sending_supplier": ["SupplierA"],
     "sla_duration": [398306],
     "status": [
-        "Integrated On Time"
+        "Integrated on time"
     ],
     "failure_reason": [""],
     "final_error_codes": [[0]],

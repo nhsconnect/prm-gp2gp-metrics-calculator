@@ -23,7 +23,7 @@ def _build_transfer_table(**kwargs) -> pa.Table:
             "sla_duration": kwargs.get("sla_duration", [1234]),
             "requesting_practice_asid": kwargs.get("requesting_practice_asid", [a_string(12)]),
             "requesting_supplier": kwargs.get("requesting_supplier", [a_string(12)]),
-            "status": kwargs.get("status", ["Integrated On Time"]),
+            "status": kwargs.get("status", ["Integrated on time"]),
             "failure_reason": kwargs.get("failure_reason", [""]),
             "date_requested": kwargs.get("date_requested", [a_datetime()]),
         }
@@ -84,7 +84,7 @@ def test_requesting_supplier_column_is_converted_to_a_transfer_field():
 
 
 def test_status_and_failure_reason_columns_are_converted_to_a_transfer_outcome_field():
-    table = _build_transfer_table(status=["Technical Failure"], failure_reason=["Final Error"])
+    table = _build_transfer_table(status=["Technical failure"], failure_reason=["Final error"])
 
     transfers = convert_table_to_transfers(table)
     actual_transfer_outcome = next(iter(transfers)).outcome
@@ -97,7 +97,7 @@ def test_status_and_failure_reason_columns_are_converted_to_a_transfer_outcome_f
 
 def test_throw_unexpected_transfer_outcome_when_failure_reason_cannot_be_mapped():
     table = _build_transfer_table(
-        status=["Technical Failure"], failure_reason=["Missing Failure Reason"]
+        status=["Technical failure"], failure_reason=["Missing Failure Reason"]
     )
 
     try:
@@ -107,7 +107,7 @@ def test_throw_unexpected_transfer_outcome_when_failure_reason_cannot_be_mapped(
 
 
 def test_throw_unexpected_transfer_outcome_when_status_cannot_be_mapped():
-    table = _build_transfer_table(status=["MISSING_STATUS"], failure_reason=["Final Error"])
+    table = _build_transfer_table(status=["MISSING_STATUS"], failure_reason=["Final error"])
 
     try:
         convert_table_to_transfers(table)
@@ -149,8 +149,8 @@ def test_converts_multiple_rows_into_list_of_transfers():
         sla_duration=[241241, 12413],
         requesting_practice_asid=["213125436412", "124135423412"],
         requesting_supplier=["Vision", "Systm One"],
-        status=["Integrated On Time", "Technical Failure"],
-        failure_reason=[None, "Contains Fatal Sender Error"],
+        status=["Integrated on time", "Technical failure"],
+        failure_reason=[None, "Contains fatal sender error"],
         date_requested=[integrated_date_requested, technical_failure_date_request],
     )
 
