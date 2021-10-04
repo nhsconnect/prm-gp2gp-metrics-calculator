@@ -89,12 +89,13 @@ class PlatformMetricsS3UriResolver:
 
     def _transfer_data_uri(self, year_month: YearMonth) -> str:
         year, month = year_month
+        s3_file_name = f"{year}-{month}-{self._TRANSFER_DATA_FILE_NAME}"
         return "/".join(
             [
                 self._transfer_data_bucket,
                 _TRANSFER_DATA_VERSION,
                 f"{year}/{month}",
-                self._TRANSFER_DATA_FILE_NAME,
+                s3_file_name,
             ]
         )
 
