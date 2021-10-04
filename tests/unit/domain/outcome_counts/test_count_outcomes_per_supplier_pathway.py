@@ -304,7 +304,7 @@ def test_returns_sorted_count_by_count_and_supplier_and_status_per_scenario():
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
-def test_returns_dataframe_with_percentage_of_transfers_rounded_to_3_decimal_places():
+def test_returns_dataframe_with_percentage_of_transfers():
     integrated_status = TransferStatus.INTEGRATED_ON_TIME.value
     failed_status = TransferStatus.TECHNICAL_FAILURE.value
     process_failure_status = TransferStatus.PROCESS_FAILURE.value
@@ -327,14 +327,14 @@ def test_returns_dataframe_with_percentage_of_transfers_rounded_to_3_decimal_pla
     expected = pl.from_dict(
         {
             "status": [integrated_status, failed_status, process_failure_status],
-            "% of transfers": [57.143, 28.571, 14.286],
+            "% of transfers": [57.14285714285714, 28.57142857142857, 14.285714285714285],
         }
     )
     assert actual.frame_equal(expected, null_equal=True)
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
-def test_returns_dataframe_with_percentage_of_technical_failures_rounded_to_3_decimal_places():
+def test_returns_dataframe_with_percentage_of_technical_failures():
     integrated_status = TransferStatus.INTEGRATED_ON_TIME.value
     failed_status = TransferStatus.TECHNICAL_FAILURE.value
     final_error_failure_reason = TransferFailureReason.FINAL_ERROR.value
@@ -366,14 +366,19 @@ def test_returns_dataframe_with_percentage_of_technical_failures_rounded_to_3_de
                 None,
                 copc_not_sent_failure_reason,
             ],
-            "% of technical failures": [57.143, 28.571, None, 14.286],
+            "% of technical failures": [
+                57.14285714285714,
+                28.57142857142857,
+                None,
+                14.285714285714285,
+            ],
         }
     )
     assert actual.frame_equal(expected, null_equal=True)
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
-def test_returns_dataframe_with_percentage_of_supplier_pathway_rounded_to_3_decimal_places():
+def test_returns_dataframe_with_percentage_of_supplier_pathway():
     supplier_a = "SupplierA"
     supplier_b = "SupplierB"
     integrated_status = TransferStatus.INTEGRATED_ON_TIME.value
@@ -429,7 +434,13 @@ def test_returns_dataframe_with_percentage_of_supplier_pathway_rounded_to_3_deci
                 process_failure_status,
                 integrated_status,
             ],
-            "% of supplier pathway": [57.143, 100, 28.571, 14.286, 100],
+            "% of supplier pathway": [
+                57.14285714285714,
+                100,
+                28.57142857142857,
+                14.285714285714285,
+                100,
+            ],
         }
     )
     assert actual.frame_equal(expected, null_equal=True)

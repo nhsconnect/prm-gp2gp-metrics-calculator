@@ -44,7 +44,7 @@ def _unique_errors(errors: List[Optional[int]]):
 
 
 def _calculate_percentage(count_column: pl.Series, total: int) -> Union[pl.Series, float]:
-    return ((count_column / total) * 100).round(3)
+    return (count_column / total) * 100
 
 
 def _add_percentage_of_transfers_column(dataframe: pl.DataFrame) -> pl.DataFrame:
@@ -94,9 +94,9 @@ def _add_percentage_of_supplier_pathway_column(dataframe) -> pl.DataFrame:
         [sum("number of transfers").alias("supplier pathway count")]
     )
     dataframe["% of supplier pathway"] = dataframe.apply(
-        lambda row: round(
-            row[7] / _get_supplier_pathway_count(row[0], row[1], supplier_pathway_counts) * 100, 3
-        )
+        lambda row: row[7]
+        / _get_supplier_pathway_count(row[0], row[1], supplier_pathway_counts)
+        * 100
     )
     return dataframe
 

@@ -1,10 +1,10 @@
 requesting supplier,sending supplier,status,failure reason,unique final errors,unique sender errors,unique intermediate errors,number of transfers,% of transfers,% of technical failures,% of supplier pathway
-"SupplierA","SupplierB","Process failure","Transferred, not integrated","","","",2,18.182,,66.667
-"SupplierC","SupplierA","Integrated on time",,"","","",2,18.182,,100
-"","","Integrated on time",,"","25 - Timeout","",1,9.091,,100
-"","SupplierB","Integrated on time",,"","","",1,9.091,,100
-"SupplierA","SupplierB","Technical failure","Final error","19 - Unauthorised req","","",1,9.091,50,33.333
-"SupplierA","SupplierC","Process failure","Transferred, not integrated","","","",1,9.091,,100
-"SupplierB","SupplierC","Technical failure","Final error","26 - Filed as attachment","","",1,9.091,50,100
-"SupplierC","SupplierB","Process failure","Integrated late","","","",1,9.091,,50
-"SupplierC","SupplierB","Unclassified failure","Transferred, not integrated, with error","","","99 - Unexpected",1,9.091,,50
+"SupplierA","SupplierB","Process failure","Transferred, not integrated","","","",2,18.181818181818183,,66.66666666666666
+"SupplierC","SupplierA","Integrated on time",,"","","",2,18.181818181818183,,100
+"","","Integrated on time",,"","25 - Timeout","",1,9.090909090909092,,100
+"","SupplierB","Integrated on time",,"","","",1,9.090909090909092,,100
+"SupplierA","SupplierB","Technical failure","Final error","19 - Unauthorised req","","",1,9.090909090909092,50,33.33333333333333
+"SupplierA","SupplierC","Process failure","Transferred, not integrated","","","",1,9.090909090909092,,100
+"SupplierB","SupplierC","Technical failure","Final error","26 - Filed as attachment","","",1,9.090909090909092,50,100
+"SupplierC","SupplierB","Process failure","Integrated late","","","",1,9.090909090909092,,50
+"SupplierC","SupplierB","Unclassified failure","Transferred, not integrated, with error","","","99 - Unexpected",1,9.090909090909092,,50
