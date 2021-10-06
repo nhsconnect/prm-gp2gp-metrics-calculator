@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import pytest
 from dateutil.tz import tzutc
 
 from prmcalculator.pipeline.config import (
@@ -70,7 +71,6 @@ def test_error_from_environment_when_required_fields_are_not_set():
         "ORGANISATION_METADATA_BUCKET": "organisation-metadata-bucket",
     }
 
-    try:
+    with pytest.raises(MissingEnvironmentVariable) as e:
         PipelineConfig.from_environment_variables(environment)
-    except MissingEnvironmentVariable as ex:
-        assert str(ex) == "Expected environment variable BUILD_TAG was not set, exiting..."
+        assert str(e) == "Expected environment variable BUILD_TAG was not set, exiting..."
