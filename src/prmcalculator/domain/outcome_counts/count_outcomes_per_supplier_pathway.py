@@ -1,10 +1,10 @@
-from typing import List, Optional, Union
-import polars as pl
-from polars import col, count, when, first, sum  # type: ignore
+from functools import reduce
+from typing import List, Optional
+from polars import col, count, when, DataFrame, lit  # type: ignore
 
 from prmcalculator.domain.gp2gp.transfer import TransferStatus
 
-default_error_description_mapping = {
+error_code_descriptions = {
     6: "Not at surgery",
     7: "GP2GP disabled",
     9: "Unexpected EHR",
@@ -33,7 +33,7 @@ default_error_description_mapping = {
 
 def _error_description(error_code: int) -> str:
     try:
-        return default_error_description_mapping[error_code]
+        return error_code_descriptions[error_code]
     except KeyError:
         return "Unknown error code"
 
@@ -43,67 +43,9 @@ def _unique_errors(errors: List[Optional[int]]):
     return ", ".join([f"{e} - {_error_description(e)}" for e in sorted(unique_error_codes)])
 
 
-def _calculate_percentage(count_column: pl.Series, total: int) -> Union[pl.Series, float]:
-    return (count_column / total) * 100
-
-
-def _add_percentage_of_transfers_column(dataframe: pl.DataFrame) -> pl.DataFrame:
-    total_number_of_transfers = dataframe["number of transfers"].sum()
-    dataframe["% of transfers"] = _calculate_percentage(
-        dataframe["number of transfers"], total_number_of_transfers
-    )
-    return dataframe
-
-
-def _add_percentage_of_technical_failures_column(dataframe: pl.DataFrame) -> pl.DataFrame:
-    total_number_of_failed_transfers = dataframe.filter(
-        col("status") == TransferStatus.TECHNICAL_FAILURE.value
-    )["number of transfers"].sum()
-
-    if total_number_of_failed_transfers is not None:
-        dataframe = dataframe[
-            [
-                col("*"),
-                (
-                    when(col("status") == TransferStatus.TECHNICAL_FAILURE.value)
-                    .then(
-                        _calculate_percentage(
-                            dataframe["number of transfers"], total_number_of_failed_transfers
-                        )
-                    )
-                    .otherwise(None)
-                    .alias("% of technical failures")
-                ),
-            ]
-        ]
-
-    return dataframe
-
-
-def _get_supplier_pathway_count(
-    requesting_supplier: str, sending_supplier: str, supplier_pathway_counts: pl.DataFrame
-) -> int:
-    count_df = supplier_pathway_counts.filter(
-        col("requesting supplier") == requesting_supplier
-    ).filter(col("sending supplier") == sending_supplier)
-    return first(count_df["supplier pathway count"])
-
-
-def _add_percentage_of_supplier_pathway_column(dataframe) -> pl.DataFrame:
-    supplier_pathway_counts = dataframe.groupby(["requesting supplier", "sending supplier"]).agg(
-        [sum("number of transfers").alias("supplier pathway count")]
-    )
-    dataframe["% of supplier pathway"] = dataframe.apply(
-        lambda row: row[7]
-        / _get_supplier_pathway_count(row[0], row[1], supplier_pathway_counts)
-        * 100
-    )
-    return dataframe
-
-
-def count_outcomes_per_supplier_pathway(dataframe):
-    outcome_counts_dataframe = (
-        dataframe.with_columns(
+def _counted_by_supplier_pathway_and_outcome(transfers: DataFrame):
+    return (
+        transfers.with_columns(
             [
                 col("requesting_supplier").alias("requesting supplier"),
                 col("sending_supplier").alias("sending supplier"),
@@ -127,21 +69,56 @@ def count_outcomes_per_supplier_pathway(dataframe):
             ]
         )
         .agg([count("conversation_id").alias("number of transfers")])
-        .sort(
-            [
-                col("number of transfers"),
-                col("requesting supplier"),
-                col("sending supplier"),
-                col("status"),
-            ],
-            reverse=[True, False, False, False],
-        )
     )
 
-    outcome_counts_dataframe = _add_percentage_of_transfers_column(outcome_counts_dataframe)
-    outcome_counts_dataframe = _add_percentage_of_technical_failures_column(
-        outcome_counts_dataframe
-    )
-    outcome_counts_dataframe = _add_percentage_of_supplier_pathway_column(outcome_counts_dataframe)
 
-    return outcome_counts_dataframe
+def _with_percentage_of_all_transfers(transfer_counts: DataFrame):
+    total_transfers = col("number of transfers").sum()
+    percentage_of_total_transfers = (col("number of transfers") / total_transfers) * 100
+    return transfer_counts.with_column(percentage_of_total_transfers.alias("% of transfers"))
+
+
+def _with_percentage_of_supplier_pathway(transfer_counts: DataFrame):
+    supplier_pathway = [col("requesting supplier"), col("sending supplier")]
+    count_per_pathway = col("number of transfers").sum().over(supplier_pathway)
+    percentage_of_pathway = (col("number of transfers") / count_per_pathway) * 100
+    return transfer_counts.with_column(percentage_of_pathway.alias("% of supplier pathway"))
+
+
+def _with_percentage_of_technical_failures(transfer_counts: DataFrame):
+    is_technical_failure = col("status") == TransferStatus.TECHNICAL_FAILURE.value
+    total_technical_failures = col("number of transfers").filter(is_technical_failure).sum()
+    percentage_of_tech_failures = (col("number of transfers") / total_technical_failures) * 100
+    return transfer_counts.with_column(
+        when(is_technical_failure)
+        .then(percentage_of_tech_failures)
+        .otherwise(lit(None).cast(float))
+        .alias("% of technical failures"),
+    )
+
+
+def _sorted_by_pathway_and_status(transfer_counts: DataFrame):
+    return transfer_counts.sort(
+        [
+            col("number of transfers"),
+            col("requesting supplier"),
+            col("sending supplier"),
+            col("status"),
+        ],
+        reverse=[True, False, False, False],
+    )
+
+
+def _process(data, *function_chain):
+    return reduce(lambda d, func: func(d), list(function_chain), data)
+
+
+def count_outcomes_per_supplier_pathway(transfers):
+    return _process(
+        transfers,
+        _counted_by_supplier_pathway_and_outcome,
+        _with_percentage_of_all_transfers,
+        _with_percentage_of_technical_failures,
+        _with_percentage_of_supplier_pathway,
+        _sorted_by_pathway_and_status,
+    )

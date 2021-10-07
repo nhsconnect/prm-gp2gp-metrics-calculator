@@ -88,8 +88,8 @@ class MetricsPipeline:
 
     @staticmethod
     def _count_outcomes_per_supplier_pathway(transfer_table: pa.Table):
-        dataframe = pl.from_arrow(transfer_table)
-        return count_outcomes_per_supplier_pathway(dataframe)
+        transfers_frame = pl.from_arrow(transfer_table)
+        return count_outcomes_per_supplier_pathway(transfers_frame)
 
     def _write_practice_metrics(self, practice_metrics, month):
         self._io.write_practice_metrics(
