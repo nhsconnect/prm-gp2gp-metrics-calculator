@@ -2,47 +2,75 @@
 
 Metrics calculator for the gp registrations data platform.
 
+## Configuration
+
+Configuration is achieved via the following environment variables:
+
+
+| Environment variable         | Description                                                                       |
+| ---------------------------- | --------------------------------------------------------------------------------- |
+| INPUT_TRANSFER_DATA_BUCKET   | Bucket to read transfer files from.                                               |
+| ORGANISATION_METADATA_BUCKET | Bucket to read organisation metadata.                                             |
+| OUTPUT_METRICS_BUCKET        | Bucket to write metrics.                                                          |
+| NUMBER_OF_MONTHS             | Number of months to create metrics for (historical data).                         |
+| BUILD_TAG                    | Unique identifier for version of code build tag (e.g. short git hash)             |
+
 ## Developing
 
 Common development workflows are defined in the `tasks` script.
 
-### Prerequisites
+This project is written in Python 3.9.
 
-- Python 3.9. Use [pyenv](https://github.com/pyenv/pyenv) to easily switch Python versions.
-- [Pipenv](https://pypi.org/project/pipenv/). Install by running `python -m pip install pipenv`
-- [Docker](https://www.docker.com/get-started)
+### Recommended developer environment
 
-#### Installing the correct versions of pip and python locally
+- [pyenv](https://github.com/pyenv/pyenv) to easily switch Python versions.
+- [Pipenv](https://pypi.org/project/pipenv/) to manage dependencies and virtual environments.
+- [dojo](https://github.com/kudulab/dojo) and [Docker](https://www.docker.com/get-started)
+  to run test suites in the same environment used by the CI/CD server.
 
-Ensure you are not within a virtual environment (run `deactivate` if you are in one)
+#### Installing pyenv
+```
+brew install pyenv
+```
 
-1. Run `pyenv install 3.9.4`
-2. Follow step 3 from [here](https://github.com/pyenv/pyenv#basic-github-checkout)
-3. Run `pyenv global 3.9.4`
-4. For the following steps open another terminal.
-5. Run `python -m pip install pipenv` to install pipenv using the updated python environment.
-6. Run `python -m pip install -U "pip>=21.1`
-   - `pyenv global` should output the specific python version specified rather than `system`.
-   - Both `python --version` and `pip --version` should point to the versions you have specified.
-   - `ls -l $(which pipenv)` should output `.../.pyenv/shims/pipenv` rather than `...Cellar...` (which is a brew install).
+#### Configure your shell's environment for Pyenv
 
-#### Python virtual environment
+```
+For zsh:
+echo 'eval "$(pyenv init --path)"' >> ~/.zprofile
+echo 'eval "$(pyenv init -)"' >> ~/.zshrc
+```
 
-From the base directory of the project, create a python3 virtual environment by running `./tasks devenv`, then to activate it run `pipenv shell`.
+#### Install new python and set as default
 
-To deactivate the virtual environment run `deactivate`.
+```
+pyenv install 3.9.6
+pyenv global 3.9.6
+```
 
-To remove the virtual environment and clear the cache, run `pipenv --rm && pipenv --clear`.
+#### Installing pipenv and updating pip
 
-Run the following commands in the virtual environment:
+In a new shell, run the following:
+```
+python -m pip install pipenv
+python -m pip install -U "pip>=21.1”
+```
 
-### Scripts
+#### Build a dev env
 
-These instructions assume you are using:
+In a new shell, in the project directory run.
 
-- [aws-vault](https://github.com/99designs/aws-vault) to validate your AWS credentials.
+```
+./tasks devenv
+```
 
-### Running the unit tests
+This will create a python virtual environment containing all required dependencies.
+To find out the path of this new virtual environment (which can be useful for configuring IDEs) run:
+```
+pipenv --venv
+```
+
+### Running the unit and integration tests
 
 `./tasks test`
 
@@ -69,28 +97,6 @@ This will run the validation commands in the same container used by the GoCD pip
 `./tasks check-deps`
 
 - If this fails when running outside of Dojo, see [troubleshooting section](### Troubleshooting)
-
-### ODS Portal Pipeline
-
-This pipeline will fetch ODS codes and names of all active GP practices and save the JSON file to an S3 bucket.
-
-To build your image locally:
-
-`docker build . -t <tag>`
-
-
-### Configuration
-
-Configuration is achieved via the following environment variables:
-
-
-| Environment variable         | Description                                                                       | 
-| ---------------------------- | --------------------------------------------------------------------------------- |
-| INPUT_TRANSFER_DATA_BUCKET   | Bucket to read transfer files from.                                                |
-| ORGANISATION_METADATA_BUCKET | Bucket to read organisation metadata.                                             |
-| OUTPUT_METRICS_BUCKET        | Bucket to write metrics.                                                          |
-| NUMBER_OF_MONTHS             | Number of months to create metrics for (historical data).                         |
-| BUILD_TAG                    | Unique identifier for version of code build tag (e.g. short git hash)              |
 
 ### Troubleshooting
 
