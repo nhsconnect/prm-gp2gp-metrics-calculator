@@ -6,7 +6,7 @@ from prmcalculator.domain.supplier.count_outcomes_per_supplier_pathway import (
     count_outcomes_per_supplier_pathway,
 )
 from tests.builders.common import a_string
-from tests.builders.outcome_counts import TransferDataFrame
+from tests.builders.dataframe import TransferDataFrame
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
@@ -109,6 +109,46 @@ def test_returns_dataframe_with_unique_intermediate_error_codes(error_codes, exp
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
+@pytest.mark.parametrize(
+    "error_code, expected",
+    [
+        (6, "6 - Not at surgery"),
+        (7, "7 - GP2GP disabled"),
+        (9, "9 - Unexpected EHR"),
+        (10, "10 - Failed to generate"),
+        (11, "11 - Failed to integrate"),
+        (12, "12 - Duplicate EHR"),
+        (13, "13 - Config issue"),
+        (14, "14 - Req not LM compliant"),
+        (15, "15 - ABA suppressed"),
+        (17, "17 - ABA wrong patient"),
+        (18, "18 - Req malformed"),
+        (19, "19 - Unauthorised req"),
+        (20, "20 - Spine error"),
+        (21, "21 - Extract malformed"),
+        (23, "23 - Sender not LM compliant"),
+        (24, "24 - SDS lookup"),
+        (25, "25 - Timeout"),
+        (26, "26 - Filed as attachment"),
+        (28, "28 - Wrong patient"),
+        (29, "29 - LM reassembly"),
+        (30, "30 - LM general failure"),
+        (31, "31 - Missing LM"),
+        (99, "99 - Unexpected"),
+    ],
+)
+def test_returns_dataframe_with_correct_description_of_error(error_code, expected):
+    df = TransferDataFrame().with_row(intermediate_error_codes=[error_code]).build()
+
+    actual = count_outcomes_per_supplier_pathway(df)
+    expected_unique_intermediate_errors = pl.Series("unique intermediate errors", [expected])
+
+    assert actual["unique intermediate errors"].series_equal(
+        expected_unique_intermediate_errors, null_equal=True
+    )
+
+
+@pytest.mark.filterwarnings("ignore:Conversion of")
 def test_returns_sorted_count_per_supplier_pathway():
     supplier_a = a_string(6)
     supplier_b = a_string(6)
@@ -162,81 +202,6 @@ def test_returns_sorted_count_per_transfer_outcome():
         {
             "status": [integrated_status, failed_status],
             "failure reason": [integrated_failure_reason, failed_failure_reason],
-            "number of transfers": [2, 1],
-        }
-    )
-    assert actual.frame_equal(expected, null_equal=True)
-
-
-@pytest.mark.filterwarnings("ignore:Conversion of")
-@pytest.mark.parametrize(
-    "error_codes_field_name, unique_error_codes_field_name, scenario_a_error_codes, \
-     scenario_a_unique_errors, scenario_b_error_codes, scenario_b_unique_errors",
-    [
-        ("sender_error_codes", "unique sender errors", [15], "15 - ABA suppressed", [], ""),
-        (
-            "sender_error_codes",
-            "unique sender errors",
-            [7, 6, 15, 7],
-            "6 - Not at surgery, 7 - GP2GP disabled, 15 - ABA suppressed",
-            [99, 99],
-            "99 - Unexpected",
-        ),
-        ("sender_error_codes", "unique sender errors", [10], "10 - Failed to generate", [None], ""),
-        (
-            "intermediate_error_codes",
-            "unique intermediate errors",
-            [13],
-            "13 - Config issue",
-            [],
-            "",
-        ),
-        (
-            "intermediate_error_codes",
-            "unique intermediate errors",
-            [9, 13, 24, 9],
-            "9 - Unexpected EHR, 13 - Config issue, 24 - SDS lookup",
-            [20, 20],
-            "20 - Spine error",
-        ),
-        ("final_error_codes", "unique final errors", [23], "23 - Sender not LM compliant", [], ""),
-        (
-            "final_error_codes",
-            "unique final errors",
-            [6, 9, 10, 6],
-            "6 - Not at surgery, 9 - Unexpected EHR, 10 - Failed to generate",
-            [11, 11],
-            "11 - Failed to integrate",
-        ),
-        ("final_error_codes", "unique final errors", [17], "17 - ABA wrong patient", [None], ""),
-    ],
-)
-def test_returns_sorted_count_per_unique_error_combinations(
-    error_codes_field_name,
-    unique_error_codes_field_name,
-    scenario_a_error_codes,
-    scenario_a_unique_errors,
-    scenario_b_error_codes,
-    scenario_b_unique_errors,
-):
-
-    df = (
-        TransferDataFrame()
-        .with_row(**{error_codes_field_name: scenario_a_error_codes})
-        .with_row(**{error_codes_field_name: scenario_a_error_codes})
-        .with_row(**{error_codes_field_name: scenario_b_error_codes})
-        .build()
-    )
-
-    actual_dataframe = count_outcomes_per_supplier_pathway(df)
-    actual = actual_dataframe[[unique_error_codes_field_name, "number of transfers"]]
-
-    expected = pl.from_dict(
-        {
-            unique_error_codes_field_name: [
-                scenario_a_unique_errors,
-                scenario_b_unique_errors,
-            ],
             "number of transfers": [2, 1],
         }
     )
