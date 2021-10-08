@@ -2,7 +2,7 @@ import polars as pl
 import pytest
 
 from prmcalculator.domain.gp2gp.transfer import TransferStatus, TransferFailureReason
-from prmcalculator.domain.outcome_counts.count_outcomes_per_supplier_pathway import (
+from prmcalculator.domain.supplier.count_outcomes_per_supplier_pathway import (
     count_outcomes_per_supplier_pathway,
 )
 from tests.builders.common import a_string

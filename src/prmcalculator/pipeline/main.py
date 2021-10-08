@@ -8,7 +8,7 @@ from prmcalculator.domain.national.calculate_national_metrics_data import (
     calculate_national_metrics_data,
     NationalMetricsObservabilityProbe,
 )
-from prmcalculator.domain.outcome_counts.count_outcomes_per_supplier_pathway import (
+from prmcalculator.domain.supplier.count_outcomes_per_supplier_pathway import (
     count_outcomes_per_supplier_pathway,
 )
 from prmcalculator.domain.practice.calculate_practice_metrics import (
