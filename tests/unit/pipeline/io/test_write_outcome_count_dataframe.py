@@ -27,6 +27,6 @@ def test_given_dataframe_will_write_csv():
 
     expected_dataframe = df
 
-    s3_manager.write_csv.assert_called_once_with(
+    s3_manager.write_dataframe_to_csv.assert_called_once_with(
         object_uri=s3_uri, dataframe=expected_dataframe, metadata=output_metadata
     )

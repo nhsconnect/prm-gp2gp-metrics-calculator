@@ -148,6 +148,6 @@ class PlatformMetricsIO:
         )
 
     def write_outcome_counts(self, dataframe: pl.DataFrame, s3_uri: str):
-        self._s3_manager.write_csv(
+        self._s3_manager.write_dataframe_to_csv(
             object_uri=s3_uri, dataframe=dataframe, metadata=self._output_metadata
         )

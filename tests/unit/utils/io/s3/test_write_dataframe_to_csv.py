@@ -20,7 +20,7 @@ def test_writes_csv():
 
     expected = b'"Fruit","Colour","Quantity"\n"Banana","yellow",2\n"Strawberry","red",3\n'
 
-    s3_manager.write_csv(
+    s3_manager.write_dataframe_to_csv(
         object_uri="s3://test_bucket/test_object.csv", dataframe=df, metadata=SOME_METADATA
     )
 
@@ -39,7 +39,7 @@ def test_writes_correct_content_type():
 
     expected = "text/csv"
 
-    s3_manager.write_csv(
+    s3_manager.write_dataframe_to_csv(
         object_uri="s3://test_bucket/test_object.csv", dataframe=df, metadata=SOME_METADATA
     )
 
@@ -61,7 +61,7 @@ def test_writes_metadata_when_supplied():
         "second_metadata_field": "metadata_field_second_value",
     }
 
-    s3_manager.write_csv(
+    s3_manager.write_dataframe_to_csv(
         object_uri="s3://test_bucket/test_object.csv", dataframe=df, metadata=metadata
     )
 
@@ -82,7 +82,9 @@ def test_logs_writing_file_events():
     object_uri = "s3://test_bucket/test_object.csv"
 
     with mock.patch.object(logger, "info") as mock_log_info:
-        s3_manager.write_csv(object_uri=object_uri, dataframe=df, metadata=SOME_METADATA)
+        s3_manager.write_dataframe_to_csv(
+            object_uri=object_uri, dataframe=df, metadata=SOME_METADATA
+        )
         mock_log_info.assert_has_calls(
             [
                 mock.call(
