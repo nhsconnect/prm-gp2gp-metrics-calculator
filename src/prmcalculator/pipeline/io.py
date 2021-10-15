@@ -58,7 +58,7 @@ class PlatformMetricsS3UriResolver:
                 self._data_platform_metrics_bucket,
                 self._data_platform_metrics_version,
                 f"{year}/{month}",
-                self._PRACTICE_METRICS_FILE_NAME,
+                f"{year}-{month}-{self._PRACTICE_METRICS_FILE_NAME}",
             ]
         )
         return f"s3://{s3_key}"
@@ -70,7 +70,7 @@ class PlatformMetricsS3UriResolver:
                 self._data_platform_metrics_bucket,
                 self._data_platform_metrics_version,
                 f"{year}/{month}",
-                self._NATIONAL_METRICS_FILE_NAME,
+                f"{year}-{month}-{self._NATIONAL_METRICS_FILE_NAME}",
             ]
         )
         return f"s3://{s3_key}"

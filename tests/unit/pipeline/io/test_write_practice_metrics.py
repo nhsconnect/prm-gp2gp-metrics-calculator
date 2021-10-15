@@ -80,7 +80,8 @@ def test_given_practice_metrics_object_will_generate_json():
     s3_manager = Mock()
 
     data_platform_metrics_bucket = a_string()
-    s3_key = f"v6/{_METRIC_YEAR}/{_METRIC_MONTH}/practiceMetrics.json"
+    s3_file_name = f"{_DATE_ANCHOR_YEAR}-{_DATE_ANCHOR_MONTH}-practiceMetrics.json"
+    s3_key = f"v6/{_METRIC_YEAR}/{_METRIC_MONTH}/{s3_file_name}"
     s3_uri = f"s3://{data_platform_metrics_bucket}/{s3_key}"
 
     output_metadata = {"metadata-field": "metadata_value"}
@@ -108,7 +109,7 @@ def test_given_data_platform_metrics_version_will_override_default():
     s3_uri = (
         f"s3://{data_platform_metrics_bucket}"
         f"/{data_platform_metrics_version}"
-        f"/{_METRIC_YEAR}/{_METRIC_MONTH}/practiceMetrics.json"
+        f"/{_METRIC_YEAR}/{_METRIC_MONTH}/{_METRIC_YEAR}-{_METRIC_MONTH}-practiceMetrics.json"
     )
 
     metrics_io = PlatformMetricsIO(

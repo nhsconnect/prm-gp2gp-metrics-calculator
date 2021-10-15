@@ -35,7 +35,9 @@ def test_resolver_returns_correct_practice_metrics_uri():
 
     actual = uri_resolver.practice_metrics((year, month))
 
-    expected = f"s3://{data_platform_metrics_bucket}/v6/{year}/{month}/practiceMetrics.json"
+    expected = (
+        f"s3://{data_platform_metrics_bucket}/v6/{year}/{month}/{year}-{month}-practiceMetrics.json"
+    )
 
     assert actual == expected
 
@@ -54,7 +56,9 @@ def test_resolver_returns_correct_national_metrics_uri():
 
     actual = uri_resolver.national_metrics((year, month))
 
-    expected = f"s3://{data_platform_metrics_bucket}/v6/{year}/{month}/nationalMetrics.json"
+    expected = (
+        f"s3://{data_platform_metrics_bucket}/v6/{year}/{month}/{year}-{month}-nationalMetrics.json"
+    )
 
     assert actual == expected
 

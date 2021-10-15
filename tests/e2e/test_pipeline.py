@@ -156,8 +156,8 @@ def test_end_to_end_with_fake_s3(datadir):
         f"{s3_input_transfer_data_bucket_name}/v5/2019/12/2019-12-transfers.parquet",
     )
 
-    expected_practice_metrics_output_key = "practiceMetrics.json"
-    expected_national_metrics_output_key = "nationalMetrics.json"
+    expected_practice_metrics_output_key = "2019-12-practiceMetrics.json"
+    expected_national_metrics_output_key = "2019-12-nationalMetrics.json"
     expected_supplier_pathway_outcome_counts_output_key = (
         "2019-12-supplier_pathway_outcome_counts.csv"
     )
