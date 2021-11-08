@@ -20,10 +20,14 @@ _METRIC_YEAR = 2020
 
 _integrated_date_requested = a_datetime()
 _integrated_sla_duration = timedelta(days=2, hours=19, minutes=0, seconds=41)
+_integrated_last_sender_message_timestamp = _integrated_date_requested + timedelta(hours=1)
 _integrated_date_completed = _integrated_date_requested + _integrated_sla_duration
 
 _integrated_late_date_requested = a_datetime()
 _integrated_late_sla_duration = timedelta(days=9, hours=0, minutes=0, seconds=0)
+_integrated_late_last_sender_message_timestamp = _integrated_late_date_requested + timedelta(
+    hours=1
+)
 _integrated_late_date_completed = _integrated_late_date_requested + _integrated_late_sla_duration
 
 _INTEGRATED_TRANSFER = Transfer(
@@ -32,6 +36,7 @@ _INTEGRATED_TRANSFER = Transfer(
     requesting_practice=Practice(asid="213125436412", supplier="SupplierA"),
     outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
     date_requested=_integrated_date_requested,
+    last_sender_message_timestamp=_integrated_last_sender_message_timestamp,
 )
 
 
@@ -43,6 +48,7 @@ _INTEGRATED_LATE_TRANSFER = Transfer(
         status=TransferStatus.PROCESS_FAILURE, failure_reason=TransferFailureReason.INTEGRATED_LATE
     ),
     date_requested=_integrated_late_date_requested,
+    last_sender_message_timestamp=_integrated_late_last_sender_message_timestamp,
 )
 
 
@@ -54,6 +60,7 @@ _INTEGRATED_TRANSFER_DATA_DICT = {
     "status": ["Integrated on time"],
     "failure_reason": [None],
     "date_requested": [_integrated_date_requested],
+    "last_sender_message_timestamp": [_integrated_last_sender_message_timestamp],
 }
 
 
@@ -65,6 +72,7 @@ _INTEGRATED_LATE_TRANSFER_DATA_DICT = {
     "status": ["Process failure"],
     "failure_reason": ["Integrated late"],
     "date_requested": [_integrated_late_date_requested],
+    "last_sender_message_timestamp": [_integrated_late_last_sender_message_timestamp],
 }
 
 

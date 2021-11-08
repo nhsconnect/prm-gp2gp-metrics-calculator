@@ -48,8 +48,9 @@ def _parse_dates(items):
 
 
 def _read_parquet_columns_json(path):
+    datetime_columns = ["date_requested", "last_sender_message_timestamp"]
     return {
-        column_name: _parse_dates(values) if column_name.startswith("date_") else values
+        column_name: _parse_dates(values) if column_name in datetime_columns else values
         for column_name, values in _read_json(path).items()
     }
 

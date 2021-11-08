@@ -51,6 +51,7 @@ class Transfer(NamedTuple):
     requesting_practice: Practice
     outcome: TransferOutcome
     date_requested: datetime
+    last_sender_message_timestamp: Optional[datetime]
 
 
 def filter_transfers_by_date_requested(
@@ -106,6 +107,7 @@ def convert_table_to_transfers(table: pa.Table) -> List[Transfer]:
                 else None,
             ),
             date_requested=transfer["date_requested"].astimezone(UTC),
+            last_sender_message_timestamp=transfer["last_sender_message_timestamp"].astimezone(UTC),
         )
         for transfer in transfers
     ]

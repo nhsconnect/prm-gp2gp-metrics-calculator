@@ -26,6 +26,9 @@ def _build_transfer_table(**kwargs) -> pa.Table:
             "status": kwargs.get("status", ["Integrated on time"]),
             "failure_reason": kwargs.get("failure_reason", [""]),
             "date_requested": kwargs.get("date_requested", [a_datetime()]),
+            "last_sender_message_timestamp": kwargs.get(
+                "last_sender_message_timestamp", [a_datetime()]
+            ),
         }
     )
 
@@ -115,7 +118,7 @@ def test_throw_unexpected_transfer_outcome_when_status_cannot_be_mapped():
         assert str(ex) == "Unexpected Status: MISSING_STATUS - cannot be mapped."
 
 
-def test_date_requested_column_is_converted_to_a_transfer_field():
+def test_date_requested_column_converts_to_a_transfer_field():
     date_requested = a_datetime()
 
     table = _build_transfer_table(date_requested=[date_requested])
@@ -126,7 +129,7 @@ def test_date_requested_column_is_converted_to_a_transfer_field():
     assert actual_date_requested == date_requested
 
 
-def test_naive_date_requested_column_is_converted_to_a_utc_datetime_transfer_field():
+def test_explicit_date_requested_column__converts_to_a_utc_datetime_transfer_field():
     date_requested = datetime(year=2020, month=2, day=1, hour=1, minute=2, second=3)
 
     table = _build_transfer_table(date_requested=[date_requested])
@@ -139,10 +142,35 @@ def test_naive_date_requested_column_is_converted_to_a_utc_datetime_transfer_fie
     )
 
 
+def test_last_sender_message_timestamp_column_converts_to_a_transfer_field():
+    last_sender_message_timestamp = a_datetime()
+
+    table = _build_transfer_table(last_sender_message_timestamp=[last_sender_message_timestamp])
+
+    transfers = convert_table_to_transfers(table)
+    actual_last_sender_message_timestamp = next(iter(transfers)).last_sender_message_timestamp
+
+    assert actual_last_sender_message_timestamp == last_sender_message_timestamp
+
+
+def test_explicit_last_sender_message_timestamp_column_converts_to_a_utc_datetime_transfer_field():
+    last_sender_message_timestamp = datetime(year=2020, month=2, day=1, hour=1, minute=2, second=3)
+
+    table = _build_transfer_table(last_sender_message_timestamp=[last_sender_message_timestamp])
+
+    transfers = convert_table_to_transfers(table)
+    actual_last_sender_message_timestamp = next(iter(transfers)).last_sender_message_timestamp
+
+    assert actual_last_sender_message_timestamp == datetime(
+        year=2020, month=2, day=1, hour=1, minute=2, second=3, tzinfo=UTC
+    )
+
+
 def test_converts_multiple_rows_into_list_of_transfers():
     integrated_date_requested = a_datetime()
     integrated_sla_duration = timedelta(days=2, hours=19, minutes=0, seconds=41)
     technical_failure_date_request = a_datetime()
+    last_sender_message_timestamp = a_datetime()
 
     table = _build_transfer_table(
         conversation_id=["123", "2345"],
@@ -152,6 +180,10 @@ def test_converts_multiple_rows_into_list_of_transfers():
         status=["Integrated on time", "Technical failure"],
         failure_reason=[None, "Contains fatal sender error"],
         date_requested=[integrated_date_requested, technical_failure_date_request],
+        last_sender_message_timestamp=[
+            last_sender_message_timestamp,
+            last_sender_message_timestamp,
+        ],
     )
 
     expected_transfers = [
@@ -161,6 +193,7 @@ def test_converts_multiple_rows_into_list_of_transfers():
             requesting_practice=Practice(asid="213125436412", supplier="Vision"),
             outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
             date_requested=integrated_date_requested,
+            last_sender_message_timestamp=last_sender_message_timestamp,
         ),
         Transfer(
             conversation_id="2345",
@@ -171,6 +204,7 @@ def test_converts_multiple_rows_into_list_of_transfers():
                 failure_reason=TransferFailureReason.FATAL_SENDER_ERROR,
             ),
             date_requested=technical_failure_date_request,
+            last_sender_message_timestamp=last_sender_message_timestamp,
         ),
     ]
 

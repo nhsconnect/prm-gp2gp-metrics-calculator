@@ -23,6 +23,7 @@ def build_transfer(**kwargs) -> Transfer:
             TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
         ),
         date_requested=kwargs.get("date_requested", a_datetime()),
+        last_sender_message_timestamp=None,
     )
 
 
@@ -99,6 +100,7 @@ def a_transfer_that_was_never_integrated(**kwargs):
             "requesting_practice", Practice(asid=a_string(12), supplier=a_string(12))
         ),
         date_requested=kwargs.get("date_requested", a_datetime()),
+        last_sender_message_timestamp=None,
     )
 
 
