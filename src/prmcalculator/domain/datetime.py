@@ -45,5 +45,5 @@ class MonthlyReportingWindow:
         month = self._date_anchor_month_start
         return month.year, month.month
 
-    def contains(self, time: datetime):
+    def last_month_contains(self, time: datetime):
         return self._latest_metric_month <= time < self._date_anchor_month_start

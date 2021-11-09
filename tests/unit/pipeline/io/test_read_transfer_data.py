@@ -75,10 +75,25 @@ _INTEGRATED_LATE_TRANSFER_DATA_DICT = {
     "last_sender_message_timestamp": [_integrated_late_last_sender_message_timestamp],
 }
 
+_SCHEMA = pa.schema(
+    [
+        ("conversation_id", pa.string()),
+        ("sla_duration", pa.uint64()),
+        ("requesting_practice_asid", pa.string()),
+        ("requesting_supplier", pa.string()),
+        ("status", pa.string()),
+        ("failure_reason", pa.string()),
+        ("date_requested", pa.timestamp("us", tz="utc")),
+        ("last_sender_message_timestamp", pa.timestamp("us", tz="utc")),
+    ]
+)
+
 
 def test_read_transfer_data():
     s3_manager = Mock()
-    s3_manager.read_parquet.return_value = pa.Table.from_pydict(_INTEGRATED_TRANSFER_DATA_DICT)
+    s3_manager.read_parquet.return_value = pa.Table.from_pydict(
+        _INTEGRATED_TRANSFER_DATA_DICT, schema=_SCHEMA
+    )
 
     transfer_data_bucket = "test_transfer_data_bucket"
     s3_uri = f"s3://{transfer_data_bucket}/v4/{_METRIC_YEAR}/{_METRIC_MONTH}/transfers.parquet"
@@ -90,7 +105,7 @@ def test_read_transfer_data():
 
     expected_data = [_INTEGRATED_TRANSFER]
 
-    actual_data = metrics_io.read_transfer_data(s3_uris=[s3_uri])
+    actual_data = metrics_io.read_transfers_as_dataclass(s3_uris=[s3_uri])
 
     assert actual_data == expected_data
 
@@ -100,8 +115,8 @@ def test_read_transfer_data():
 def test_read_transfer_data_from_multiple_files():
     s3_manager = Mock()
     s3_manager.read_parquet.side_effect = [
-        pa.Table.from_pydict(_INTEGRATED_TRANSFER_DATA_DICT),
-        pa.Table.from_pydict(_INTEGRATED_LATE_TRANSFER_DATA_DICT),
+        pa.Table.from_pydict(_INTEGRATED_TRANSFER_DATA_DICT, schema=_SCHEMA),
+        pa.Table.from_pydict(_INTEGRATED_LATE_TRANSFER_DATA_DICT, schema=_SCHEMA),
     ]
 
     transfer_data_bucket = "test_transfer_data_bucket"
@@ -118,7 +133,7 @@ def test_read_transfer_data_from_multiple_files():
 
     expected_data = [_INTEGRATED_TRANSFER, _INTEGRATED_LATE_TRANSFER]
 
-    actual_data = metrics_io.read_transfer_data(s3_uris=[s3_uri_one, s3_uri_two])
+    actual_data = metrics_io.read_transfers_as_dataclass(s3_uris=[s3_uri_one, s3_uri_two])
 
     assert actual_data == expected_data
 

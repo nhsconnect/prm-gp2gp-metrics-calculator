@@ -121,15 +121,14 @@ class PlatformMetricsIO:
         ods_metadata_dict = self._s3_manager.read_json(s3_uri)
         return OrganisationMetadata.from_dict(ods_metadata_dict)
 
-    def read_transfer_data(self, s3_uris: List[str]) -> List[Transfer]:
-        transfer_table = pa.concat_tables(
-            [self._s3_manager.read_parquet(s3_path) for s3_path in s3_uris],
-            promote=True,
-        )
+    def read_transfers_as_dataclass(self, s3_uris: List[str]) -> List[Transfer]:
+        transfer_table = self.read_transfers_as_table(s3_uris)
         return convert_table_to_transfers(transfer_table)
 
-    def read_transfer_table(self, s3_uri: str) -> pa.Table:
-        return self._s3_manager.read_parquet(s3_uri)
+    def read_transfers_as_table(self, s3_uris: List[str]) -> pa.Table:
+        return pa.concat_tables(
+            [self._s3_manager.read_parquet(s3_path) for s3_path in s3_uris],
+        )
 
     def write_national_metrics(
         self, national_metrics_presentation_data: NationalMetricsPresentation, s3_uri: str

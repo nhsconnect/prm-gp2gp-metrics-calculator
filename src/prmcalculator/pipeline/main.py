@@ -65,11 +65,11 @@ class MetricsPipeline:
 
     def _read_transfer_data(self, months):
         transfers_data_s3_uris = self._uris.transfer_data(months)
-        return self._io.read_transfer_data(transfers_data_s3_uris)
+        return self._io.read_transfers_as_dataclass(transfers_data_s3_uris)
 
     def _read_transfer_table(self, months) -> pa.Table:
-        transfer_table_s3_uri = self._uris.transfer_data(months)[0]
-        return self._io.read_transfer_table(transfer_table_s3_uri)
+        transfer_table_s3_uri = self._uris.transfer_data(months)
+        return self._io.read_transfers_as_table(transfer_table_s3_uri)
 
     def _calculate_national_metrics(self, transfers):
         return calculate_national_metrics_data(
@@ -117,7 +117,7 @@ class MetricsPipeline:
         last_month = self._reporting_window.last_metric_month
         ods_metadata = self._read_ods_metadata(date_anchor_month)
         transfers = self._read_transfer_data(metric_months)
-        transfer_table = self._read_transfer_table(metric_months)
+        transfer_table = self._read_transfer_table([last_month])
         national_metrics = self._calculate_national_metrics(transfers)
         practice_metrics = self._calculate_practice_metrics(transfers, ods_metadata)
         supplier_pathway_outcome_counts = self._count_outcomes_per_supplier_pathway(transfer_table)

@@ -58,7 +58,9 @@ def filter_transfers_by_date_requested(
     transfers: List[Transfer], reporting_window: MonthlyReportingWindow
 ) -> List[Transfer]:
     return [
-        transfer for transfer in transfers if reporting_window.contains(transfer.date_requested)
+        transfer
+        for transfer in transfers
+        if reporting_window.last_month_contains(transfer.date_requested)
     ]
 
 

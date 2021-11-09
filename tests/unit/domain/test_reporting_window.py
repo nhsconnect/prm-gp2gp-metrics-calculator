@@ -69,6 +69,6 @@ def test_contains_returns_correct_boolean(test_case):
 
     reporting_window = MonthlyReportingWindow.prior_to(moment, default_number_of_months)
 
-    actual = reporting_window.contains(test_case["date"])
+    actual = reporting_window.last_month_contains(test_case["date"])
 
     assert actual == test_case["expected"]
