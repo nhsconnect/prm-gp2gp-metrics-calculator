@@ -58,12 +58,19 @@ def calculate_practice_metrics(
     organisation_metadata: OrganisationMetadata,
     reporting_window: MonthlyReportingWindow,
     observability_probe: PracticeMetricsObservabilityProbe,
+    hide_slow_transferred_records_after_days: int = None,
 ) -> PracticeMetricsPresentation:
     observability_probe.record_calculating_practice_metrics(reporting_window)
     practice_lookup = PracticeLookup(organisation_metadata.practices)
-    filtered_transfers = _filter_out_slow_transfers(transfers)
+
+    transfers = (
+        _filter_out_slow_transfers(transfers, hide_slow_transferred_records_after_days)
+        if hide_slow_transferred_records_after_days
+        else transfers
+    )
+
     grouped_transfers = group_transfers_by_practice(
-        transfers=filtered_transfers,
+        transfers=transfers,
         practice_lookup=practice_lookup,
         observability_probe=observability_probe,
     )
@@ -81,15 +88,21 @@ def calculate_practice_metrics(
     )
 
 
-def _filter_out_slow_transfers(transfers: List[Transfer]) -> List[Transfer]:
+def _filter_out_slow_transfers(
+    transfers: List[Transfer], hide_slow_transferred_records_after_days: int
+) -> List[Transfer]:
     filtered_transfers = []
 
     for transfer in transfers:
-        allowed_time_for_transfer = transfer.date_requested + timedelta(days=1)
+
         if transfer.last_sender_message_timestamp is None:
             filtered_transfers.append(transfer)
+            continue
 
-        elif allowed_time_for_transfer > transfer.last_sender_message_timestamp:
+        allowed_time_for_transfer = transfer.date_requested + timedelta(
+            hide_slow_transferred_records_after_days
+        )
+        if allowed_time_for_transfer > transfer.last_sender_message_timestamp:
             filtered_transfers.append(transfer)
 
     return filtered_transfers

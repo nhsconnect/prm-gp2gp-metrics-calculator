@@ -127,12 +127,19 @@ def a_transfer_where_the_request_was_never_acknowledged(**kwargs):
 
 
 def a_transfer_where_no_core_ehr_was_sent(**kwargs):
+    date_requested = kwargs.get("date_requested", a_datetime())
     return build_transfer(
         outcome=TransferOutcome(
             status=TransferStatus.TECHNICAL_FAILURE,
             failure_reason=TransferFailureReason.CORE_EHR_NOT_SENT,
         ),
-        date_requested=kwargs.get("date_requested", a_datetime()),
+        requesting_practice=kwargs.get(
+            "requesting_practice", Practice(asid=a_string(12), supplier=a_string(12))
+        ),
+        date_requested=date_requested,
+        last_sender_message_timestamp=kwargs.get(
+            "last_sender_message_timestamp", date_requested + timedelta(minutes=1)
+        ),
     )
 
 
