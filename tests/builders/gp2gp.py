@@ -12,6 +12,7 @@ from tests.builders.common import a_string, a_duration, a_datetime
 
 
 def build_transfer(**kwargs) -> Transfer:
+    date_requested = kwargs.get("date_requested", a_datetime())
     return Transfer(
         conversation_id=kwargs.get("conversation_id", a_string(36)),
         sla_duration=kwargs.get("sla_duration", a_duration()),
@@ -22,8 +23,10 @@ def build_transfer(**kwargs) -> Transfer:
             "outcome",
             TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
         ),
-        date_requested=kwargs.get("date_requested", a_datetime()),
-        last_sender_message_timestamp=None,
+        date_requested=date_requested,
+        last_sender_message_timestamp=kwargs.get(
+            "last_sender_message_timestamp", date_requested + timedelta(minutes=1)
+        ),
     )
 
 
@@ -46,6 +49,8 @@ def a_supressed_transfer(**kwargs):
 
 
 def a_transfer_integrated_within_3_days(**kwargs):
+    date_requested = kwargs.get("date_requested", a_datetime())
+
     return build_transfer(
         outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
         sla_duration=timedelta(seconds=THREE_DAYS_IN_SECONDS),
@@ -53,6 +58,9 @@ def a_transfer_integrated_within_3_days(**kwargs):
             "requesting_practice", Practice(asid=a_string(12), supplier=a_string(12))
         ),
         date_requested=kwargs.get("date_requested", a_datetime()),
+        last_sender_message_timestamp=kwargs.get(
+            "last_sender_message_timestamp", date_requested + timedelta(minutes=1)
+        ),
     )
 
 
@@ -89,6 +97,8 @@ def a_transfer_with_a_final_error(**kwargs):
 
 
 def a_transfer_that_was_never_integrated(**kwargs):
+    date_requested = kwargs.get("date_requested", a_datetime())
+
     return Transfer(
         sla_duration=None,
         outcome=TransferOutcome(
@@ -99,8 +109,10 @@ def a_transfer_that_was_never_integrated(**kwargs):
         requesting_practice=kwargs.get(
             "requesting_practice", Practice(asid=a_string(12), supplier=a_string(12))
         ),
-        date_requested=kwargs.get("date_requested", a_datetime()),
-        last_sender_message_timestamp=None,
+        date_requested=date_requested,
+        last_sender_message_timestamp=kwargs.get(
+            "last_sender_message_timestamp", date_requested + timedelta(minutes=1)
+        ),
     )
 
 

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List
 
 from dateutil.tz import tzutc
@@ -61,8 +61,9 @@ def calculate_practice_metrics(
 ) -> PracticeMetricsPresentation:
     observability_probe.record_calculating_practice_metrics(reporting_window)
     practice_lookup = PracticeLookup(organisation_metadata.practices)
+    filtered_transfers = _filter_out_slow_transfers(transfers)
     grouped_transfers = group_transfers_by_practice(
-        transfers=transfers,
+        transfers=filtered_transfers,
         practice_lookup=practice_lookup,
         observability_probe=observability_probe,
     )
@@ -78,3 +79,17 @@ def calculate_practice_metrics(
         ],
         ccgs=organisation_metadata.ccgs,
     )
+
+
+def _filter_out_slow_transfers(transfers: List[Transfer]) -> List[Transfer]:
+    filtered_transfers = []
+
+    for transfer in transfers:
+        allowed_time_for_transfer = transfer.date_requested + timedelta(days=1)
+        if transfer.last_sender_message_timestamp is None:
+            filtered_transfers.append(transfer)
+
+        elif allowed_time_for_transfer > transfer.last_sender_message_timestamp:
+            filtered_transfers.append(transfer)
+
+    return filtered_transfers
