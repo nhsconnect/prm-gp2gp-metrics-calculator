@@ -16,7 +16,7 @@ from prmcalculator.utils.io.s3 import S3DataManager
 
 logger = logging.getLogger(__name__)
 
-_TRANSFER_DATA_VERSION = "v5"
+_TRANSFER_DATA_VERSION = "v6"
 _ORG_METADATA_VERSION = "v2"
 _DEFAULT_DATA_PLATFORM_METRICS_VERSION = "v7"
 
