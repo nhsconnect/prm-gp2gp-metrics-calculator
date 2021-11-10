@@ -21,7 +21,7 @@ def test_resolver_returns_correct_ods_metadata_uri():
     assert actual == expected
 
 
-def test_resolver_returns_correct_practice_metrics_uri():
+def test_resolver_returns_correct_practice_metrics_uri_with_default_version():
     data_platform_metrics_bucket = a_string()
     date_anchor = a_datetime()
     year = date_anchor.year
@@ -37,6 +37,27 @@ def test_resolver_returns_correct_practice_metrics_uri():
 
     expected = (
         f"s3://{data_platform_metrics_bucket}/v6/{year}/{month}/{year}-{month}-practiceMetrics.json"
+    )
+
+    assert actual == expected
+
+
+def test_resolver_returns_correct_practice_metrics_uri_with_specified_version():
+    data_platform_metrics_bucket = a_string()
+    date_anchor = a_datetime()
+    year = date_anchor.year
+    month = date_anchor.month
+
+    uri_resolver = PlatformMetricsS3UriResolver(
+        ods_bucket=a_string(),
+        data_platform_metrics_bucket=data_platform_metrics_bucket,
+        transfer_data_bucket=a_string(),
+    )
+
+    actual = uri_resolver.practice_metrics((year, month), "v2")
+
+    expected = (
+        f"s3://{data_platform_metrics_bucket}/v2/{year}/{month}/{year}-{month}-practiceMetrics.json"
     )
 
     assert actual == expected

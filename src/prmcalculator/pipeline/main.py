@@ -1,4 +1,6 @@
 from os import environ
+from typing import Optional
+
 import boto3
 import logging
 import pyarrow as pa
@@ -14,13 +16,14 @@ from prmcalculator.domain.supplier.count_outcomes_per_supplier_pathway import (
 from prmcalculator.domain.practice.calculate_practice_metrics import (
     calculate_practice_metrics,
     PracticeMetricsObservabilityProbe,
+    PracticeMetricsPresentation,
 )
 from prmcalculator.pipeline.config import PipelineConfig
 
 from prmcalculator.pipeline.io import PlatformMetricsIO, PlatformMetricsS3UriResolver
 from prmcalculator.utils.io.json_formatter import JsonFormatter
 from prmcalculator.utils.io.s3 import S3DataManager
-from prmcalculator.domain.datetime import MonthlyReportingWindow
+from prmcalculator.domain.datetime import MonthlyReportingWindow, YearMonth
 
 logger = logging.getLogger("prmcalculator")
 
@@ -91,10 +94,15 @@ class MetricsPipeline:
         transfers_frame = pl.from_arrow(transfer_table)
         return count_outcomes_per_supplier_pathway(transfers_frame)
 
-    def _write_practice_metrics(self, practice_metrics, month):
+    def _write_practice_metrics(
+        self,
+        practice_metrics: PracticeMetricsPresentation,
+        year_month: YearMonth,
+        data_platform_metrics_version: Optional[str] = None,
+    ):
         self._io.write_practice_metrics(
             practice_metrics_presentation_data=practice_metrics,
-            s3_uri=self._uris.practice_metrics(month),
+            s3_uri=self._uris.practice_metrics(year_month, data_platform_metrics_version),
         )
 
     def _write_national_metrics(self, national_metrics, month):

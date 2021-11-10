@@ -1,5 +1,5 @@
 from dataclasses import asdict
-from typing import List, Dict
+from typing import List, Dict, Optional
 import logging
 import pyarrow as pa
 import polars as pl
@@ -51,12 +51,14 @@ class PlatformMetricsS3UriResolver:
         )
         return f"s3://{s3_key}"
 
-    def practice_metrics(self, year_month: YearMonth) -> str:
+    def practice_metrics(
+        self, year_month: YearMonth, data_platform_metrics_version: Optional[str] = None
+    ) -> str:
         year, month = year_month
         s3_key = "/".join(
             [
                 self._data_platform_metrics_bucket,
-                self._data_platform_metrics_version,
+                data_platform_metrics_version or self._data_platform_metrics_version,
                 f"{year}/{month}",
                 f"{year}-{month}-{self._PRACTICE_METRICS_FILE_NAME}",
             ]
