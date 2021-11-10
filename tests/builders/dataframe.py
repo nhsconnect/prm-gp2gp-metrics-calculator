@@ -23,6 +23,7 @@ class TransferDataFrame:
         self._failure_reason_list = []
         self._date_requested_list = []
         self._date_completed_list = []
+        self._last_sender_message_list = []
 
     def with_row(self, **kwargs):
         self._conversation_id_list.append(kwargs.get("conversation_id", a_string(36)))
@@ -42,6 +43,9 @@ class TransferDataFrame:
         self._failure_reason_list.append(kwargs.get("failure_reason", None))
         self._date_requested_list.append(kwargs.get("date_requested", a_datetime().astimezone(UTC)))
         self._date_completed_list.append(kwargs.get("date_completed", a_datetime().astimezone(UTC)))
+        self._last_sender_message_list.append(
+            kwargs.get("last_sender_message", a_datetime().astimezone(UTC))
+        )
 
         return self
 
@@ -62,6 +66,7 @@ class TransferDataFrame:
                     "failure_reason": self._failure_reason_list,
                     "date_requested": self._date_requested_list,
                     "date_completed": self._date_completed_list,
+                    "last_sender_message": self._last_sender_message_list,
                 },
                 schema=pa.schema(
                     [
@@ -78,6 +83,7 @@ class TransferDataFrame:
                         ("failure_reason", pa.string()),
                         ("date_requested", pa.timestamp("us")),
                         ("date_completed", pa.timestamp("us")),
+                        ("last_sender_message", pa.timestamp("us")),
                     ]
                 ),
             )

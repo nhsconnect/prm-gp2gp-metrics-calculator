@@ -211,3 +211,35 @@ def test_converts_multiple_rows_into_list_of_transfers():
     actual_transfers = convert_table_to_transfers(table)
 
     assert actual_transfers == expected_transfers
+
+
+def test_convert_table_to_transfers_handles_none_values_gracefully():
+    date_requested = a_datetime()
+
+    table = _build_transfer_table(
+        conversation_id=[None],
+        sla_duration=[None],
+        requesting_practice_asid=[None],
+        requesting_supplier=[None],
+        status=["Technical failure"],
+        failure_reason=["Contains fatal sender error"],
+        date_requested=[date_requested],
+        last_sender_message_timestamp=[None],
+    )
+
+    actual_transfers = convert_table_to_transfers(table)
+    expected_transfers = [
+        Transfer(
+            conversation_id=None,  # type: ignore
+            sla_duration=None,
+            requesting_practice=Practice(asid=None, supplier=None),  # type: ignore
+            outcome=TransferOutcome(
+                status=TransferStatus.TECHNICAL_FAILURE,
+                failure_reason=TransferFailureReason.FATAL_SENDER_ERROR,
+            ),
+            date_requested=date_requested,
+            last_sender_message_timestamp=None,
+        ),
+    ]
+
+    assert actual_transfers == expected_transfers
