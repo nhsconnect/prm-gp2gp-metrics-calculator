@@ -13,11 +13,15 @@ class MissingEnvironmentVariable(Exception):
     pass
 
 
+class InvalidEnvironmentVariableValue(Exception):
+    pass
+
+
 class EnvConfig:
     def __init__(self, env_vars):
         self._env_vars = env_vars
 
-    def _read_env(self, name: str, optional: bool, converter=None, default=None):
+    def _read_env(self, name: str, optional: bool, converter=None, default=None):  # noqa: C901
         try:
             env_var = self._env_vars[name]
             if converter:
@@ -31,11 +35,18 @@ class EnvConfig:
                 raise MissingEnvironmentVariable(
                     f"Expected environment variable {name} was not set, exiting..."
                 )
+        except ValueError:
+            if optional:
+                return default
+            else:
+                raise InvalidEnvironmentVariableValue(
+                    f"Expected environment variable {name} value is invalid, exiting..."
+                )
 
     def read_str(self, name: str) -> str:
         return self._read_env(name, optional=False)
 
-    def read_optional_int(self, name: str, default) -> int:
+    def read_optional_int(self, name: str, default: int) -> int:
         return self._read_env(name, optional=True, converter=int, default=default)
 
     def read_optional_str(self, name: str) -> Optional[str]:
