@@ -163,6 +163,9 @@ def test_end_to_end_with_fake_s3(datadir):
         "2019-12-supplier_pathway_outcome_counts.csv"
     )
 
+    expected_practice_metrics_deprecated = _read_json(
+        datadir / "expected_outputs" / "practiceMetrics.json"
+    )
     expected_practice_metrics = _read_json(datadir / "expected_outputs" / "practiceMetrics.json")
     expected_national_metrics = _read_json(datadir / "expected_outputs" / "nationalMetrics.json")
     expected_supplier_pathway_outcome_counts = _read_csv(
@@ -175,11 +178,18 @@ def test_end_to_end_with_fake_s3(datadir):
         "number-of-months": "2",
     }
 
-    s3_metrics_output_path = "v6/2019/12/"
+    s3_metrics_output_path_deprecated = "v6/2019/12/"
+    s3_metrics_output_path = "v7/2019/12/"
 
     try:
         main()
+        practice_metrics_s3_path_deprecated = (
+            f"{s3_metrics_output_path_deprecated}{expected_practice_metrics_output_key}"
+        )
         practice_metrics_s3_path = f"{s3_metrics_output_path}{expected_practice_metrics_output_key}"
+        actual_practice_metrics_deprecated = _read_s3_json(
+            output_metrics_bucket, practice_metrics_s3_path_deprecated
+        )
         actual_practice_metrics = _read_s3_json(output_metrics_bucket, practice_metrics_s3_path)
 
         national_metrics_s3_path = f"{s3_metrics_output_path}{expected_national_metrics_output_key}"
@@ -192,6 +202,9 @@ def test_end_to_end_with_fake_s3(datadir):
             output_metrics_bucket, supplier_pathway_outcome_counts_s3_path
         )
 
+        actual_practice_metrics_s3_metadata_deprecated = _read_s3_metadata(
+            output_metrics_bucket, practice_metrics_s3_path_deprecated
+        )
         actual_practice_metrics_s3_metadata = _read_s3_metadata(
             output_metrics_bucket, practice_metrics_s3_path
         )
@@ -202,10 +215,19 @@ def test_end_to_end_with_fake_s3(datadir):
             output_metrics_bucket, supplier_pathway_outcome_counts_s3_path
         )
 
+        assert (
+            actual_practice_metrics_deprecated["practices"]
+            == expected_practice_metrics_deprecated["practices"]
+        )
         assert actual_practice_metrics["practices"] == expected_practice_metrics["practices"]
+        assert (
+            actual_practice_metrics_deprecated["ccgs"]
+            == expected_practice_metrics_deprecated["ccgs"]
+        )
         assert actual_practice_metrics["ccgs"] == expected_practice_metrics["ccgs"]
         assert actual_national_metrics["metrics"] == expected_national_metrics["metrics"]
         assert actual_supplier_pathway_outcome_counts == expected_supplier_pathway_outcome_counts
+        assert actual_practice_metrics_s3_metadata_deprecated == expected_metadata
         assert actual_practice_metrics_s3_metadata == expected_metadata
         assert actual_national_metrics_s3_metadata == expected_metadata
         assert actual_supplier_pathway_outcome_counts_s3_metadata == expected_metadata

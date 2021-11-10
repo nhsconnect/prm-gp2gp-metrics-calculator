@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 _TRANSFER_DATA_VERSION = "v5"
 _ORG_METADATA_VERSION = "v2"
-_DEFAULT_DATA_PLATFORM_METRICS_VERSION = "v6"
+_DEFAULT_DATA_PLATFORM_METRICS_VERSION = "v7"
 
 
 class PlatformMetricsS3UriResolver:

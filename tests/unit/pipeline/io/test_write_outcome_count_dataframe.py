@@ -11,7 +11,7 @@ _DATE_ANCHOR_YEAR = 2021
 def test_given_dataframe_will_write_csv():
     s3_manager = Mock()
     data_platform_metrics_bucket = a_string()
-    s3_key = f"v6/{_DATE_ANCHOR_YEAR}/{_DATE_ANCHOR_MONTH}/supplier_pathway_outcome_counts.csv"
+    s3_key = f"v7/{_DATE_ANCHOR_YEAR}/{_DATE_ANCHOR_MONTH}/supplier_pathway_outcome_counts.csv"
     s3_uri = f"s3://{data_platform_metrics_bucket}/{s3_key}"
 
     output_metadata = {"metadata-field": "metadata_value"}

@@ -1,15 +1,17 @@
 from os import environ
-from typing import Optional
+from typing import Optional, List
 
 import boto3
 import logging
 import pyarrow as pa
 import polars as pl
 
+from prmcalculator.domain.gp2gp.transfer import Transfer
 from prmcalculator.domain.national.calculate_national_metrics_data import (
     calculate_national_metrics_data,
     NationalMetricsObservabilityProbe,
 )
+from prmcalculator.domain.ods_portal.organisation_metadata import OrganisationMetadata
 from prmcalculator.domain.supplier.count_outcomes_per_supplier_pathway import (
     count_outcomes_per_supplier_pathway,
 )
@@ -43,6 +45,10 @@ class MetricsPipeline:
 
         self._reporting_window = MonthlyReportingWindow.prior_to(
             config.date_anchor, config.number_of_months
+        )
+
+        self._hide_slow_transferred_records_after_days = (
+            config.hide_slow_transferred_records_after_days
         )
 
         output_metadata = {
@@ -81,12 +87,18 @@ class MetricsPipeline:
             observability_probe=NationalMetricsObservabilityProbe(),
         )
 
-    def _calculate_practice_metrics(self, transfers, ods_metadata):
+    def _calculate_practice_metrics(
+        self,
+        transfers: List[Transfer],
+        ods_metadata: OrganisationMetadata,
+        hide_slow_transferred_records_after_days: Optional[int],
+    ):
         return calculate_practice_metrics(
             transfers=transfers,
             organisation_metadata=ods_metadata,
             reporting_window=self._reporting_window,
             observability_probe=PracticeMetricsObservabilityProbe(),
+            hide_slow_transferred_records_after_days=hide_slow_transferred_records_after_days,
         )
 
     @staticmethod
@@ -127,9 +139,19 @@ class MetricsPipeline:
         transfers = self._read_transfer_data(metric_months)
         transfer_table = self._read_transfer_table([last_month])
         national_metrics = self._calculate_national_metrics(transfers)
-        practice_metrics = self._calculate_practice_metrics(transfers, ods_metadata)
+        practice_metrics_deprecated = self._calculate_practice_metrics(
+            transfers, ods_metadata, hide_slow_transferred_records_after_days=None
+        )
+        practice_metrics = self._calculate_practice_metrics(
+            transfers,
+            ods_metadata,
+            hide_slow_transferred_records_after_days=self._hide_slow_transferred_records_after_days,
+        )
         supplier_pathway_outcome_counts = self._count_outcomes_per_supplier_pathway(transfer_table)
         self._write_national_metrics(national_metrics, last_month)
+        self._write_practice_metrics(
+            practice_metrics_deprecated, last_month, data_platform_metrics_version="v6"
+        )
         self._write_practice_metrics(practice_metrics, last_month)
         self._write_supplier_pathway_outcome_counts(supplier_pathway_outcome_counts, last_month)
 

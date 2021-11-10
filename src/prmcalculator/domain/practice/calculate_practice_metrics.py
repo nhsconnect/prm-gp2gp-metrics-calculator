@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import List
+from typing import List, Optional
 
 from dateutil.tz import tzutc
 
@@ -58,7 +58,7 @@ def calculate_practice_metrics(
     organisation_metadata: OrganisationMetadata,
     reporting_window: MonthlyReportingWindow,
     observability_probe: PracticeMetricsObservabilityProbe,
-    hide_slow_transferred_records_after_days: int = None,
+    hide_slow_transferred_records_after_days: Optional[int] = None,
 ) -> PracticeMetricsPresentation:
     observability_probe.record_calculating_practice_metrics(reporting_window)
     practice_lookup = PracticeLookup(organisation_metadata.practices)
