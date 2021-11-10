@@ -70,6 +70,7 @@ class PipelineConfig:
     date_anchor: datetime
     number_of_months: int
     s3_endpoint_url: Optional[str]
+    hide_slow_transferred_records_after_days: Optional[int]
 
     @classmethod
     def from_environment_variables(cls, env_vars):
@@ -80,6 +81,9 @@ class PipelineConfig:
             organisation_metadata_bucket=env.read_str("ORGANISATION_METADATA_BUCKET"),
             output_metrics_bucket=env.read_str("OUTPUT_METRICS_BUCKET"),
             date_anchor=env.read_datetime("DATE_ANCHOR"),
-            number_of_months=env.read_optional_int(name="NUMBER_OF_MONTHS", default=1),
+            number_of_months=env.read_optional_int("NUMBER_OF_MONTHS", default=1),
             s3_endpoint_url=env.read_optional_str("S3_ENDPOINT_URL"),
+            hide_slow_transferred_records_after_days=env.read_optional_int(
+                "HIDE_SLOW_TRANSFERRED_RECORDS_AFTER_DAYS", default=1
+            ),
         )

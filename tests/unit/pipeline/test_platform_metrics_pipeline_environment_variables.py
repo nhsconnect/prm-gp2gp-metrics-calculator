@@ -19,6 +19,7 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
         "DATE_ANCHOR": "2020-01-30T18:44:49Z",
         "S3_ENDPOINT_URL": "a_url",
         "BUILD_TAG": build_tag,
+        "HIDE_SLOW_TRANSFERRED_RECORDS_AFTER_DAYS": "3",
     }
 
     expected_config = PipelineConfig(
@@ -31,6 +32,7 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
         ),
         s3_endpoint_url="a_url",
         build_tag=build_tag,
+        hide_slow_transferred_records_after_days=3,
     )
 
     actual_config = PipelineConfig.from_environment_variables(environment)
@@ -58,6 +60,7 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
         ),
         s3_endpoint_url=None,
         build_tag=build_tag,
+        hide_slow_transferred_records_after_days=1,
     )
 
     actual_config = PipelineConfig.from_environment_variables(environment)
