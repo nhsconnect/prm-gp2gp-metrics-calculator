@@ -162,10 +162,6 @@ def test_end_to_end_with_fake_s3(datadir):
     expected_supplier_pathway_outcome_counts_output_key = (
         "2019-12-supplier_pathway_outcome_counts.csv"
     )
-
-    expected_practice_metrics_deprecated = _read_json(
-        datadir / "expected_outputs" / "practiceMetrics.json"
-    )
     expected_practice_metrics = _read_json(datadir / "expected_outputs" / "practiceMetrics.json")
     expected_national_metrics = _read_json(datadir / "expected_outputs" / "nationalMetrics.json")
     expected_supplier_pathway_outcome_counts = _read_csv(
@@ -178,18 +174,13 @@ def test_end_to_end_with_fake_s3(datadir):
         "number-of-months": "2",
     }
 
-    s3_metrics_output_path_deprecated = "v6/2019/12/"
     s3_metrics_output_path = "v7/2019/12/"
 
     try:
         main()
-        practice_metrics_s3_path_deprecated = (
-            f"{s3_metrics_output_path_deprecated}{expected_practice_metrics_output_key}"
-        )
+
         practice_metrics_s3_path = f"{s3_metrics_output_path}{expected_practice_metrics_output_key}"
-        actual_practice_metrics_deprecated = _read_s3_json(
-            output_metrics_bucket, practice_metrics_s3_path_deprecated
-        )
+
         actual_practice_metrics = _read_s3_json(output_metrics_bucket, practice_metrics_s3_path)
 
         national_metrics_s3_path = f"{s3_metrics_output_path}{expected_national_metrics_output_key}"
@@ -202,9 +193,6 @@ def test_end_to_end_with_fake_s3(datadir):
             output_metrics_bucket, supplier_pathway_outcome_counts_s3_path
         )
 
-        actual_practice_metrics_s3_metadata_deprecated = _read_s3_metadata(
-            output_metrics_bucket, practice_metrics_s3_path_deprecated
-        )
         actual_practice_metrics_s3_metadata = _read_s3_metadata(
             output_metrics_bucket, practice_metrics_s3_path
         )
@@ -215,22 +203,112 @@ def test_end_to_end_with_fake_s3(datadir):
             output_metrics_bucket, supplier_pathway_outcome_counts_s3_path
         )
 
+        assert actual_practice_metrics["practices"] == expected_practice_metrics["practices"]
+
+        assert actual_practice_metrics["ccgs"] == expected_practice_metrics["ccgs"]
+        assert actual_national_metrics["metrics"] == expected_national_metrics["metrics"]
+        assert actual_supplier_pathway_outcome_counts == expected_supplier_pathway_outcome_counts
+        assert actual_practice_metrics_s3_metadata == expected_metadata
+        assert actual_national_metrics_s3_metadata == expected_metadata
+        assert actual_supplier_pathway_outcome_counts_s3_metadata == expected_metadata
+    finally:
+        output_metrics_bucket.objects.all().delete()
+        output_metrics_bucket.delete()
+        input_transfer_bucket.objects.all().delete()
+        input_transfer_bucket.delete()
+        fake_s3.stop()
+
+
+def test_end_to_end_with_fake_s3_deprecated(datadir):
+    fake_s3_access_key = "testing"
+    fake_s3_secret_key = "testing"
+    fake_s3_region = "eu-west-2"
+    s3_output_metrics_bucket_name = "output-metrics-bucket"
+    s3_input_transfer_data_bucket_name = "input-transfer-data-bucket"
+    s3_organisation_metadata_bucket_name = "organisation-metadata-bucket"
+    build_tag = a_string(7)
+
+    fake_s3 = _build_fake_s3(fake_s3_host, fake_s3_port)
+    fake_s3.start()
+
+    date_anchor = "2020-01-30T18:44:49Z"
+
+    environ["AWS_ACCESS_KEY_ID"] = fake_s3_access_key
+    environ["AWS_SECRET_ACCESS_KEY"] = fake_s3_secret_key
+    environ["AWS_DEFAULT_REGION"] = fake_s3_region
+
+    environ["INPUT_TRANSFER_DATA_BUCKET"] = s3_input_transfer_data_bucket_name
+    environ["OUTPUT_METRICS_BUCKET"] = s3_output_metrics_bucket_name
+    environ["ORGANISATION_METADATA_BUCKET"] = s3_organisation_metadata_bucket_name
+    environ["NUMBER_OF_MONTHS"] = "2"
+    environ["DATE_ANCHOR"] = date_anchor
+    environ["S3_ENDPOINT_URL"] = fake_s3_url
+    environ["BUILD_TAG"] = build_tag
+
+    s3 = boto3.resource(
+        "s3",
+        endpoint_url=fake_s3_url,
+        aws_access_key_id=fake_s3_access_key,
+        aws_secret_access_key=fake_s3_secret_key,
+        config=Config(signature_version="s3v4"),
+        region_name=fake_s3_region,
+    )
+
+    output_metrics_bucket = _build_fake_s3_bucket(s3_output_metrics_bucket_name, s3)
+    organisation_metadata_bucket = _build_fake_s3_bucket(s3_organisation_metadata_bucket_name, s3)
+
+    organisation_metadata_file = str(datadir / "inputs" / "organisationMetadata.json")
+    organisation_metadata_bucket.upload_file(
+        organisation_metadata_file, "v2/2020/1/organisationMetadata.json"
+    )
+
+    input_transfer_bucket = _build_fake_s3_bucket(s3_input_transfer_data_bucket_name, s3)
+
+    _write_transfer_parquet(
+        datadir / "inputs" / "novTransfersParquetColumns.json",
+        f"{s3_input_transfer_data_bucket_name}/v6/2019/11/2019-11-transfers.parquet",
+    )
+    _write_transfer_parquet(
+        datadir / "inputs" / "decTransfersParquetColumnsDeprecated.json",
+        f"{s3_input_transfer_data_bucket_name}/v6/2019/12/2019-12-transfers.parquet",
+    )
+
+    expected_practice_metrics_output_key = "2019-12-practiceMetrics.json"
+
+    expected_practice_metrics_deprecated = _read_json(
+        datadir / "expected_outputs" / "practiceMetricsDeprecated.json"
+    )
+
+    expected_metadata = {
+        "metrics-calculator-version": build_tag,
+        "date-anchor": "2020-01-30T18:44:49+00:00",
+        "number-of-months": "2",
+    }
+
+    s3_metrics_output_path_deprecated = "v6/2019/12/"
+
+    try:
+        main()
+        practice_metrics_s3_path_deprecated = (
+            f"{s3_metrics_output_path_deprecated}{expected_practice_metrics_output_key}"
+        )
+        actual_practice_metrics_deprecated = _read_s3_json(
+            output_metrics_bucket, practice_metrics_s3_path_deprecated
+        )
+
+        actual_practice_metrics_s3_metadata_deprecated = _read_s3_metadata(
+            output_metrics_bucket, practice_metrics_s3_path_deprecated
+        )
+
         assert (
             actual_practice_metrics_deprecated["practices"]
             == expected_practice_metrics_deprecated["practices"]
         )
-        assert actual_practice_metrics["practices"] == expected_practice_metrics["practices"]
         assert (
             actual_practice_metrics_deprecated["ccgs"]
             == expected_practice_metrics_deprecated["ccgs"]
         )
-        assert actual_practice_metrics["ccgs"] == expected_practice_metrics["ccgs"]
-        assert actual_national_metrics["metrics"] == expected_national_metrics["metrics"]
-        assert actual_supplier_pathway_outcome_counts == expected_supplier_pathway_outcome_counts
         assert actual_practice_metrics_s3_metadata_deprecated == expected_metadata
-        assert actual_practice_metrics_s3_metadata == expected_metadata
-        assert actual_national_metrics_s3_metadata == expected_metadata
-        assert actual_supplier_pathway_outcome_counts_s3_metadata == expected_metadata
     finally:
         output_metrics_bucket.objects.all().delete()
         output_metrics_bucket.delete()
