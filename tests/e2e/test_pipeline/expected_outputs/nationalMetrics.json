@@ -4,31 +4,31 @@
     {
       "year": 2019,
       "month": 12,
-      "transferCount": 11,
+      "transferCount": 13,
       "integratedOnTime": {
-        "transferCount": 4,
-        "transferPercentage": 36.36
+        "transferCount": 6,
+        "transferPercentage": 46.15
       },
       "paperFallback": {
         "transferCount": 7,
-        "transferPercentage": 63.64,
+        "transferPercentage": 53.85,
         "processFailure": {
           "integratedLate": {
             "transferCount": 1,
-            "transferPercentage": 9.09
+            "transferPercentage": 7.69
           },
           "transferredNotIntegrated": {
             "transferCount": 3,
-            "transferPercentage": 27.27
+            "transferPercentage": 23.08
           }
         },
         "technicalFailure": {
           "transferCount": 2,
-          "transferPercentage": 18.18
+          "transferPercentage": 15.38
         },
         "unclassifiedFailure": {
           "transferCount": 1,
-          "transferPercentage": 9.09
+          "transferPercentage": 7.69
         }
       }
     }
