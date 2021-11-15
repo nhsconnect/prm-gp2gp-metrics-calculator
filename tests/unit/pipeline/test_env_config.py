@@ -1,6 +1,6 @@
 import pytest
 
-from prmcalculator.pipeline.config import EnvConfig
+from prmcalculator.pipeline.config import EnvConfig, InvalidEnvironmentVariableValue
 
 
 @pytest.mark.parametrize(
@@ -27,21 +27,20 @@ def test_read_optional_bool_returns_false_given_different_casing(string):
     assert actual == expected
 
 
-@pytest.mark.parametrize(
-    "string",
-    ["1"],
-)
-def test_read_optional_int_returns_one_given_string_value_one(string):
-    env = EnvConfig({"OPTIONAL_INT_CONFIG": string})
+def test_read_optional_int_returns_one_given_string_value_one():
+    env = EnvConfig({"OPTIONAL_INT_CONFIG": "1"})
     actual = env.read_optional_int(name="OPTIONAL_INT_CONFIG", default=0)
     expected = 1
 
     assert actual == expected
 
 
-def test_read_optional_int_returns_default_value_given_invalid_string():
-    env = EnvConfig({"OPTIONAL_INT_CONFIG": ""})
-    actual = env.read_optional_int(name="OPTIONAL_INT_CONFIG", default=0)
-    expected = 0
+def test_read_optional_int_throws_exception_given_invalid_string():
+    env = EnvConfig({"OPTIONAL_INT_CONFIG": "one"})
 
-    assert actual == expected
+    with pytest.raises(InvalidEnvironmentVariableValue) as e:
+        env.read_optional_int(name="OPTIONAL_INT_CONFIG", default=0)
+        assert (
+            str(e)
+            == "Expected environment variable OPTIONAL_INT_CONFIG value is invalid, exiting..."
+        )

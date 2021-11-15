@@ -36,12 +36,9 @@ class EnvConfig:
                     f"Expected environment variable {name} was not set, exiting..."
                 )
         except ValueError:
-            if optional:
-                return default
-            else:
-                raise InvalidEnvironmentVariableValue(
-                    f"Expected environment variable {name} value is invalid, exiting..."
-                )
+            raise InvalidEnvironmentVariableValue(
+                f"Expected environment variable {name} value is invalid, exiting..."
+            )
 
     def read_str(self, name: str) -> str:
         return self._read_env(name, optional=False)
