@@ -97,12 +97,12 @@ def _filter_out_slow_transfers(
 
         if transfer.last_sender_message_timestamp is None:
             filtered_transfers.append(transfer)
-            continue
 
-        allowed_time_for_transfer = transfer.date_requested + timedelta(
-            hide_slow_transferred_records_after_days
-        )
-        if allowed_time_for_transfer > transfer.last_sender_message_timestamp:
-            filtered_transfers.append(transfer)
+        else:
+            allowed_time_for_transfer = transfer.date_requested + timedelta(
+                hide_slow_transferred_records_after_days
+            )
+            if allowed_time_for_transfer > transfer.last_sender_message_timestamp:
+                filtered_transfers.append(transfer)
 
     return filtered_transfers
