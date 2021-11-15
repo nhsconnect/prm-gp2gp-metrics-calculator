@@ -129,7 +129,7 @@ def test_date_requested_column_converts_to_a_transfer_field():
     assert actual_date_requested == date_requested
 
 
-def test_explicit_date_requested_column__converts_to_a_utc_datetime_transfer_field():
+def test_date_without_timezone_requested_column__converts_to_a_utc_datetime_transfer_field():
     date_requested = datetime(year=2020, month=2, day=1, hour=1, minute=2, second=3)
 
     table = _build_transfer_table(date_requested=[date_requested])
@@ -217,10 +217,10 @@ def test_convert_table_to_transfers_handles_none_values_gracefully():
     date_requested = a_datetime()
 
     table = _build_transfer_table(
-        conversation_id=[None],
+        conversation_id=["123"],
         sla_duration=[None],
-        requesting_practice_asid=[None],
-        requesting_supplier=[None],
+        requesting_practice_asid=["213125436412"],
+        requesting_supplier=["Vision"],
         status=["Technical failure"],
         failure_reason=["Contains fatal sender error"],
         date_requested=[date_requested],
@@ -230,9 +230,9 @@ def test_convert_table_to_transfers_handles_none_values_gracefully():
     actual_transfers = convert_table_to_transfers(table)
     expected_transfers = [
         Transfer(
-            conversation_id=None,  # type: ignore
+            conversation_id="123",
             sla_duration=None,
-            requesting_practice=Practice(asid=None, supplier=None),  # type: ignore
+            requesting_practice=Practice(asid="213125436412", supplier="Vision"),
             outcome=TransferOutcome(
                 status=TransferStatus.TECHNICAL_FAILURE,
                 failure_reason=TransferFailureReason.FATAL_SENDER_ERROR,
