@@ -40,7 +40,7 @@ def test_read_optional_int_throws_exception_given_invalid_string():
 
     with pytest.raises(InvalidEnvironmentVariableValue) as e:
         env.read_optional_int(name="OPTIONAL_INT_CONFIG", default=0)
-        assert (
-            str(e)
-            == "Expected environment variable OPTIONAL_INT_CONFIG value is invalid, exiting..."
-        )
+    assert (
+        str(e.value)
+        == "Expected environment variable OPTIONAL_INT_CONFIG value is invalid, exiting..."
+    )
