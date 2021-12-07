@@ -2,8 +2,8 @@ from datetime import datetime
 
 from prmcalculator.domain.ods_portal.organisation_metadata import (
     CcgDetails,
-    PracticeDetails,
     OrganisationMetadata,
+    PracticeDetails,
 )
 
 

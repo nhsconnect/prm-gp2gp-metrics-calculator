@@ -1,17 +1,17 @@
-from dataclasses import asdict
-from typing import List, Dict, Optional
 import logging
-import pyarrow as pa
-import polars as pl
+from dataclasses import asdict
+from typing import Dict, List, Optional
 
+import polars as pl
+import pyarrow as pa
+
+from prmcalculator.domain.datetime import YearMonth
 from prmcalculator.domain.gp2gp.transfer import Transfer, convert_table_to_transfers
 from prmcalculator.domain.national.construct_national_metrics_presentation import (
     NationalMetricsPresentation,
 )
-
 from prmcalculator.domain.ods_portal.organisation_metadata import OrganisationMetadata
 from prmcalculator.utils.io.dictionary import camelize_dict
-from prmcalculator.domain.datetime import YearMonth
 from prmcalculator.utils.io.s3 import S3DataManager
 
 logger = logging.getLogger(__name__)

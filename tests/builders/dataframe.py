@@ -1,8 +1,9 @@
 import polars as pl
 import pyarrow as pa
 from dateutil.tz import UTC
+
 from prmcalculator.domain.gp2gp.transfer import TransferStatus
-from tests.builders.common import a_string, a_datetime, an_integer
+from tests.builders.common import a_datetime, a_string, an_integer
 
 requesting_supplier = a_string(5)
 sending_supplier = a_string(5)

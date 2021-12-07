@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 from enum import Enum
-from typing import NamedTuple, Optional, List
+from typing import List, NamedTuple, Optional
 
 import pyarrow as pa
 from dateutil.tz import UTC

@@ -4,27 +4,26 @@ from unittest.mock import Mock
 from dateutil.tz import UTC
 from freezegun import freeze_time
 
+from prmcalculator.domain.datetime import MonthlyReportingWindow
 from prmcalculator.domain.gp2gp.transfer import Practice
 from prmcalculator.domain.ods_portal.organisation_metadata import (
-    PracticeDetails,
     CcgDetails,
     OrganisationMetadata,
+    PracticeDetails,
 )
 from prmcalculator.domain.practice.calculate_practice_metrics import (
-    calculate_practice_metrics,
     PracticeMetricsPresentation,
+    calculate_practice_metrics,
 )
 from prmcalculator.domain.practice.construct_practice_summary import (
     MonthlyMetricsPresentation,
     PracticeSummary,
     RequestedTransferMetrics,
 )
-
-from prmcalculator.domain.datetime import MonthlyReportingWindow
 from tests.builders.common import a_datetime
 from tests.builders.gp2gp import (
-    a_transfer_that_was_never_integrated,
     a_transfer_integrated_within_3_days,
+    a_transfer_that_was_never_integrated,
     a_transfer_where_no_core_ehr_was_sent,
 )
 

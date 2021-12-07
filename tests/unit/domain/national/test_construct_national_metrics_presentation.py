@@ -7,15 +7,14 @@ from prmcalculator.domain.national.calculate_national_metrics_month import Natio
 from prmcalculator.domain.national.construct_national_metrics_presentation import (
     construct_national_metrics_presentation,
 )
-
 from tests.builders.common import a_datetime
 from tests.builders.gp2gp import (
-    build_transfer,
-    a_transfer_with_a_final_error,
     a_transfer_integrated_beyond_8_days,
     a_transfer_that_was_never_integrated,
-    an_integrated_transfer,
     a_transfer_where_a_copc_triggered_an_error,
+    a_transfer_with_a_final_error,
+    an_integrated_transfer,
+    build_transfer,
 )
 
 a_year = a_datetime().year

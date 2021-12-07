@@ -1,11 +1,12 @@
 import datetime
+
 import pytest
 
 from prmcalculator.domain.gp2gp.sla import (
-    assign_to_sla_band,
-    SlaBand,
-    THREE_DAYS_IN_SECONDS,
     EIGHT_DAYS_IN_SECONDS,
+    THREE_DAYS_IN_SECONDS,
+    SlaBand,
+    assign_to_sla_band,
 )
 
 

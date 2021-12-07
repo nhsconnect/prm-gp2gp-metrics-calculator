@@ -1,13 +1,13 @@
-from logging import getLogger, Logger
+from logging import Logger, getLogger
 from typing import List
 
+from prmcalculator.domain.datetime import MonthlyReportingWindow
 from prmcalculator.domain.gp2gp.transfer import Transfer, filter_transfers_by_date_requested
 from prmcalculator.domain.national.calculate_national_metrics_month import NationalMetricsMonth
 from prmcalculator.domain.national.construct_national_metrics_presentation import (
-    construct_national_metrics_presentation,
     NationalMetricsPresentation,
+    construct_national_metrics_presentation,
 )
-from prmcalculator.domain.datetime import MonthlyReportingWindow
 
 module_logger = getLogger(__name__)
 

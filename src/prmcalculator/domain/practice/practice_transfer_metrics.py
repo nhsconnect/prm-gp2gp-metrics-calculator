@@ -1,10 +1,10 @@
 from collections import defaultdict
-from typing import Iterable, Dict, List
+from typing import Dict, Iterable, List
 
+from prmcalculator.domain.datetime import MonthNumber, YearMonth, YearNumber
 from prmcalculator.domain.gp2gp.transfer import Transfer
 from prmcalculator.domain.practice.group_transfers_by_practice import PracticeTransfers
 from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
-from prmcalculator.domain.datetime import YearNumber, MonthNumber, YearMonth
 
 
 class PracticeTransferMetrics:

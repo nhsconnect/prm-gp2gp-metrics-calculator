@@ -1,31 +1,30 @@
+import logging
 from os import environ
-from typing import Optional, List
+from typing import List, Optional
 
 import boto3
-import logging
-import pyarrow as pa
 import polars as pl
+import pyarrow as pa
 
+from prmcalculator.domain.datetime import MonthlyReportingWindow, YearMonth
 from prmcalculator.domain.gp2gp.transfer import Transfer
 from prmcalculator.domain.national.calculate_national_metrics_data import (
-    calculate_national_metrics_data,
     NationalMetricsObservabilityProbe,
+    calculate_national_metrics_data,
 )
 from prmcalculator.domain.ods_portal.organisation_metadata import OrganisationMetadata
+from prmcalculator.domain.practice.calculate_practice_metrics import (
+    PracticeMetricsObservabilityProbe,
+    PracticeMetricsPresentation,
+    calculate_practice_metrics,
+)
 from prmcalculator.domain.supplier.count_outcomes_per_supplier_pathway import (
     count_outcomes_per_supplier_pathway,
 )
-from prmcalculator.domain.practice.calculate_practice_metrics import (
-    calculate_practice_metrics,
-    PracticeMetricsObservabilityProbe,
-    PracticeMetricsPresentation,
-)
 from prmcalculator.pipeline.config import PipelineConfig
-
 from prmcalculator.pipeline.io import PlatformMetricsIO, PlatformMetricsS3UriResolver
 from prmcalculator.utils.io.json_formatter import JsonFormatter
 from prmcalculator.utils.io.s3 import S3DataManager
-from prmcalculator.domain.datetime import MonthlyReportingWindow, YearMonth
 
 logger = logging.getLogger("prmcalculator")
 

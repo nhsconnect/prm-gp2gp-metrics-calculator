@@ -1,23 +1,20 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from logging import Logger, getLogger
 from typing import List, Optional
 
 from dateutil.tz import tzutc
 
+from prmcalculator.domain.datetime import MonthlyReportingWindow
 from prmcalculator.domain.gp2gp.transfer import Transfer
 from prmcalculator.domain.ods_portal.organisation_metadata import CcgDetails, OrganisationMetadata
 from prmcalculator.domain.practice.construct_practice_summary import (
-    construct_practice_summary,
     PracticeSummary,
+    construct_practice_summary,
 )
-from prmcalculator.domain.practice.group_transfers_by_practice import (
-    group_transfers_by_practice,
-)
+from prmcalculator.domain.practice.group_transfers_by_practice import group_transfers_by_practice
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
-from prmcalculator.domain.datetime import MonthlyReportingWindow
-
-from logging import getLogger, Logger
 
 module_logger = getLogger(__name__)
 

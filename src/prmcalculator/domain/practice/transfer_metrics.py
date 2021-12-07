@@ -4,9 +4,9 @@ from typing import Iterable
 from prmcalculator.domain.gp2gp.sla import SlaCounter
 from prmcalculator.domain.gp2gp.transfer import (
     Transfer,
+    TransferFailureReason,
     TransferOutcome,
     TransferStatus,
-    TransferFailureReason,
 )
 
 _NOT_INTEGRATED = TransferOutcome(

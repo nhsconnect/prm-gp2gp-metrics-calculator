@@ -1,16 +1,13 @@
 from datetime import datetime
 from unittest.mock import Mock
 
-from prmcalculator.domain.practice.calculate_practice_metrics import (
-    PracticeMetricsPresentation,
-)
+from prmcalculator.domain.ods_portal.organisation_metadata import CcgDetails
+from prmcalculator.domain.practice.calculate_practice_metrics import PracticeMetricsPresentation
 from prmcalculator.domain.practice.construct_practice_summary import (
-    PracticeSummary,
     MonthlyMetricsPresentation,
+    PracticeSummary,
     RequestedTransferMetrics,
 )
-
-from prmcalculator.domain.ods_portal.organisation_metadata import CcgDetails
 from prmcalculator.pipeline.io import PlatformMetricsIO
 from tests.builders.common import a_string
 

@@ -3,9 +3,9 @@ from typing import Iterable
 
 from prmcalculator.domain.gp2gp.transfer import (
     Transfer,
-    TransferStatus,
     TransferFailureReason,
     TransferOutcome,
+    TransferStatus,
 )
 
 _NOT_INTEGRATED = TransferOutcome(

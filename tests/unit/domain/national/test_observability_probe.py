@@ -1,9 +1,9 @@
 from unittest.mock import Mock
 
+from prmcalculator.domain.datetime import MonthlyReportingWindow
 from prmcalculator.domain.national.calculate_national_metrics_data import (
     NationalMetricsObservabilityProbe,
 )
-from prmcalculator.domain.datetime import MonthlyReportingWindow
 from tests.builders.common import a_datetime
 
 

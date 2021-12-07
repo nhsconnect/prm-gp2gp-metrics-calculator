@@ -2,13 +2,13 @@ from datetime import timedelta
 
 from prmcalculator.domain.gp2gp.sla import EIGHT_DAYS_IN_SECONDS, THREE_DAYS_IN_SECONDS
 from prmcalculator.domain.gp2gp.transfer import (
-    Transfer,
-    TransferStatus,
-    TransferOutcome,
-    TransferFailureReason,
     Practice,
+    Transfer,
+    TransferFailureReason,
+    TransferOutcome,
+    TransferStatus,
 )
-from tests.builders.common import a_string, a_duration, a_datetime
+from tests.builders.common import a_datetime, a_duration, a_string
 
 
 def build_transfer(**kwargs) -> Transfer:

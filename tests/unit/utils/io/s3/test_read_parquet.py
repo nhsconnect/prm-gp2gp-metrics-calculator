@@ -1,8 +1,8 @@
 from unittest import mock
 
 import boto3
-from moto import mock_s3
 import pyarrow as pa
+from moto import mock_s3
 from pyarrow.parquet import write_table
 
 from prmcalculator.utils.io.s3 import S3DataManager, logger

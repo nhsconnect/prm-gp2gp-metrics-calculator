@@ -1,4 +1,5 @@
 from unittest.mock import Mock
+
 import polars as pl
 
 from prmcalculator.pipeline.io import PlatformMetricsIO

@@ -1,8 +1,8 @@
 from unittest import mock
 
 import boto3
-from moto import mock_s3
 import polars as pl
+from moto import mock_s3
 
 from prmcalculator.utils.io.s3 import S3DataManager, logger
 from tests.unit.utils.io.s3 import MOTO_MOCK_REGION

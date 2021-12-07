@@ -1,6 +1,7 @@
 from functools import reduce
 from typing import List, Optional
-from polars import col, count, when, DataFrame, lit  # type: ignore
+
+from polars import DataFrame, col, count, lit, when  # type: ignore
 
 from prmcalculator.domain.gp2gp.transfer import TransferStatus
 

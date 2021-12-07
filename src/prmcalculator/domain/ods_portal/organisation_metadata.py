@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
-from dateutil import parser
 from typing import List
+
+from dateutil import parser
 
 
 @dataclass

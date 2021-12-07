@@ -1,19 +1,18 @@
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 
+import pyarrow as pa
 from dateutil.tz import UTC
 
 from prmcalculator.domain.gp2gp.transfer import (
-    convert_table_to_transfers,
+    Practice,
+    Transfer,
+    TransferFailureReason,
     TransferOutcome,
     TransferStatus,
-    TransferFailureReason,
-    Transfer,
-    Practice,
     UnexpectedTransferOutcome,
+    convert_table_to_transfers,
 )
-import pyarrow as pa
-
-from tests.builders.common import a_string, a_datetime
+from tests.builders.common import a_datetime, a_string
 
 
 def _build_transfer_table(**kwargs) -> pa.Table:

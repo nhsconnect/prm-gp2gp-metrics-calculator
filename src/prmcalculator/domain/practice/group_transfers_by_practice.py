@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Dict, Tuple
+from typing import Dict, List, Tuple
 
 from prmcalculator.domain.gp2gp.transfer import Transfer
 from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails

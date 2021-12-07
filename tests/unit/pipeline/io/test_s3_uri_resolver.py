@@ -1,5 +1,5 @@
 from prmcalculator.pipeline.io import PlatformMetricsS3UriResolver
-from tests.builders.common import a_string, a_datetime
+from tests.builders.common import a_datetime, a_string
 
 
 def test_resolver_returns_correct_ods_metadata_uri():

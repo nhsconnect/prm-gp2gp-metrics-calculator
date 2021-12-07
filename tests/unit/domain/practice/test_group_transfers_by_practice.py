@@ -3,8 +3,8 @@ from unittest.mock import Mock
 from prmcalculator.domain.gp2gp.transfer import Practice
 from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
 from prmcalculator.domain.practice.group_transfers_by_practice import (
-    group_transfers_by_practice,
     PracticeTransfers,
+    group_transfers_by_practice,
 )
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 from tests.builders.common import a_string

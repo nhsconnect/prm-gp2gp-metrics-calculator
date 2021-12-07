@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Tuple, List
+from typing import List, Tuple
 
 from dateutil.relativedelta import relativedelta
 from dateutil.tz import tzutc

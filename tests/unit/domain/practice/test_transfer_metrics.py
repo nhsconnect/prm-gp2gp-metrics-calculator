@@ -1,17 +1,17 @@
 from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
 from tests.builders.gp2gp import (
-    a_transfer_that_was_never_integrated,
-    a_transfer_where_no_core_ehr_was_sent,
-    a_transfer_where_the_request_was_never_acknowledged,
-    a_transfer_with_a_final_error,
     a_transfer_integrated_between_3_and_8_days,
     a_transfer_integrated_beyond_8_days,
-    a_transfer_where_a_copc_triggered_an_error,
     a_transfer_integrated_within_3_days,
-    a_transfer_where_no_copc_continue_was_sent,
-    a_transfer_where_copc_fragments_were_required_but_not_sent,
+    a_transfer_that_was_never_integrated,
+    a_transfer_where_a_copc_triggered_an_error,
     a_transfer_where_copc_fragments_remained_unacknowledged,
+    a_transfer_where_copc_fragments_were_required_but_not_sent,
+    a_transfer_where_no_copc_continue_was_sent,
+    a_transfer_where_no_core_ehr_was_sent,
+    a_transfer_where_the_request_was_never_acknowledged,
     a_transfer_where_the_sender_reported_an_unrecoverable_error,
+    a_transfer_with_a_final_error,
 )
 
 

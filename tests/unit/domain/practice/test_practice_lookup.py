@@ -1,8 +1,7 @@
 from typing import List
 
-from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
-
+from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 from tests.builders.ods_portal import build_practice_details
 
 

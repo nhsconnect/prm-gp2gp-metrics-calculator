@@ -4,8 +4,8 @@ from unittest.mock import Mock
 from dateutil.tz import UTC
 
 from prmcalculator.domain.national.construct_national_metrics_presentation import (
-    NationalMetricsPresentation,
     NationalMetricMonthPresentation,
+    NationalMetricsPresentation,
     OutcomeMetricsPresentation,
     PaperFallbackMetricsPresentation,
     ProcessFailureMetricsPresentation,

@@ -3,10 +3,7 @@ from datetime import datetime
 import pytest
 from dateutil.tz import tzutc
 
-from prmcalculator.pipeline.config import (
-    PipelineConfig,
-    MissingEnvironmentVariable,
-)
+from prmcalculator.pipeline.config import MissingEnvironmentVariable, PipelineConfig
 
 
 def test_reads_from_environment_variables_and_converts_to_required_format():

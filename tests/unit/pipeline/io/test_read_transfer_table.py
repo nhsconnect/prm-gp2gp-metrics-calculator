@@ -1,4 +1,5 @@
 from unittest.mock import Mock
+
 import pyarrow as pa
 
 from prmcalculator.pipeline.io import PlatformMetricsIO

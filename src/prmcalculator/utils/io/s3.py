@@ -4,10 +4,11 @@ from datetime import datetime
 from io import BytesIO
 from typing import Dict
 from urllib.parse import urlparse
+
+import polars as pl
+import pyarrow.csv as csv
 import pyarrow.parquet as pq
 from pyarrow.lib import Table
-import pyarrow.csv as csv
-import polars as pl
 
 logger = logging.getLogger(__name__)
 

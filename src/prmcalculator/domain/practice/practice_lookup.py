@@ -1,4 +1,4 @@
-from typing import List, Iterable
+from typing import Iterable, List
 
 from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
 

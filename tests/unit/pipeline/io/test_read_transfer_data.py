@@ -1,13 +1,14 @@
 from datetime import timedelta
 from unittest.mock import Mock, call
+
 import pyarrow as pa
 
 from prmcalculator.domain.gp2gp.transfer import (
+    Practice,
     Transfer,
+    TransferFailureReason,
     TransferOutcome,
     TransferStatus,
-    Practice,
-    TransferFailureReason,
 )
 from prmcalculator.pipeline.io import PlatformMetricsIO
 from tests.builders.common import a_datetime

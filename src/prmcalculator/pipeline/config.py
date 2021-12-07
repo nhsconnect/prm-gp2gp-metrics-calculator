@@ -1,7 +1,6 @@
-from datetime import datetime
-from dataclasses import dataclass
 import logging
-
+from dataclasses import dataclass
+from datetime import datetime
 from typing import Optional
 
 from dateutil.parser import isoparse

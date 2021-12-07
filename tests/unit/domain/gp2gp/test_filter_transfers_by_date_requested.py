@@ -1,7 +1,7 @@
 from typing import List
 
-from prmcalculator.domain.gp2gp.transfer import filter_transfers_by_date_requested, Transfer
 from prmcalculator.domain.datetime import MonthlyReportingWindow
+from prmcalculator.domain.gp2gp.transfer import Transfer, filter_transfers_by_date_requested
 from tests.builders.common import a_datetime
 from tests.builders.gp2gp import build_transfer
 

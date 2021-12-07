@@ -1,8 +1,8 @@
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
 from tests.builders.common import a_datetime, a_string
 from tests.builders.gp2gp import (
-    a_transfer_integrated_within_3_days,
     a_transfer_integrated_beyond_8_days,
+    a_transfer_integrated_within_3_days,
 )
 
 

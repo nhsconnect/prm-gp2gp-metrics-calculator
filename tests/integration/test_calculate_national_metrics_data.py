@@ -4,31 +4,31 @@ from unittest.mock import Mock
 from dateutil.tz import tzutc
 from freezegun import freeze_time
 
+from prmcalculator.domain.datetime import MonthlyReportingWindow
 from prmcalculator.domain.national.calculate_national_metrics_data import (
     calculate_national_metrics_data,
 )
 from prmcalculator.domain.national.construct_national_metrics_presentation import (
-    NationalMetricsPresentation,
     NationalMetricMonthPresentation,
+    NationalMetricsPresentation,
     OutcomeMetricsPresentation,
-    ProcessFailureMetricsPresentation,
     PaperFallbackMetricsPresentation,
+    ProcessFailureMetricsPresentation,
 )
-from prmcalculator.domain.datetime import MonthlyReportingWindow
-from tests.builders.common import a_duration, a_datetime, a_date_in
+from tests.builders.common import a_date_in, a_datetime, a_duration
 from tests.builders.gp2gp import (
+    a_transfer_integrated_between_3_and_8_days,
     a_transfer_integrated_beyond_8_days,
     a_transfer_integrated_within_3_days,
-    a_transfer_integrated_between_3_and_8_days,
-    a_transfer_with_a_final_error,
     a_transfer_that_was_never_integrated,
-    a_transfer_where_the_request_was_never_acknowledged,
-    a_transfer_where_no_core_ehr_was_sent,
-    a_transfer_where_no_copc_continue_was_sent,
-    a_transfer_where_copc_fragments_were_required_but_not_sent,
-    a_transfer_where_copc_fragments_remained_unacknowledged,
-    a_transfer_where_the_sender_reported_an_unrecoverable_error,
     a_transfer_where_a_copc_triggered_an_error,
+    a_transfer_where_copc_fragments_remained_unacknowledged,
+    a_transfer_where_copc_fragments_were_required_but_not_sent,
+    a_transfer_where_no_copc_continue_was_sent,
+    a_transfer_where_no_core_ehr_was_sent,
+    a_transfer_where_the_request_was_never_acknowledged,
+    a_transfer_where_the_sender_reported_an_unrecoverable_error,
+    a_transfer_with_a_final_error,
     build_transfer,
 )
 

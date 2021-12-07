@@ -4,9 +4,9 @@ from unittest.mock import Mock
 from dateutil.tz import UTC
 
 from prmcalculator.domain.ods_portal.organisation_metadata import (
+    CcgDetails,
     OrganisationMetadata,
     PracticeDetails,
-    CcgDetails,
 )
 from prmcalculator.pipeline.io import PlatformMetricsIO
 from tests.builders.common import a_string

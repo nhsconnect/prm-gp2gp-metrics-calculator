@@ -1,13 +1,12 @@
 from unittest.mock import Mock
 
-from prmcalculator.domain.practice.construct_practice_summary import (
-    construct_practice_summary,
-    MonthlyMetricsPresentation,
-    RequestedTransferMetrics,
-    PracticeSummary,
-)
-
 from prmcalculator.domain.datetime import MonthlyReportingWindow
+from prmcalculator.domain.practice.construct_practice_summary import (
+    MonthlyMetricsPresentation,
+    PracticeSummary,
+    RequestedTransferMetrics,
+    construct_practice_summary,
+)
 from tests.builders.common import a_datetime
 
 

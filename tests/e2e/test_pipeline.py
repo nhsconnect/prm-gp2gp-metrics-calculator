@@ -1,17 +1,18 @@
-from datetime import datetime
-import json
 import csv
+import json
 import logging
+from datetime import datetime
 from io import BytesIO, StringIO
 from os import environ
 from threading import Thread
+
 import boto3
+import pyarrow as pa
 import pytest
 from botocore.config import Config
 from moto.server import DomainDispatcherApplication, create_backend_app
 from pyarrow._s3fs import S3FileSystem
 from pyarrow.parquet import write_table
-import pyarrow as pa
 from werkzeug.serving import make_server
 
 from prmcalculator.pipeline.main import main
