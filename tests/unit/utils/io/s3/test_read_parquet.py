@@ -10,7 +10,7 @@ from tests.unit.utils.io.s3 import MOTO_MOCK_REGION
 
 
 @mock_s3
-def test_read_parquet_returns_dictionary():
+def test_read_parquet_returns_table():
     conn = boto3.resource("s3", region_name=MOTO_MOCK_REGION)
     bucket_name = "test_bucket"
     bucket = conn.create_bucket(Bucket=bucket_name)

@@ -7,13 +7,14 @@ Metrics calculator for the gp registrations data platform.
 Configuration is achieved via the following environment variables:
 
 
-| Environment variable         | Description                                                                       |
-| ---------------------------- | --------------------------------------------------------------------------------- |
-| INPUT_TRANSFER_DATA_BUCKET   | Bucket to read transfer files from.                                               |
-| ORGANISATION_METADATA_BUCKET | Bucket to read organisation metadata.                                             |
-| OUTPUT_METRICS_BUCKET        | Bucket to write metrics.                                                          |
-| NUMBER_OF_MONTHS             | Number of months to create metrics for (historical data).                         |
-| BUILD_TAG                    | Unique identifier for version of code build tag (e.g. short git hash)             |
+| Environment variable         | Description                                                           |
+|------------------------------|-----------------------------------------------------------------------|
+| INPUT_TRANSFER_DATA_BUCKET   | Bucket to read transfer files from.                                   |
+| ORGANISATION_METADATA_BUCKET | Bucket to read organisation metadata.                                 |
+| OUTPUT_METRICS_BUCKET        | Bucket to write metrics.                                              |
+| NUMBER_OF_MONTHS             | Number of months to create metrics for (historical data).             |
+| BUILD_TAG                    | Unique identifier for version of code build tag (e.g. short git hash) |
+| DATE_ANCHOR                  | ISO-8601 datetime specifying "now".                                   | 
 
 ## Developing
 
