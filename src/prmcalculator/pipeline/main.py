@@ -3,8 +3,6 @@ from os import environ
 from typing import List, Optional
 
 import boto3
-import polars as pl
-import pyarrow as pa
 
 from prmcalculator.domain.datetime import MonthlyReportingWindow, YearMonth
 from prmcalculator.domain.gp2gp.transfer import Transfer
@@ -17,9 +15,6 @@ from prmcalculator.domain.practice.calculate_practice_metrics import (
     PracticeMetricsObservabilityProbe,
     PracticeMetricsPresentation,
     calculate_practice_metrics,
-)
-from prmcalculator.domain.supplier.count_outcomes_per_supplier_pathway import (
-    count_outcomes_per_supplier_pathway,
 )
 from prmcalculator.pipeline.config import PipelineConfig
 from prmcalculator.pipeline.io import PlatformMetricsIO, PlatformMetricsS3UriResolver
@@ -75,10 +70,6 @@ class MetricsPipeline:
         transfers_data_s3_uris = self._uris.transfer_data(months)
         return self._io.read_transfers_as_dataclass(transfers_data_s3_uris)
 
-    def _read_transfer_table(self, months) -> pa.Table:
-        transfer_table_s3_uri = self._uris.transfer_data(months)
-        return self._io.read_transfers_as_table(transfer_table_s3_uri)
-
     def _calculate_national_metrics(self, transfers):
         return calculate_national_metrics_data(
             transfers=transfers,
@@ -100,11 +91,6 @@ class MetricsPipeline:
             hide_slow_transferred_records_after_days=hide_slow_transferred_records_after_days,
         )
 
-    @staticmethod
-    def _count_outcomes_per_supplier_pathway(transfer_table: pa.Table):
-        transfers_frame = pl.from_arrow(transfer_table)
-        return count_outcomes_per_supplier_pathway(transfers_frame)
-
     def _write_practice_metrics(
         self,
         practice_metrics: PracticeMetricsPresentation,
@@ -122,21 +108,12 @@ class MetricsPipeline:
             s3_uri=self._uris.national_metrics(month),
         )
 
-    def _write_supplier_pathway_outcome_counts(
-        self, supplier_pathway_outcome_counts: pl.DataFrame, month
-    ):
-        self._io.write_outcome_counts(
-            dataframe=supplier_pathway_outcome_counts,
-            s3_uri=self._uris.supplier_pathway_outcome_counts(month),
-        )
-
     def run(self):
         date_anchor_month = self._reporting_window.date_anchor_month
         metric_months = self._reporting_window.metric_months
         last_month = self._reporting_window.last_metric_month
         ods_metadata = self._read_ods_metadata(date_anchor_month)
         transfers = self._read_transfer_data(metric_months)
-        transfer_table = self._read_transfer_table([last_month])
         national_metrics = self._calculate_national_metrics(transfers)
         practice_metrics_deprecated = self._calculate_practice_metrics(
             transfers, ods_metadata, hide_slow_transferred_records_after_days=None
@@ -146,13 +123,11 @@ class MetricsPipeline:
             ods_metadata,
             hide_slow_transferred_records_after_days=self._hide_slow_transferred_records_after_days,
         )
-        supplier_pathway_outcome_counts = self._count_outcomes_per_supplier_pathway(transfer_table)
         self._write_national_metrics(national_metrics, last_month)
         self._write_practice_metrics(
             practice_metrics_deprecated, last_month, data_platform_metrics_version="v6"
         )
         self._write_practice_metrics(practice_metrics, last_month)
-        self._write_supplier_pathway_outcome_counts(supplier_pathway_outcome_counts, last_month)
 
 
 def main():

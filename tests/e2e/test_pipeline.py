@@ -1,8 +1,7 @@
-import csv
 import json
 import logging
 from datetime import datetime
-from io import BytesIO, StringIO
+from io import BytesIO
 from os import environ
 from threading import Thread
 
@@ -38,12 +37,6 @@ def _read_json(path):
     return json.loads(path.read_text())
 
 
-def _read_csv(path):
-    with open(path, "r") as csvfile:
-        reader = csv.reader(csvfile, skipinitialspace=True)
-        return list(reader)
-
-
 def _parse_dates(items):
     return [None if item is None else datetime.fromisoformat(item) for item in items]
 
@@ -61,15 +54,6 @@ def _read_s3_json(bucket, key):
     bucket.download_fileobj(key, f)
     f.seek(0)
     return json.loads(f.read().decode("utf-8"))
-
-
-def _read_s3_csv(bucket, key):
-    f = BytesIO()
-    bucket.download_fileobj(key, f)
-    f.seek(0)
-    data = f.read().decode("utf-8")
-    reader = csv.reader(StringIO(data))
-    return list(reader)
 
 
 def _read_s3_metadata(bucket, key):
@@ -160,14 +144,9 @@ def test_end_to_end_with_fake_s3(datadir):
 
     expected_practice_metrics_output_key = "2019-12-practiceMetrics.json"
     expected_national_metrics_output_key = "2019-12-nationalMetrics.json"
-    expected_supplier_pathway_outcome_counts_output_key = (
-        "2019-12-supplier_pathway_outcome_counts.csv"
-    )
+
     expected_practice_metrics = _read_json(datadir / "expected_outputs" / "practiceMetrics.json")
     expected_national_metrics = _read_json(datadir / "expected_outputs" / "nationalMetrics.json")
-    expected_supplier_pathway_outcome_counts = _read_csv(
-        datadir / "expected_outputs" / "supplier_pathway_outcome_counts.csv"
-    )
 
     expected_metadata = {
         "metrics-calculator-version": build_tag,
@@ -187,31 +166,19 @@ def test_end_to_end_with_fake_s3(datadir):
         national_metrics_s3_path = f"{s3_metrics_output_path}{expected_national_metrics_output_key}"
         actual_national_metrics = _read_s3_json(output_metrics_bucket, national_metrics_s3_path)
 
-        supplier_pathway_outcome_counts_s3_path = (
-            f"{s3_metrics_output_path}{expected_supplier_pathway_outcome_counts_output_key}"
-        )
-        actual_supplier_pathway_outcome_counts = _read_s3_csv(
-            output_metrics_bucket, supplier_pathway_outcome_counts_s3_path
-        )
-
         actual_practice_metrics_s3_metadata = _read_s3_metadata(
             output_metrics_bucket, practice_metrics_s3_path
         )
         actual_national_metrics_s3_metadata = _read_s3_metadata(
             output_metrics_bucket, national_metrics_s3_path
         )
-        actual_supplier_pathway_outcome_counts_s3_metadata = _read_s3_metadata(
-            output_metrics_bucket, supplier_pathway_outcome_counts_s3_path
-        )
 
         assert actual_practice_metrics["practices"] == expected_practice_metrics["practices"]
 
         assert actual_practice_metrics["ccgs"] == expected_practice_metrics["ccgs"]
         assert actual_national_metrics["metrics"] == expected_national_metrics["metrics"]
-        assert actual_supplier_pathway_outcome_counts == expected_supplier_pathway_outcome_counts
         assert actual_practice_metrics_s3_metadata == expected_metadata
         assert actual_national_metrics_s3_metadata == expected_metadata
-        assert actual_supplier_pathway_outcome_counts_s3_metadata == expected_metadata
     finally:
         output_metrics_bucket.objects.all().delete()
         output_metrics_bucket.delete()
