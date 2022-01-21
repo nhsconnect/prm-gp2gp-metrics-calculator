@@ -4,8 +4,8 @@ from typing import Dict, List, Optional
 
 import pyarrow as pa
 
-from prmcalculator.domain.datetime import YearMonth
 from prmcalculator.domain.gp2gp.transfer import Transfer, convert_table_to_transfers
+from prmcalculator.domain.monthly_reporting_window import YearMonth
 from prmcalculator.domain.national.construct_national_metrics_presentation import (
     NationalMetricsPresentation,
 )

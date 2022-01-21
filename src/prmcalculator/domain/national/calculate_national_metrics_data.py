@@ -1,8 +1,8 @@
 from logging import Logger, getLogger
 from typing import List
 
-from prmcalculator.domain.datetime import MonthlyReportingWindow
 from prmcalculator.domain.gp2gp.transfer import Transfer, filter_transfers_by_date_requested
+from prmcalculator.domain.monthly_reporting_window import MonthlyReportingWindow
 from prmcalculator.domain.national.calculate_national_metrics_month import NationalMetricsMonth
 from prmcalculator.domain.national.construct_national_metrics_presentation import (
     NationalMetricsPresentation,

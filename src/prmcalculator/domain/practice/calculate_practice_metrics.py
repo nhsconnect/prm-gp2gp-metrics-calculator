@@ -5,8 +5,8 @@ from typing import List, Optional
 
 from dateutil.tz import tzutc
 
-from prmcalculator.domain.datetime import MonthlyReportingWindow
 from prmcalculator.domain.gp2gp.transfer import Transfer
+from prmcalculator.domain.monthly_reporting_window import MonthlyReportingWindow
 from prmcalculator.domain.ods_portal.organisation_metadata import CcgDetails, OrganisationMetadata
 from prmcalculator.domain.practice.construct_practice_summary import (
     PracticeSummary,

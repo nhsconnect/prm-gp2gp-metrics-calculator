@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from prmcalculator.domain.datetime import MonthlyReportingWindow
+from prmcalculator.domain.monthly_reporting_window import MonthlyReportingWindow
 from prmcalculator.domain.practice.construct_practice_summary import (
     MonthlyMetricsPresentation,
     PracticeSummary,

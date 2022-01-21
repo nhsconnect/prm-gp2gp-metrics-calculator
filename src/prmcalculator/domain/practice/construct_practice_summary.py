@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
-from prmcalculator.domain.datetime import MonthlyReportingWindow
+from prmcalculator.domain.monthly_reporting_window import MonthlyReportingWindow
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
 from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
 

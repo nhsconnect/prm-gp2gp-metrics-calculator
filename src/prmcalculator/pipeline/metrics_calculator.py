@@ -2,8 +2,8 @@ from typing import List, Optional
 
 import boto3
 
-from prmcalculator.domain.datetime import MonthlyReportingWindow, YearMonth
 from prmcalculator.domain.gp2gp.transfer import Transfer
+from prmcalculator.domain.monthly_reporting_window import MonthlyReportingWindow, YearMonth
 from prmcalculator.domain.national.calculate_national_metrics_data import (
     NationalMetricsObservabilityProbe,
     calculate_national_metrics_data,

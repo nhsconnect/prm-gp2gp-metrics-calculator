@@ -4,8 +4,8 @@ from unittest.mock import Mock
 from dateutil.tz import UTC
 from freezegun import freeze_time
 
-from prmcalculator.domain.datetime import MonthlyReportingWindow
 from prmcalculator.domain.gp2gp.transfer import Practice
+from prmcalculator.domain.monthly_reporting_window import MonthlyReportingWindow
 from prmcalculator.domain.ods_portal.organisation_metadata import (
     CcgDetails,
     OrganisationMetadata,

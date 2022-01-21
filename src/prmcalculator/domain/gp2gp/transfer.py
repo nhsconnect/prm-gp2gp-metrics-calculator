@@ -6,7 +6,7 @@ from typing import List, NamedTuple, Optional
 import pyarrow as pa
 from dateutil.tz import UTC
 
-from prmcalculator.domain.datetime import MonthlyReportingWindow
+from prmcalculator.domain.monthly_reporting_window import MonthlyReportingWindow
 
 
 class UnexpectedTransferOutcome(Exception):

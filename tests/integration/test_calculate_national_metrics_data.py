@@ -4,7 +4,7 @@ from unittest.mock import Mock
 from dateutil.tz import tzutc
 from freezegun import freeze_time
 
-from prmcalculator.domain.datetime import MonthlyReportingWindow
+from prmcalculator.domain.monthly_reporting_window import MonthlyReportingWindow
 from prmcalculator.domain.national.calculate_national_metrics_data import (
     calculate_national_metrics_data,
 )

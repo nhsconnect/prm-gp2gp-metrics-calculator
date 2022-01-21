@@ -1,6 +1,6 @@
 import pytest
 
-from prmcalculator.domain.datetime import MonthlyReportingWindow
+from prmcalculator.domain.monthly_reporting_window import MonthlyReportingWindow
 from tests.builders.common import a_datetime
 
 default_number_of_months = 1
