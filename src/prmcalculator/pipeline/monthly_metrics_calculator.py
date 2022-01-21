@@ -20,7 +20,7 @@ from prmcalculator.pipeline.monthly_s3_uri_resolver import MonthlyPlatformMetric
 from prmcalculator.utils.io.s3 import S3DataManager
 
 
-class MetricsCalculator:
+class MonthlyMetricsCalculator:
     def __init__(self, config: PipelineConfig):
         s3 = boto3.resource("s3", endpoint_url=config.s3_endpoint_url)
         s3_manager = S3DataManager(s3)

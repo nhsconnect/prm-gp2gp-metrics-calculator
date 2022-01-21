@@ -66,7 +66,8 @@ class PipelineConfig:
     date_anchor: datetime
     number_of_months: int
     s3_endpoint_url: Optional[str]
-    hide_slow_transferred_records_after_days: Optional[int]
+    hide_slow_transferred_records_after_days: int
+    read_daily_transfer_files: int
 
     @classmethod
     def from_environment_variables(cls, env_vars):
@@ -82,4 +83,5 @@ class PipelineConfig:
             hide_slow_transferred_records_after_days=env.read_optional_int(
                 "HIDE_SLOW_TRANSFERRED_RECORDS_AFTER_DAYS", default=1
             ),
+            read_daily_transfer_files=env.read_optional_int("READ_DAILY_TRANSFER_FILES", default=0),
         )
