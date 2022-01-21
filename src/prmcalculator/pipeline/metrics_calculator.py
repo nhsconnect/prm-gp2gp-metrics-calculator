@@ -15,7 +15,8 @@ from prmcalculator.domain.practice.calculate_practice_metrics import (
     calculate_practice_metrics,
 )
 from prmcalculator.pipeline.config import PipelineConfig
-from prmcalculator.pipeline.io import PlatformMetricsIO, PlatformMetricsS3UriResolver
+from prmcalculator.pipeline.io import PlatformMetricsIO
+from prmcalculator.pipeline.monthly_s3_uri_resolver import MonthlyPlatformMetricsS3UriResolver
 from prmcalculator.utils.io.s3 import S3DataManager
 
 
@@ -38,7 +39,7 @@ class MetricsCalculator:
             "number-of-months": str(config.number_of_months),
         }
 
-        self._uris = PlatformMetricsS3UriResolver(
+        self._uris = MonthlyPlatformMetricsS3UriResolver(
             ods_bucket=config.organisation_metadata_bucket,
             transfer_data_bucket=config.input_transfer_data_bucket,
             data_platform_metrics_bucket=config.output_metrics_bucket,
