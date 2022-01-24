@@ -1,5 +1,5 @@
 from logging import Logger, getLogger
-from typing import List
+from typing import List, Union
 
 from prmcalculator.domain.gp2gp.transfer import Transfer, filter_transfers_by_date_requested
 from prmcalculator.domain.monthly_reporting_window import MonthlyReportingWindow
@@ -8,6 +8,7 @@ from prmcalculator.domain.national.construct_national_metrics_presentation impor
     NationalMetricsPresentation,
     construct_national_metrics_presentation,
 )
+from prmcalculator.domain.reporting_window import ReportingWindow
 
 module_logger = getLogger(__name__)
 
@@ -16,7 +17,9 @@ class NationalMetricsObservabilityProbe:
     def __init__(self, logger: Logger = module_logger):
         self._logger = logger
 
-    def record_calculating_national_metrics(self, reporting_window: MonthlyReportingWindow):
+    def record_calculating_national_metrics(
+        self, reporting_window: Union[MonthlyReportingWindow, ReportingWindow]
+    ):
         self._logger.info(
             "Calculating national metrics",
             extra={
@@ -28,7 +31,7 @@ class NationalMetricsObservabilityProbe:
 
 def calculate_national_metrics_data(
     transfers: List[Transfer],
-    reporting_window: MonthlyReportingWindow,
+    reporting_window: Union[MonthlyReportingWindow, ReportingWindow],
     observability_probe: NationalMetricsObservabilityProbe,
 ) -> NationalMetricsPresentation:
     observability_probe.record_calculating_national_metrics(reporting_window)

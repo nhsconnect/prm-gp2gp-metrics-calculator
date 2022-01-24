@@ -10,7 +10,7 @@ from tests.builders.common import a_datetime
 def test_prior_to_correctly_determines_last_metric_month():
     moment = a_datetime(year=2021, month=3, day=4)
 
-    reporting_window = ReportingWindow.prior_to(moment, 6)
+    reporting_window = ReportingWindow.prior_to(date_anchor=moment, number_of_months=6)
 
     expected = 2021, 2
 
@@ -22,7 +22,7 @@ def test_prior_to_correctly_determines_last_metric_month():
 def test_prior_to_correctly_determines_last_metric_month_over_new_year():
     moment = a_datetime(year=2021, month=1, day=4)
 
-    reporting_window = ReportingWindow.prior_to(moment, 6)
+    reporting_window = ReportingWindow.prior_to(date_anchor=moment, number_of_months=6)
 
     expected = 2020, 12
 
@@ -34,11 +34,23 @@ def test_prior_to_correctly_determines_last_metric_month_over_new_year():
 def test_prior_to_correctly_determines_date_anchor_month():
     moment = a_datetime(year=2021, month=3, day=4)
 
-    reporting_window = ReportingWindow.prior_to(moment, 6)
+    reporting_window = ReportingWindow.prior_to(date_anchor=moment, number_of_months=6)
 
     expected = 2021, 3
 
     actual = reporting_window.date_anchor_month
+
+    assert actual == expected
+
+
+def test_prior_to_correctly_determines_multiple_metric_months():
+    moment = a_datetime(year=2021, month=2, day=4)
+
+    reporting_window = ReportingWindow.prior_to(date_anchor=moment, number_of_months=3)
+
+    expected = [(2021, 1), (2020, 12), (2020, 11)]
+
+    actual = reporting_window.metric_months
 
     assert actual == expected
 
@@ -71,7 +83,7 @@ def test_prior_to_correctly_determines_datetimes_for_two_metric_months():
 def test_last_month_contains_returns_correct_boolean(test_case):
     moment = a_datetime(year=2021, month=3, day=4)
 
-    reporting_window = ReportingWindow.prior_to(moment, 6)
+    reporting_window = ReportingWindow.prior_to(date_anchor=moment, number_of_months=6)
 
     actual = reporting_window.last_month_contains(test_case["date"])
 
@@ -82,7 +94,7 @@ def test_returns_dates_list_when_date_anchor_is_bst():
     moment = datetime(year=2021, month=5, day=1, hour=3, minute=0, second=0, tzinfo=UTC).astimezone(
         gettz("Europe/London")
     )
-    reporting_window = ReportingWindow.prior_to(moment, 1)
+    reporting_window = ReportingWindow.prior_to(date_anchor=moment, number_of_months=1)
 
     actual_dates = reporting_window.dates
 
