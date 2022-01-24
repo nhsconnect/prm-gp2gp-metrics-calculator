@@ -16,6 +16,7 @@ class PlatformMetricsS3UriResolver:
     _NATIONAL_METRICS_FILE_NAME = "nationalMetrics.json"
     _SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME = "supplier_pathway_outcome_counts.csv"
     _TRANSFER_DATA_FILE_NAME = "transfers.parquet"
+    _TRANSFER_DATA_CUTOFF_FOLDER_NAME = "cutoff-14"
 
     def __init__(
         self,
@@ -76,6 +77,7 @@ class PlatformMetricsS3UriResolver:
             [
                 self._transfer_data_bucket,
                 self._TRANSFER_DATA_VERSION,
+                self._TRANSFER_DATA_CUTOFF_FOLDER_NAME,
                 f"{year}/{month}/{day}",
                 s3_file_name,
             ]
