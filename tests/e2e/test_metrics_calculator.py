@@ -120,31 +120,15 @@ def _upload_template_transfer_data(
 
 
 def _override_transfer_data(
-    datadir, input_transfer_bucket, year: int, data_month: int, data_day: int
+    datadir, input_transfer_bucket, year: int, data_month: int, data_day: int, input_folder: str
 ):
     day = add_leading_zero(data_day)
     month = add_leading_zero(data_month)
 
     _write_transfer_parquet(
-        datadir / "inputs" / f"{year}-{month}-{day}-transfers.json",
+        datadir / input_folder / f"{year}-{month}-{day}-transfers.json",
         _get_s3_path(input_transfer_bucket, year, month, day),
     )
-
-
-def _upload_files_to_transfer_data_bucket(input_transfer_bucket, datadir):
-    _upload_template_transfer_data(
-        datadir, input_transfer_bucket, year=2019, data_month=11, time_range=range(1, 31)
-    )
-    _override_transfer_data(datadir, input_transfer_bucket, year=2019, data_month=11, data_day=1)
-
-    _upload_template_transfer_data(
-        datadir, input_transfer_bucket, year=2019, data_month=12, time_range=range(1, 32)
-    )
-
-    for day in [1, 3, 5, 19, 20, 23, 24, 25, 29, 30, 31]:
-        _override_transfer_data(
-            datadir, input_transfer_bucket, year=2019, data_month=12, data_day=day
-        )
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
@@ -194,7 +178,39 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3(datadir):
 
     input_transfer_bucket = _build_fake_s3_bucket(s3_input_transfer_data_bucket_name, s3)
 
-    _upload_files_to_transfer_data_bucket(s3_input_transfer_data_bucket_name, datadir)
+    _upload_template_transfer_data(
+        datadir,
+        s3_input_transfer_data_bucket_name,
+        year=2019,
+        data_month=11,
+        time_range=range(1, 31),
+    )
+    _override_transfer_data(
+        datadir,
+        s3_input_transfer_data_bucket_name,
+        year=2019,
+        data_month=11,
+        data_day=1,
+        input_folder="inputs/daily",
+    )
+
+    _upload_template_transfer_data(
+        datadir,
+        s3_input_transfer_data_bucket_name,
+        year=2019,
+        data_month=12,
+        time_range=range(1, 32),
+    )
+
+    for day in [1, 3, 5, 19, 20, 23, 24, 25, 29, 30, 31]:
+        _override_transfer_data(
+            datadir,
+            s3_input_transfer_data_bucket_name,
+            year=2019,
+            data_month=12,
+            data_day=day,
+            input_folder="inputs/daily",
+        )
 
     expected_practice_metrics_output_key = "2019-12-practiceMetrics.json"
     expected_national_metrics_output_key = "2019-12-nationalMetrics.json"
@@ -233,6 +249,135 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3(datadir):
         assert actual_national_metrics["metrics"] == expected_national_metrics["metrics"]
         assert actual_practice_metrics_s3_metadata == expected_metadata
         assert actual_national_metrics_s3_metadata == expected_metadata
+
+    finally:
+        output_metrics_bucket.objects.all().delete()
+        output_metrics_bucket.delete()
+        input_transfer_bucket.objects.all().delete()
+        input_transfer_bucket.delete()
+        fake_s3.stop()
+        environ.clear()
+
+
+@pytest.mark.filterwarnings("ignore:Conversion of")
+def test_reads_daily_input_files_and_outputs_metrics_to_s3_deprecated(datadir):
+    fake_s3_access_key = "testing"
+    fake_s3_secret_key = "testing"
+    fake_s3_region = "eu-west-2"
+    s3_output_metrics_bucket_name = "output-metrics-bucket"
+    s3_input_transfer_data_bucket_name = "input-transfer-data-bucket"
+    s3_organisation_metadata_bucket_name = "organisation-metadata-bucket"
+    build_tag = a_string(7)
+
+    fake_s3 = _build_fake_s3(fake_s3_host, fake_s3_port)
+    fake_s3.start()
+
+    date_anchor = "2020-01-30T18:44:49Z"
+
+    environ["AWS_ACCESS_KEY_ID"] = fake_s3_access_key
+    environ["AWS_SECRET_ACCESS_KEY"] = fake_s3_secret_key
+    environ["AWS_DEFAULT_REGION"] = fake_s3_region
+
+    environ["INPUT_TRANSFER_DATA_BUCKET"] = s3_input_transfer_data_bucket_name
+    environ["OUTPUT_METRICS_BUCKET"] = s3_output_metrics_bucket_name
+    environ["ORGANISATION_METADATA_BUCKET"] = s3_organisation_metadata_bucket_name
+    environ["NUMBER_OF_MONTHS"] = "2"
+    environ["DATE_ANCHOR"] = date_anchor
+    environ["S3_ENDPOINT_URL"] = fake_s3_url
+    environ["BUILD_TAG"] = build_tag
+    environ["READ_DAILY_TRANSFER_FILES"] = "1"
+
+    s3 = boto3.resource(
+        "s3",
+        endpoint_url=fake_s3_url,
+        aws_access_key_id=fake_s3_access_key,
+        aws_secret_access_key=fake_s3_secret_key,
+        config=Config(signature_version="s3v4"),
+        region_name=fake_s3_region,
+    )
+
+    output_metrics_bucket = _build_fake_s3_bucket(s3_output_metrics_bucket_name, s3)
+    organisation_metadata_bucket = _build_fake_s3_bucket(s3_organisation_metadata_bucket_name, s3)
+
+    organisation_metadata_file = str(datadir / "inputs" / "organisationMetadata.json")
+    organisation_metadata_bucket.upload_file(
+        organisation_metadata_file, "v2/2020/1/organisationMetadata.json"
+    )
+
+    input_transfer_bucket = _build_fake_s3_bucket(s3_input_transfer_data_bucket_name, s3)
+
+    _upload_template_transfer_data(
+        datadir,
+        s3_input_transfer_data_bucket_name,
+        year=2019,
+        data_month=11,
+        time_range=range(1, 31),
+    )
+    _override_transfer_data(
+        datadir,
+        s3_input_transfer_data_bucket_name,
+        year=2019,
+        data_month=11,
+        data_day=1,
+        input_folder="inputs/daily_deprecated",
+    )
+
+    _upload_template_transfer_data(
+        datadir,
+        s3_input_transfer_data_bucket_name,
+        year=2019,
+        data_month=12,
+        time_range=range(1, 32),
+    )
+
+    for day in [1, 3, 5, 19, 20, 23, 24, 25, 30, 31]:
+        _override_transfer_data(
+            datadir,
+            s3_input_transfer_data_bucket_name,
+            year=2019,
+            data_month=12,
+            data_day=day,
+            input_folder="inputs/daily_deprecated",
+        )
+
+    expected_practice_metrics_output_key = "2019-12-practiceMetrics.json"
+
+    expected_practice_metrics_deprecated = _read_json(
+        datadir / "expected_outputs" / "practiceMetricsDeprecated.json"
+    )
+
+    expected_metadata = {
+        "metrics-calculator-version": build_tag,
+        "date-anchor": "2020-01-30T18:44:49+00:00",
+        "number-of-months": "2",
+    }
+
+    s3_metrics_output_path_deprecated = "v6/2019/12/"
+
+    try:
+        main()
+
+        practice_metrics_s3_path_deprecated = (
+            f"{s3_metrics_output_path_deprecated}{expected_practice_metrics_output_key}"
+        )
+
+        actual_practice_metrics_deprecated = _read_s3_json(
+            output_metrics_bucket, practice_metrics_s3_path_deprecated
+        )
+
+        actual_practice_metrics_s3_metadata_deprecated = _read_s3_metadata(
+            output_metrics_bucket, practice_metrics_s3_path_deprecated
+        )
+
+        assert (
+            actual_practice_metrics_deprecated["practices"]
+            == expected_practice_metrics_deprecated["practices"]
+        )
+        assert (
+            actual_practice_metrics_deprecated["ccgs"]
+            == expected_practice_metrics_deprecated["ccgs"]
+        )
+        assert actual_practice_metrics_s3_metadata_deprecated == expected_metadata
 
     finally:
         output_metrics_bucket.objects.all().delete()
