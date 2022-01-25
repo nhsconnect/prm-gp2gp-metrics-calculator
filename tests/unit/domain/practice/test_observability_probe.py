@@ -1,10 +1,10 @@
 from unittest.mock import Mock
 
 from prmcalculator.domain.gp2gp.transfer import Practice
-from prmcalculator.domain.monthly_reporting_window import MonthlyReportingWindow
 from prmcalculator.domain.practice.calculate_practice_metrics import (
     PracticeMetricsObservabilityProbe,
 )
+from prmcalculator.domain.reporting_window import ReportingWindow
 from tests.builders.common import a_datetime, a_string
 from tests.builders.gp2gp import build_transfer
 
@@ -14,7 +14,7 @@ def test_probe_should_log_event_when_calculating_practice_metrics():
     probe = PracticeMetricsObservabilityProbe(mock_logger)
 
     date_anchor = a_datetime(year=2021, month=8)
-    reporting_window = MonthlyReportingWindow.prior_to(date_anchor=date_anchor, number_of_months=3)
+    reporting_window = ReportingWindow.prior_to(date_anchor=date_anchor, number_of_months=3)
 
     probe.record_calculating_practice_metrics(reporting_window)
 

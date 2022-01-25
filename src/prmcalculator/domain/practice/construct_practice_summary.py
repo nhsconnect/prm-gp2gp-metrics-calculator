@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List
 
-from prmcalculator.domain.monthly_reporting_window import MonthlyReportingWindow
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
 from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
 from prmcalculator.domain.reporting_window import ReportingWindow
@@ -57,7 +56,7 @@ def _construct_monthly_metrics_presentation(
 
 def construct_practice_summary(
     practice_metrics: PracticeTransferMetrics,
-    reporting_window: Union[MonthlyReportingWindow, ReportingWindow],
+    reporting_window: ReportingWindow,
 ) -> PracticeSummary:
     return PracticeSummary(
         name=practice_metrics.name,

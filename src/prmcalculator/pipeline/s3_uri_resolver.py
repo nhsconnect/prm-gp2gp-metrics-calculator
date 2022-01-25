@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from prmcalculator.domain.monthly_reporting_window import YearMonth
+from prmcalculator.domain.reporting_window import YearMonth
 from prmcalculator.utils.add_leading_zero import add_leading_zero
 
 

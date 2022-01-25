@@ -5,7 +5,6 @@ from dateutil.tz import UTC
 from freezegun import freeze_time
 
 from prmcalculator.domain.gp2gp.transfer import Practice
-from prmcalculator.domain.monthly_reporting_window import MonthlyReportingWindow
 from prmcalculator.domain.ods_portal.organisation_metadata import (
     CcgDetails,
     OrganisationMetadata,
@@ -20,6 +19,7 @@ from prmcalculator.domain.practice.construct_practice_summary import (
     PracticeSummary,
     RequestedTransferMetrics,
 )
+from prmcalculator.domain.reporting_window import ReportingWindow
 from tests.builders.common import a_datetime
 from tests.builders.gp2gp import (
     a_transfer_integrated_within_3_days,
@@ -33,9 +33,10 @@ def test_calculates_correct_practice_metrics_given_transfers():
     mock_probe = Mock()
     metric_month_start = a_datetime(year=2019, month=12, day=1)
 
-    reporting_window = MonthlyReportingWindow(
+    reporting_window = ReportingWindow(
         date_anchor_month_start=a_datetime(year=2020, month=1, day=1),
-        metric_monthly_datetimes=[metric_month_start],
+        dates=[],
+        metric_months_datetimes=[metric_month_start],
     )
 
     requesting_practice_name = "Test GP"
@@ -114,9 +115,10 @@ def test_returns_default_metric_values_for_practice_without_transfers():
     mock_probe = Mock()
     metric_month_start = a_datetime(year=2019, month=12, day=1)
 
-    reporting_window = MonthlyReportingWindow(
+    reporting_window = ReportingWindow(
         date_anchor_month_start=a_datetime(year=2020, month=1, day=1),
-        metric_monthly_datetimes=[metric_month_start],
+        dates=[],
+        metric_months_datetimes=[metric_month_start],
     )
 
     requesting_practice_name = "Test GP practice with no transfers"
@@ -177,9 +179,10 @@ def test_returns_default_metric_values_for_practice_without_transfers():
 def test_calls_observability_probe_calculating_practice_metrics():
     mock_probe = Mock()
 
-    reporting_window = MonthlyReportingWindow(
+    reporting_window = ReportingWindow(
         date_anchor_month_start=a_datetime(),
-        metric_monthly_datetimes=[a_datetime()],
+        dates=[],
+        metric_months_datetimes=[a_datetime()],
     )
 
     organisation_metadata = OrganisationMetadata(
@@ -203,9 +206,10 @@ def test_calculates_correct_practice_metrics_filtering_transfers_that_take_longe
     mock_probe = Mock()
     metric_month_start = a_datetime(year=2019, month=12, day=1)
 
-    reporting_window = MonthlyReportingWindow(
+    reporting_window = ReportingWindow(
         date_anchor_month_start=a_datetime(year=2020, month=1, day=1),
-        metric_monthly_datetimes=[metric_month_start],
+        dates=[],
+        metric_months_datetimes=[metric_month_start],
     )
 
     requesting_practice_name = "Test GP"
@@ -311,9 +315,10 @@ def test_calculates_correct_practice_metrics_without_filtering_transfers_if_conf
     mock_probe = Mock()
     metric_month_start = a_datetime(year=2019, month=12, day=1)
 
-    reporting_window = MonthlyReportingWindow(
+    reporting_window = ReportingWindow(
         date_anchor_month_start=a_datetime(year=2020, month=1, day=1),
-        metric_monthly_datetimes=[metric_month_start],
+        dates=[],
+        metric_months_datetimes=[metric_month_start],
     )
 
     requesting_practice_name = "Test GP"

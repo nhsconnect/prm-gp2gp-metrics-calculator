@@ -1,12 +1,11 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from logging import Logger, getLogger
-from typing import List, Optional, Union
+from typing import List, Optional
 
 from dateutil.tz import tzutc
 
 from prmcalculator.domain.gp2gp.transfer import Transfer
-from prmcalculator.domain.monthly_reporting_window import MonthlyReportingWindow
 from prmcalculator.domain.ods_portal.organisation_metadata import CcgDetails, OrganisationMetadata
 from prmcalculator.domain.practice.construct_practice_summary import (
     PracticeSummary,
@@ -24,9 +23,7 @@ class PracticeMetricsObservabilityProbe:
     def __init__(self, logger: Logger = module_logger):
         self._logger = logger
 
-    def record_calculating_practice_metrics(
-        self, reporting_window: Union[MonthlyReportingWindow, ReportingWindow]
-    ):
+    def record_calculating_practice_metrics(self, reporting_window: ReportingWindow):
         self._logger.info(
             "Calculating practice metrics",
             extra={
@@ -56,7 +53,7 @@ class PracticeMetricsPresentation:
 def calculate_practice_metrics(
     transfers: List[Transfer],
     organisation_metadata: OrganisationMetadata,
-    reporting_window: Union[MonthlyReportingWindow, ReportingWindow],
+    reporting_window: ReportingWindow,
     observability_probe: PracticeMetricsObservabilityProbe,
     hide_slow_transferred_records_after_days: Optional[int] = None,
 ) -> PracticeMetricsPresentation:

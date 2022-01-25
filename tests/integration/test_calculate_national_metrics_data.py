@@ -4,7 +4,6 @@ from unittest.mock import Mock
 from dateutil.tz import tzutc
 from freezegun import freeze_time
 
-from prmcalculator.domain.monthly_reporting_window import MonthlyReportingWindow
 from prmcalculator.domain.national.calculate_national_metrics_data import (
     calculate_national_metrics_data,
 )
@@ -15,6 +14,7 @@ from prmcalculator.domain.national.construct_national_metrics_presentation impor
     PaperFallbackMetricsPresentation,
     ProcessFailureMetricsPresentation,
 )
+from prmcalculator.domain.reporting_window import ReportingWindow
 from tests.builders.common import a_date_in, a_datetime, a_duration
 from tests.builders.gp2gp import (
     a_transfer_integrated_between_3_and_8_days,
@@ -73,9 +73,10 @@ def test_calculates_correct_national_metrics_given_series_of_transfers():
     )
 
     metric_month_start = datetime(year=2019, month=12, day=1, tzinfo=tzutc())
-    reporting_window = MonthlyReportingWindow(
+    reporting_window = ReportingWindow(
         date_anchor_month_start=a_datetime(year=2020, month=1, day=1),
-        metric_monthly_datetimes=[metric_month_start],
+        dates=[],
+        metric_months_datetimes=[metric_month_start],
     )
     current_datetime = datetime.now(tzutc())
 
@@ -143,9 +144,10 @@ def test_calculates_correct_national_metrics_for_transfers_within_reporting_wind
         transfer_after_reporting_window,
     ]
 
-    reporting_window = MonthlyReportingWindow(
+    reporting_window = ReportingWindow(
         date_anchor_month_start=a_datetime(year=2020, month=1, day=1),
-        metric_monthly_datetimes=[metric_month_start],
+        dates=[],
+        metric_months_datetimes=[metric_month_start],
     )
     current_datetime = datetime.now(tzutc())
 
@@ -194,9 +196,10 @@ def test_calculates_correct_national_metrics_for_transfers_within_reporting_wind
 
 def test_calls_observability_probe_calculating_national_metrics():
     mock_probe = Mock()
-    reporting_window = MonthlyReportingWindow(
+    reporting_window = ReportingWindow(
         date_anchor_month_start=a_datetime(),
-        metric_monthly_datetimes=[a_datetime()],
+        dates=[],
+        metric_months_datetimes=[a_datetime()],
     )
 
     calculate_national_metrics_data(

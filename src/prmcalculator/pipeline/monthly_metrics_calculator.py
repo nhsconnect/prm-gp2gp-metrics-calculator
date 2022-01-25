@@ -3,7 +3,6 @@ from typing import List, Optional
 import boto3
 
 from prmcalculator.domain.gp2gp.transfer import Transfer
-from prmcalculator.domain.monthly_reporting_window import MonthlyReportingWindow, YearMonth
 from prmcalculator.domain.national.calculate_national_metrics_data import (
     NationalMetricsObservabilityProbe,
     calculate_national_metrics_data,
@@ -14,6 +13,7 @@ from prmcalculator.domain.practice.calculate_practice_metrics import (
     PracticeMetricsPresentation,
     calculate_practice_metrics,
 )
+from prmcalculator.domain.reporting_window import ReportingWindow, YearMonth
 from prmcalculator.pipeline.config import PipelineConfig
 from prmcalculator.pipeline.io import PlatformMetricsIO
 from prmcalculator.pipeline.monthly_s3_uri_resolver import MonthlyPlatformMetricsS3UriResolver
@@ -25,7 +25,7 @@ class MonthlyMetricsCalculator:
         s3 = boto3.resource("s3", endpoint_url=config.s3_endpoint_url)
         s3_manager = S3DataManager(s3)
 
-        self._reporting_window = MonthlyReportingWindow.prior_to(
+        self._reporting_window = ReportingWindow.prior_to(
             config.date_anchor, config.number_of_months
         )
 

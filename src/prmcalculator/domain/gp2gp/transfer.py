@@ -1,12 +1,11 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import List, NamedTuple, Optional, Union
+from typing import List, NamedTuple, Optional
 
 import pyarrow as pa
 from dateutil.tz import UTC
 
-from prmcalculator.domain.monthly_reporting_window import MonthlyReportingWindow
 from prmcalculator.domain.reporting_window import ReportingWindow
 
 
@@ -56,7 +55,7 @@ class Transfer(NamedTuple):
 
 
 def filter_transfers_by_date_requested(
-    transfers: List[Transfer], reporting_window: Union[MonthlyReportingWindow, ReportingWindow]
+    transfers: List[Transfer], reporting_window: ReportingWindow
 ) -> List[Transfer]:
     return [
         transfer

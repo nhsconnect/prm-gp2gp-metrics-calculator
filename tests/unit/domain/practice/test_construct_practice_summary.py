@@ -1,12 +1,12 @@
 from unittest.mock import Mock
 
-from prmcalculator.domain.monthly_reporting_window import MonthlyReportingWindow
 from prmcalculator.domain.practice.construct_practice_summary import (
     MonthlyMetricsPresentation,
     PracticeSummary,
     RequestedTransferMetrics,
     construct_practice_summary,
 )
+from prmcalculator.domain.reporting_window import ReportingWindow
 from tests.builders.common import a_datetime
 
 
@@ -26,9 +26,7 @@ def test_returns_a_practice_summary_for_one_month_of_metrics():
     mock_monthly_metrics.technical_failures_total.return_value = 8
     mock_monthly_metrics.unclassified_failure_total.return_value = 9
 
-    reporting_window = MonthlyReportingWindow.prior_to(
-        a_datetime(year=2021, month=7), number_of_months=1
-    )
+    reporting_window = ReportingWindow.prior_to(a_datetime(year=2021, month=7), number_of_months=1)
 
     expected = PracticeSummary(
         ods_code="ABC123",
@@ -64,9 +62,7 @@ def test_returns_a_practice_summary_for_multiple_months():
     mock_transfer_metrics = Mock()
     mock_transfer_metrics.monthly_metrics.return_value = Mock()
 
-    reporting_window = MonthlyReportingWindow.prior_to(
-        a_datetime(year=2021, month=7), number_of_months=3
-    )
+    reporting_window = ReportingWindow.prior_to(a_datetime(year=2021, month=7), number_of_months=3)
 
     actual = construct_practice_summary(
         practice_metrics=mock_transfer_metrics,
