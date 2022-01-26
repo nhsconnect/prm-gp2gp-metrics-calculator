@@ -58,14 +58,14 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
         input_transfer_data_bucket="input-transfer-data-bucket",
         organisation_metadata_bucket="metadata-bucket",
         output_metrics_bucket="output-metrics-bucket",
-        number_of_months=1,
+        number_of_months=6,
         date_anchor=datetime(
             year=2020, month=1, day=30, hour=18, minute=44, second=49, tzinfo=tzutc()
         ),
         s3_endpoint_url=None,
         build_tag=build_tag,
         hide_slow_transferred_records_after_days=1,
-        read_daily_transfer_files=0,
+        read_daily_transfer_files=1,
     )
 
     actual_config = PipelineConfig.from_environment_variables(environment)

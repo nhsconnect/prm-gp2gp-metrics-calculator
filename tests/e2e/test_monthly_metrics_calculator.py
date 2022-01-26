@@ -113,6 +113,7 @@ def test_end_to_end_with_fake_s3(datadir):
     environ["DATE_ANCHOR"] = date_anchor
     environ["S3_ENDPOINT_URL"] = fake_s3_url
     environ["BUILD_TAG"] = build_tag
+    environ["READ_DAILY_TRANSFER_FILES"] = "0"
 
     s3 = boto3.resource(
         "s3",
@@ -213,6 +214,7 @@ def test_end_to_end_with_fake_s3_deprecated(datadir):
     environ["DATE_ANCHOR"] = date_anchor
     environ["S3_ENDPOINT_URL"] = fake_s3_url
     environ["BUILD_TAG"] = build_tag
+    environ["READ_DAILY_TRANSFER_FILES"] = "0"
 
     s3 = boto3.resource(
         "s3",
