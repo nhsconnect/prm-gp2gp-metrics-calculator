@@ -42,7 +42,7 @@ class S3DataManager:
                 f"File not found: {object_uri}, exiting...",
                 extra={"event": "FILE_NOT_FOUND_IN_S3"},
             )
-            sys.exit()
+            sys.exit(1)
 
         body = response["Body"].read()
         return json.loads(body.decode("utf8"))
@@ -74,7 +74,7 @@ class S3DataManager:
                 f"File not found: {object_uri}, exiting...",
                 extra={"event": "FILE_NOT_FOUND_IN_S3"},
             )
-            sys.exit()
+            sys.exit(1)
 
         body = BytesIO(response["Body"].read())
         return pq.read_table(body)
