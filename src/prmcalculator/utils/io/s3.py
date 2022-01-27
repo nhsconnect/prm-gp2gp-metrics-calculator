@@ -1,11 +1,13 @@
 import json
 import logging
+import sys
 from datetime import datetime
 from io import BytesIO
 from typing import Dict
 from urllib.parse import urlparse
 
 import pyarrow.parquet as pq
+from botocore.exceptions import ClientError
 from pyarrow.lib import Table
 
 logger = logging.getLogger(__name__)
@@ -33,7 +35,16 @@ class S3DataManager:
             extra={"event": "READING_FILE_FROM_S3", "object_uri": object_uri},
         )
         s3_object = self._object_from_uri(object_uri)
-        response = s3_object.get()
+
+        try:
+            response = s3_object.get()
+        except ClientError as e:
+            if e.response["Error"]["Code"] == "NoSuchKey":
+                logger.error(f"File not found: {object_uri}, exiting...")
+                sys.exit()
+            else:
+                raise
+
         body = response["Body"].read()
         return json.loads(body.decode("utf8"))
 
@@ -56,6 +67,15 @@ class S3DataManager:
             extra={"event": "READING_FILE_FROM_S3", "object_uri": object_uri},
         )
         s3_object = self._object_from_uri(object_uri)
-        response = s3_object.get()
+
+        try:
+            response = s3_object.get()
+        except ClientError as e:
+            if e.response["Error"]["Code"] == "NoSuchKey":
+                logger.error(f"File not found: {object_uri}, exiting...")
+                sys.exit()
+            else:
+                raise
+
         body = BytesIO(response["Body"].read())
         return pq.read_table(body)
