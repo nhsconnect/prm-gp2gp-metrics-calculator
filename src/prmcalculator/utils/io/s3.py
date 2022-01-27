@@ -7,7 +7,6 @@ from typing import Dict
 from urllib.parse import urlparse
 
 import pyarrow.parquet as pq
-from botocore.exceptions import ClientError
 from pyarrow.lib import Table
 
 logger = logging.getLogger(__name__)
@@ -38,15 +37,12 @@ class S3DataManager:
 
         try:
             response = s3_object.get()
-        except ClientError as e:
-            if e.response["Error"]["Code"] == "NoSuchKey":
-                logger.error(
-                    f"File not found: {object_uri}, exiting...",
-                    extra={"event": "FILE_NOT_FOUND_IN_S3"},
-                )
-                sys.exit()
-            else:
-                raise
+        except self._client.meta.client.exceptions.NoSuchKey:
+            logger.error(
+                f"File not found: {object_uri}, exiting...",
+                extra={"event": "FILE_NOT_FOUND_IN_S3"},
+            )
+            sys.exit()
 
         body = response["Body"].read()
         return json.loads(body.decode("utf8"))
@@ -73,15 +69,12 @@ class S3DataManager:
 
         try:
             response = s3_object.get()
-        except ClientError as e:
-            if e.response["Error"]["Code"] == "NoSuchKey":
-                logger.error(
-                    f"File not found: {object_uri}, exiting...",
-                    extra={"event": "FILE_NOT_FOUND_IN_S3"},
-                )
-                sys.exit()
-            else:
-                raise
+        except self._client.meta.client.exceptions.NoSuchKey:
+            logger.error(
+                f"File not found: {object_uri}, exiting...",
+                extra={"event": "FILE_NOT_FOUND_IN_S3"},
+            )
+            sys.exit()
 
         body = BytesIO(response["Body"].read())
         return pq.read_table(body)
