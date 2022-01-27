@@ -40,7 +40,10 @@ class S3DataManager:
             response = s3_object.get()
         except ClientError as e:
             if e.response["Error"]["Code"] == "NoSuchKey":
-                logger.error(f"File not found: {object_uri}, exiting...")
+                logger.error(
+                    f"File not found: {object_uri}, exiting...",
+                    extra={"event": "FILE_NOT_FOUND_IN_S3"},
+                )
                 sys.exit()
             else:
                 raise
@@ -72,7 +75,10 @@ class S3DataManager:
             response = s3_object.get()
         except ClientError as e:
             if e.response["Error"]["Code"] == "NoSuchKey":
-                logger.error(f"File not found: {object_uri}, exiting...")
+                logger.error(
+                    f"File not found: {object_uri}, exiting...",
+                    extra={"event": "FILE_NOT_FOUND_IN_S3"},
+                )
                 sys.exit()
             else:
                 raise

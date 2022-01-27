@@ -58,7 +58,7 @@ def test_will_log_reading_file_event():
 
 
 @mock_s3
-def test_read_parquet_logs_error_when_s3_parquet_file_not_found():
+def test_read_parquet_logs_error_when_s3_parquet_file_not_found(capsys):
     conn = boto3.resource("s3", region_name=MOTO_MOCK_REGION)
     bucket_name = "test_bucket"
     conn.create_bucket(Bucket=bucket_name)
@@ -69,7 +69,11 @@ def test_read_parquet_logs_error_when_s3_parquet_file_not_found():
     with pytest.raises(SystemExit):
         with mock.patch.object(logger, "error") as mock_log_error:
             s3_manager.read_parquet(object_uri)
-            mock_log_error.assert_called_with(f"File not found: {object_uri}, exiting...")
+
+    mock_log_error.assert_called_once_with(
+        f"File not found: {object_uri}, exiting...",
+        extra={"event": "FILE_NOT_FOUND_IN_S3"},
+    )
 
 
 @mock_s3
@@ -84,4 +88,8 @@ def test_read_json_logs_error_when_s3_json_file_not_found():
     with pytest.raises(SystemExit):
         with mock.patch.object(logger, "error") as mock_log_error:
             s3_manager.read_json(object_uri)
-            mock_log_error.assert_called_with(f"File not found: {object_uri}, exiting...")
+
+    mock_log_error.assert_called_with(
+        f"File not found: {object_uri}, exiting...",
+        extra={"event": "FILE_NOT_FOUND_IN_S3"},
+    )
