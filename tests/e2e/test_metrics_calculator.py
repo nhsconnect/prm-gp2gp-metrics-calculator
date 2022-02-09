@@ -285,7 +285,6 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_deprecated(datadir):
     environ["DATE_ANCHOR"] = date_anchor
     environ["S3_ENDPOINT_URL"] = fake_s3_url
     environ["BUILD_TAG"] = build_tag
-    environ["READ_DAILY_TRANSFER_FILES"] = "1"
 
     s3 = boto3.resource(
         "s3",
