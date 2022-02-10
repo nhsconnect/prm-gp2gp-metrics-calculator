@@ -132,7 +132,7 @@ def _override_transfer_data(
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
-def test_reads_daily_input_files_and_outputs_metrics_to_s3(datadir):
+def test_reads_daily_input_files_and_outputs_metrics_to_s3_hiding_slow_transfers(datadir):
     fake_s3_access_key = "testing"
     fake_s3_secret_key = "testing"
     fake_s3_region = "eu-west-2"
@@ -157,7 +157,6 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3(datadir):
     environ["DATE_ANCHOR"] = date_anchor
     environ["S3_ENDPOINT_URL"] = fake_s3_url
     environ["BUILD_TAG"] = build_tag
-    environ["READ_DAILY_TRANSFER_FILES"] = "1"
 
     s3 = boto3.resource(
         "s3",
@@ -191,7 +190,7 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3(datadir):
         year=2019,
         data_month=11,
         data_day=1,
-        input_folder="inputs/daily",
+        input_folder="inputs/daily_hiding_slow_transfers",
     )
 
     _upload_template_transfer_data(
@@ -209,14 +208,14 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3(datadir):
             year=2019,
             data_month=12,
             data_day=day,
-            input_folder="inputs/daily",
+            input_folder="inputs/daily_hiding_slow_transfers",
         )
 
     expected_practice_metrics_output_key = "2019-12-practiceMetrics.json"
-    expected_national_metrics_output_key = "2019-12-nationalMetrics.json"
 
-    expected_practice_metrics = _read_json(datadir / "expected_outputs" / "practiceMetrics.json")
-    expected_national_metrics = _read_json(datadir / "expected_outputs" / "nationalMetrics.json")
+    expected_practice_metrics = _read_json(
+        datadir / "expected_outputs" / "practiceMetricsHidingSlowTransfers.json"
+    )
 
     expected_metadata = {
         "metrics-calculator-version": build_tag,
@@ -233,22 +232,14 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3(datadir):
 
         actual_practice_metrics = _read_s3_json(output_metrics_bucket, practice_metrics_s3_path)
 
-        national_metrics_s3_path = f"{s3_metrics_output_path}{expected_national_metrics_output_key}"
-        actual_national_metrics = _read_s3_json(output_metrics_bucket, national_metrics_s3_path)
-
         actual_practice_metrics_s3_metadata = _read_s3_metadata(
             output_metrics_bucket, practice_metrics_s3_path
-        )
-        actual_national_metrics_s3_metadata = _read_s3_metadata(
-            output_metrics_bucket, national_metrics_s3_path
         )
 
         assert actual_practice_metrics["practices"] == expected_practice_metrics["practices"]
 
         assert actual_practice_metrics["ccgs"] == expected_practice_metrics["ccgs"]
-        assert actual_national_metrics["metrics"] == expected_national_metrics["metrics"]
         assert actual_practice_metrics_s3_metadata == expected_metadata
-        assert actual_national_metrics_s3_metadata == expected_metadata
 
     finally:
         output_metrics_bucket.objects.all().delete()
@@ -260,7 +251,7 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3(datadir):
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
-def test_reads_daily_input_files_and_outputs_metrics_to_s3_deprecated(datadir):
+def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transfers(datadir):
     fake_s3_access_key = "testing"
     fake_s3_secret_key = "testing"
     fake_s3_region = "eu-west-2"
@@ -318,7 +309,7 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_deprecated(datadir):
         year=2019,
         data_month=11,
         data_day=1,
-        input_folder="inputs/daily_deprecated",
+        input_folder="inputs/daily_including_slow_transfers",
     )
 
     _upload_template_transfer_data(
@@ -336,13 +327,17 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_deprecated(datadir):
             year=2019,
             data_month=12,
             data_day=day,
-            input_folder="inputs/daily_deprecated",
+            input_folder="inputs/daily_including_slow_transfers",
         )
 
     expected_practice_metrics_output_key = "2019-12-practiceMetrics.json"
 
-    expected_practice_metrics_deprecated = _read_json(
-        datadir / "expected_outputs" / "practiceMetricsDeprecated.json"
+    expected_practice_metrics_including_slow_transfers = _read_json(
+        datadir / "expected_outputs" / "practiceMetricsIncludingSlowTransfers.json"
+    )
+    expected_national_metrics_output_key = "2019-12-nationalMetrics.json"
+    expected_national_metrics = _read_json(
+        datadir / "expected_outputs" / "nationalMetricsIncludingSlowTransfers.json"
     )
 
     expected_metadata = {
@@ -351,32 +346,41 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_deprecated(datadir):
         "number-of-months": "2",
     }
 
-    s3_metrics_output_path_deprecated = "v6/2019/12/"
+    s3_metrics_output_path = "v9/2019/12/"
 
     try:
         main()
 
-        practice_metrics_s3_path_deprecated = (
-            f"{s3_metrics_output_path_deprecated}{expected_practice_metrics_output_key}"
+        practice_metrics_s3_path = f"{s3_metrics_output_path}{expected_practice_metrics_output_key}"
+
+        actual_practice_metrics_including_slow_transfers = _read_s3_json(
+            output_metrics_bucket, practice_metrics_s3_path
         )
 
-        actual_practice_metrics_deprecated = _read_s3_json(
-            output_metrics_bucket, practice_metrics_s3_path_deprecated
+        national_metrics_s3_path = (
+            f"{s3_metrics_output_path}" f"{expected_national_metrics_output_key}"
         )
+        actual_national_metrics = _read_s3_json(output_metrics_bucket, national_metrics_s3_path)
 
-        actual_practice_metrics_s3_metadata_deprecated = _read_s3_metadata(
-            output_metrics_bucket, practice_metrics_s3_path_deprecated
+        actual_practice_metrics_s3_metadata_including_slow_transfers = _read_s3_metadata(
+            output_metrics_bucket, practice_metrics_s3_path
+        )
+        actual_national_metrics_s3_metadata = _read_s3_metadata(
+            output_metrics_bucket, national_metrics_s3_path
         )
 
         assert (
-            actual_practice_metrics_deprecated["practices"]
-            == expected_practice_metrics_deprecated["practices"]
+            actual_practice_metrics_including_slow_transfers["practices"]
+            == expected_practice_metrics_including_slow_transfers["practices"]
         )
         assert (
-            actual_practice_metrics_deprecated["ccgs"]
-            == expected_practice_metrics_deprecated["ccgs"]
+            actual_practice_metrics_including_slow_transfers["ccgs"]
+            == expected_practice_metrics_including_slow_transfers["ccgs"]
         )
-        assert actual_practice_metrics_s3_metadata_deprecated == expected_metadata
+        assert actual_national_metrics["metrics"] == expected_national_metrics["metrics"]
+
+        assert actual_practice_metrics_s3_metadata_including_slow_transfers == expected_metadata
+        assert actual_national_metrics_s3_metadata == expected_metadata
 
     finally:
         output_metrics_bucket.objects.all().delete()

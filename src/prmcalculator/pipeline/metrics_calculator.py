@@ -103,16 +103,16 @@ class MetricsCalculator:
         ods_metadata = self._read_ods_metadata(date_anchor_month)
         transfers = self._read_transfer_data(dates)
         national_metrics = self._calculate_national_metrics(transfers)
-        practice_metrics_deprecated = self._calculate_practice_metrics(
+        practice_metrics_including_slow_transfers = self._calculate_practice_metrics(
             transfers, ods_metadata, hide_slow_transferred_records_after_days=None
         )
-        practice_metrics = self._calculate_practice_metrics(
+        practice_metrics_hiding_slow_transfers = self._calculate_practice_metrics(
             transfers,
             ods_metadata,
             hide_slow_transferred_records_after_days=self._hide_slow_transferred_records_after_days,
         )
         self._write_national_metrics(national_metrics, last_month)
         self._write_practice_metrics(
-            practice_metrics_deprecated, last_month, data_platform_metrics_version="v6"
+            practice_metrics_hiding_slow_transfers, last_month, data_platform_metrics_version="v8"
         )
-        self._write_practice_metrics(practice_metrics, last_month)
+        self._write_practice_metrics(practice_metrics_including_slow_transfers, last_month)
