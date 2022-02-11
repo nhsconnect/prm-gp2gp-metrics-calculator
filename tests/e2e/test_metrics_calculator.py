@@ -333,12 +333,10 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
     expected_practice_metrics_output_key = "2019-12-practiceMetrics.json"
 
     expected_practice_metrics_including_slow_transfers = _read_json(
-        datadir / "expected_outputs" / "practiceMetricsIncludingSlowTransfers.json"
+        datadir / "expected_outputs" / "practiceMetrics.json"
     )
     expected_national_metrics_output_key = "2019-12-nationalMetrics.json"
-    expected_national_metrics = _read_json(
-        datadir / "expected_outputs" / "nationalMetricsIncludingSlowTransfers.json"
-    )
+    expected_national_metrics = _read_json(datadir / "expected_outputs" / "nationalMetrics.json")
 
     expected_metadata = {
         "metrics-calculator-version": build_tag,
