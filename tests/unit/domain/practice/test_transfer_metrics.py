@@ -262,7 +262,7 @@ def test_returns_failures_total():
     ]
     transfer_metrics = TransferMetrics(transfers=transfers)
 
-    assert transfer_metrics.failures_total() == 2
+    assert transfer_metrics.failures_total_count() == 2
 
 
 def test_returns_failures_percent_of_requested():
@@ -274,3 +274,10 @@ def test_returns_failures_percent_of_requested():
     transfer_metrics = TransferMetrics(transfers=transfers)
 
     assert transfer_metrics.failures_percent_of_requested() == 66.67
+
+
+def test_returns_zero_percent_when_divided_by_zero():
+    transfers = [a_transfer_integrated_within_3_days()]
+    transfer_metrics = TransferMetrics(transfers=transfers)
+
+    assert transfer_metrics.failures_percent_of_requested() == 0

@@ -85,12 +85,14 @@ class TransferMetrics:
     def unclassified_failure_total(self) -> int:
         return self._counts_by_status[TransferStatus.UNCLASSIFIED_FAILURE]
 
-    def failures_total(self) -> int:
+    def failures_total_count(self) -> int:
         return self.technical_failures_total() + self.unclassified_failure_total()
 
     def failures_percent_of_requested(self) -> float:
-        return self._calculate_percentage(self.failures_total(), self.requested_by_practice_total())
+        return self._calculate_percentage(
+            self.failures_total_count(), self.requested_by_practice_total()
+        )
 
     @staticmethod
     def _calculate_percentage(portion: int, total: int) -> float:
-        return round((portion / total) * 100, 2)
+        return 0 if total == 0 else round((portion / total) * 100, 2)

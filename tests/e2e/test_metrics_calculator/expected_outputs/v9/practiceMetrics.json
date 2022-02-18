@@ -2,112 +2,154 @@
   "generatedOn": "2020-02-24 16:51:21.353977",
   "practices": [
     {
-      "odsCode": "A12345",
-      "name": "Test GP Practice with Integrations",
       "metrics": [
         {
-          "year": 2019,
           "month": 12,
           "requestedTransfers": {
-            "requestedCount": 8,
-            "receivedCount": 6,
+            "awaitingIntegrationCount": 3,
+            "failuresTotalCount": 2,
+            "failuresTotalPercentOfRequested": 25.0,
+            "integratedBeyond8DaysCount": 1,
             "integratedCount": 3,
             "integratedWithin3DaysCount": 1,
+            "integratedWithin3DaysPercentOfReceived": 16.67,
             "integratedWithin8DaysCount": 1,
-            "integratedBeyond8DaysCount": 1,
-            "awaitingIntegrationCount": 3,
+            "integratedWithin8DaysPercentOfReceived": 16.67,
+            "notIntegratedWithin8DaysPercentOfReceived": 66.67,
+            "notIntegratedWithin8DaysTotal": 4,
+            "receivedCount": 6,
+            "receivedPercentOfRequested": 75.0,
+            "requestedCount": 8,
             "technicalFailuresCount": 2,
             "unclassifiedFailureCount": 0
-          }
+          },
+          "year": 2019
         },
         {
-          "year": 2019,
           "month": 11,
           "requestedTransfers": {
-            "requestedCount": 1,
-            "receivedCount": 1,
+            "awaitingIntegrationCount": 0,
+            "failuresTotalCount": 0,
+            "failuresTotalPercentOfRequested": 0.0,
+            "integratedBeyond8DaysCount": 0,
             "integratedCount": 1,
             "integratedWithin3DaysCount": 0,
+            "integratedWithin3DaysPercentOfReceived": 0.0,
             "integratedWithin8DaysCount": 1,
-            "integratedBeyond8DaysCount": 0,
-            "awaitingIntegrationCount": 0,
+            "integratedWithin8DaysPercentOfReceived": 100.0,
+            "notIntegratedWithin8DaysPercentOfReceived": 0.0,
+            "notIntegratedWithin8DaysTotal": 0,
+            "receivedCount": 1,
+            "receivedPercentOfRequested": 100.0,
+            "requestedCount": 1,
             "technicalFailuresCount": 0,
             "unclassifiedFailureCount": 0
-          }
+          },
+          "year": 2019
         }
-      ]
+      ],
+      "name": "Test GP Practice with Integrations",
+      "odsCode": "A12345"
     },
     {
-      "odsCode": "A12346",
-      "name": "Test GP Practice with no Integrations",
       "metrics": [
         {
-          "year": 2019,
           "month": 12,
           "requestedTransfers": {
-            "requestedCount": 0,
-            "receivedCount": 0,
+            "awaitingIntegrationCount": 0,
+            "failuresTotalCount": 0,
+            "failuresTotalPercentOfRequested": 0,
+            "integratedBeyond8DaysCount": 0,
             "integratedCount": 0,
             "integratedWithin3DaysCount": 0,
+            "integratedWithin3DaysPercentOfReceived": 0,
             "integratedWithin8DaysCount": 0,
-            "integratedBeyond8DaysCount": 0,
-            "awaitingIntegrationCount": 0,
+            "integratedWithin8DaysPercentOfReceived": 0,
+            "notIntegratedWithin8DaysPercentOfReceived": 0,
+            "notIntegratedWithin8DaysTotal": 0,
+            "receivedCount": 0,
+            "receivedPercentOfRequested": 0,
+            "requestedCount": 0,
             "technicalFailuresCount": 0,
             "unclassifiedFailureCount": 0
-          }
+          },
+          "year": 2019
         },
         {
-          "year": 2019,
           "month": 11,
           "requestedTransfers": {
-            "requestedCount": 0,
-            "receivedCount": 0,
+            "awaitingIntegrationCount": 0,
+            "failuresTotalCount": 0,
+            "failuresTotalPercentOfRequested": 0,
+            "integratedBeyond8DaysCount": 0,
             "integratedCount": 0,
             "integratedWithin3DaysCount": 0,
+            "integratedWithin3DaysPercentOfReceived": 0,
             "integratedWithin8DaysCount": 0,
-            "integratedBeyond8DaysCount": 0,
-            "awaitingIntegrationCount": 0,
+            "integratedWithin8DaysPercentOfReceived": 0,
+            "notIntegratedWithin8DaysPercentOfReceived": 0,
+            "notIntegratedWithin8DaysTotal": 0,
+            "receivedCount": 0,
+            "receivedPercentOfRequested": 0,
+            "requestedCount": 0,
             "technicalFailuresCount": 0,
             "unclassifiedFailureCount": 0
-          }
+          },
+          "year": 2019
         }
-      ]
+      ],
+      "name": "Test GP Practice with no Integrations",
+      "odsCode": "A12346"
     },
     {
-      "odsCode": "A12347",
-      "name": "Test GP Practice with some Integrations",
       "metrics": [
         {
-          "year": 2019,
           "month": 12,
           "requestedTransfers": {
-            "requestedCount": 3,
-            "receivedCount": 2,
+            "awaitingIntegrationCount": 0,
+            "failuresTotalCount": 1,
+            "failuresTotalPercentOfRequested": 33.33,
+            "integratedBeyond8DaysCount": 0,
             "integratedCount": 2,
             "integratedWithin3DaysCount": 1,
+            "integratedWithin3DaysPercentOfReceived": 50.0,
             "integratedWithin8DaysCount": 1,
-            "integratedBeyond8DaysCount": 0,
-            "awaitingIntegrationCount": 0,
+            "integratedWithin8DaysPercentOfReceived": 50.0,
+            "notIntegratedWithin8DaysPercentOfReceived": 0.0,
+            "notIntegratedWithin8DaysTotal": 0,
+            "receivedCount": 2,
+            "receivedPercentOfRequested": 66.67,
+            "requestedCount": 3,
             "technicalFailuresCount": 0,
             "unclassifiedFailureCount": 1
-          }
+          },
+          "year": 2019
         },
         {
-          "year": 2019,
           "month": 11,
           "requestedTransfers": {
-            "requestedCount": 0,
-            "receivedCount": 0,
+            "awaitingIntegrationCount": 0,
+            "failuresTotalCount": 0,
+            "failuresTotalPercentOfRequested": 0,
+            "integratedBeyond8DaysCount": 0,
             "integratedCount": 0,
             "integratedWithin3DaysCount": 0,
+            "integratedWithin3DaysPercentOfReceived": 0,
             "integratedWithin8DaysCount": 0,
-            "integratedBeyond8DaysCount": 0,
-            "awaitingIntegrationCount": 0,
+            "integratedWithin8DaysPercentOfReceived": 0,
+            "notIntegratedWithin8DaysPercentOfReceived": 0,
+            "notIntegratedWithin8DaysTotal": 0,
+            "receivedCount": 0,
+            "receivedPercentOfRequested": 0,
+            "requestedCount": 0,
             "technicalFailuresCount": 0,
             "unclassifiedFailureCount": 0
-          }
+          },
+          "year": 2019
         }
-      ]
+      ],
+      "name": "Test GP Practice with some Integrations",
+      "odsCode": "A12347"
     }
   ],
   "ccgs": [

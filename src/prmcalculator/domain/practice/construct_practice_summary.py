@@ -10,9 +10,17 @@ from prmcalculator.domain.reporting_window import ReportingWindow
 class RequestedTransferMetrics:
     requested_count: int
     received_count: int
-    integrated_count: int
+    received_percent_of_requested: float
     integrated_within_3_days_count: int
+    integrated_within_3_days_percent_of_received: float
     integrated_within_8_days_count: int
+    integrated_within_8_days_percent_of_received: float
+    not_integrated_within_8_days_total: int
+    not_integrated_within_8_days_percent_of_received: float
+    failures_total_count: int
+    failures_total_percent_of_requested: float
+    # deprecated fields
+    integrated_count: int
     integrated_beyond_8_days_count: int
     awaiting_integration_count: int
     technical_failures_count: int
@@ -33,19 +41,27 @@ class PracticeSummary:
     metrics: List[MonthlyMetricsPresentation]
 
 
+# flake8: noqa: E501
 def _construct_monthly_metrics_presentation(
     transfer_month_metrics: TransferMetrics, year: int, month: int
 ) -> MonthlyMetricsPresentation:
-
     return MonthlyMetricsPresentation(
         year=year,
         month=month,
         requested_transfers=RequestedTransferMetrics(
             requested_count=transfer_month_metrics.requested_by_practice_total(),
             received_count=transfer_month_metrics.received_by_practice_total(),
-            integrated_count=transfer_month_metrics.integrated_total(),
+            received_percent_of_requested=transfer_month_metrics.received_by_practice_percent_of_requested(),
             integrated_within_3_days_count=transfer_month_metrics.integrated_within_3_days(),
+            integrated_within_3_days_percent_of_received=transfer_month_metrics.integrated_within_3_days_percent_of_received(),
             integrated_within_8_days_count=transfer_month_metrics.integrated_within_8_days(),
+            integrated_within_8_days_percent_of_received=transfer_month_metrics.integrated_within_8_days_percent_of_received(),
+            not_integrated_within_8_days_total=transfer_month_metrics.not_integrated_within_8_days_total(),
+            not_integrated_within_8_days_percent_of_received=transfer_month_metrics.not_integrated_within_8_days_percent_of_received(),
+            failures_total_count=transfer_month_metrics.failures_total_count(),
+            failures_total_percent_of_requested=transfer_month_metrics.failures_percent_of_requested(),
+            # deprecated fields
+            integrated_count=transfer_month_metrics.integrated_total(),
             integrated_beyond_8_days_count=transfer_month_metrics.integrated_beyond_8_days(),
             awaiting_integration_count=transfer_month_metrics.process_failure_not_integrated(),
             technical_failures_count=transfer_month_metrics.technical_failures_total(),
