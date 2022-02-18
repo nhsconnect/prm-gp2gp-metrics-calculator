@@ -56,8 +56,17 @@ class TransferMetrics:
     def requested_by_practice_total(self) -> int:
         return self._transfers_requested_count
 
+    def received_by_practice_percent_of_requested(self) -> float:
+        return self._calculate_percentage(
+            self.received_by_practice_total(), self.requested_by_practice_total()
+        )
+
     def technical_failures_total(self) -> int:
         return self._counts_by_status[TransferStatus.TECHNICAL_FAILURE]
 
     def unclassified_failure_total(self) -> int:
         return self._counts_by_status[TransferStatus.UNCLASSIFIED_FAILURE]
+
+    @staticmethod
+    def _calculate_percentage(portion: int, total: int) -> float:
+        return round((portion / total) * 100, 2)

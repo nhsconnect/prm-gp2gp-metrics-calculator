@@ -122,6 +122,24 @@ def test_returns_received_by_practice_total():
     assert transfer_metrics.received_by_practice_total() == 5
 
 
+def test_returns_received_by_practice_percent_of_requested():
+    transfers = [
+        a_transfer_integrated_within_3_days(),
+        a_transfer_integrated_between_3_and_8_days(),
+        a_transfer_integrated_between_3_and_8_days(),
+        a_transfer_with_a_final_error(),
+        a_transfer_where_the_request_was_never_acknowledged(),
+        a_transfer_where_no_core_ehr_was_sent(),
+        a_transfer_that_was_never_integrated(),
+        a_transfer_integrated_beyond_8_days(),
+        a_transfer_where_a_copc_triggered_an_error(),
+    ]
+
+    transfer_metrics = TransferMetrics(transfers=transfers)
+
+    assert transfer_metrics.received_by_practice_percent_of_requested() == 55.56
+
+
 def test_returns_requested_by_practice_total():
     transfers = [
         a_transfer_integrated_within_3_days(),
