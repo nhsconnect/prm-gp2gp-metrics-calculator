@@ -32,9 +32,6 @@ class TransferMetrics:
             if transfer.outcome.status == TransferStatus.INTEGRATED_ON_TIME:
                 self._sla_counter.increment(transfer.sla_duration)
 
-    def process_failure_not_integrated(self) -> int:
-        return self._counts_by_outcome[_NOT_INTEGRATED]
-
     def integrated_total(self) -> int:
         return (
             self._counts_by_outcome[_INTEGRATED_LATE]
@@ -44,11 +41,32 @@ class TransferMetrics:
     def integrated_within_3_days(self) -> int:
         return self._sla_counter.within_3_days
 
+    def integrated_within_3_days_percent_of_received(self) -> float:
+        return self._calculate_percentage(
+            self.integrated_within_3_days(), self.received_by_practice_total()
+        )
+
     def integrated_within_8_days(self) -> int:
         return self._sla_counter.within_8_days
 
+    def integrated_within_8_days_percent_of_received(self) -> float:
+        return self._calculate_percentage(
+            self.integrated_within_8_days(), self.received_by_practice_total()
+        )
+
     def integrated_beyond_8_days(self) -> int:
         return self._counts_by_outcome[_INTEGRATED_LATE]
+
+    def process_failure_not_integrated(self) -> int:
+        return self._counts_by_outcome[_NOT_INTEGRATED]
+
+    def not_integrated_within_8_days_total(self) -> int:
+        return self.integrated_beyond_8_days() + self.process_failure_not_integrated()
+
+    def not_integrated_within_8_days_percent_of_received(self) -> float:
+        return self._calculate_percentage(
+            self.not_integrated_within_8_days_total(), self.received_by_practice_total()
+        )
 
     def received_by_practice_total(self) -> int:
         return self.integrated_total() + self.process_failure_not_integrated()
@@ -66,6 +84,12 @@ class TransferMetrics:
 
     def unclassified_failure_total(self) -> int:
         return self._counts_by_status[TransferStatus.UNCLASSIFIED_FAILURE]
+
+    def failures_total(self) -> int:
+        return self.technical_failures_total() + self.unclassified_failure_total()
+
+    def failures_percent_of_requested(self) -> float:
+        return self._calculate_percentage(self.failures_total(), self.requested_by_practice_total())
 
     @staticmethod
     def _calculate_percentage(portion: int, total: int) -> float:
