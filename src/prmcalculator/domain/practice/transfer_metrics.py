@@ -1,5 +1,5 @@
 from collections import Counter
-from typing import Iterable
+from typing import Iterable, Optional
 
 from prmcalculator.domain.gp2gp.sla import SlaCounter
 from prmcalculator.domain.gp2gp.transfer import (
@@ -41,7 +41,7 @@ class TransferMetrics:
     def integrated_within_3_days(self) -> int:
         return self._sla_counter.within_3_days
 
-    def integrated_within_3_days_percent_of_received(self) -> float:
+    def integrated_within_3_days_percent_of_received(self) -> Optional[float]:
         return self._calculate_percentage(
             self.integrated_within_3_days(), self.received_by_practice_total()
         )
@@ -49,7 +49,7 @@ class TransferMetrics:
     def integrated_within_8_days(self) -> int:
         return self._sla_counter.within_8_days
 
-    def integrated_within_8_days_percent_of_received(self) -> float:
+    def integrated_within_8_days_percent_of_received(self) -> Optional[float]:
         return self._calculate_percentage(
             self.integrated_within_8_days(), self.received_by_practice_total()
         )
@@ -63,7 +63,7 @@ class TransferMetrics:
     def not_integrated_within_8_days_total(self) -> int:
         return self.integrated_beyond_8_days() + self.process_failure_not_integrated()
 
-    def not_integrated_within_8_days_percent_of_received(self) -> float:
+    def not_integrated_within_8_days_percent_of_received(self) -> Optional[float]:
         return self._calculate_percentage(
             self.not_integrated_within_8_days_total(), self.received_by_practice_total()
         )
@@ -74,7 +74,7 @@ class TransferMetrics:
     def requested_by_practice_total(self) -> int:
         return self._transfers_requested_count
 
-    def received_by_practice_percent_of_requested(self) -> float:
+    def received_by_practice_percent_of_requested(self) -> Optional[float]:
         return self._calculate_percentage(
             self.received_by_practice_total(), self.requested_by_practice_total()
         )
@@ -88,11 +88,11 @@ class TransferMetrics:
     def failures_total_count(self) -> int:
         return self.technical_failures_total() + self.unclassified_failure_total()
 
-    def failures_percent_of_requested(self) -> float:
+    def failures_percent_of_requested(self) -> Optional[float]:
         return self._calculate_percentage(
             self.failures_total_count(), self.requested_by_practice_total()
         )
 
     @staticmethod
-    def _calculate_percentage(portion: int, total: int) -> float:
-        return 0 if total == 0 else round((portion / total) * 100, 2)
+    def _calculate_percentage(portion: int, total: int) -> Optional[float]:
+        return None if total == 0 else round((portion / total) * 100, 1)

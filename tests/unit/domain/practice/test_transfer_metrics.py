@@ -66,7 +66,7 @@ def test_returns_integrated_within_3_days_percent_of_received():
 
     transfer_metrics = TransferMetrics(transfers=transfers)
 
-    assert transfer_metrics.integrated_within_3_days_percent_of_received() == 50.00
+    assert transfer_metrics.integrated_within_3_days_percent_of_received() == 50.0
 
 
 def test_returns_integrated_within_8_days():
@@ -102,7 +102,7 @@ def test_returns_integrated_within_8_days_percent_of_received():
 
     transfer_metrics = TransferMetrics(transfers=transfers)
 
-    assert transfer_metrics.integrated_within_8_days_percent_of_received() == 40.00
+    assert transfer_metrics.integrated_within_8_days_percent_of_received() == 40.0
 
 
 def test_returns_integrated_beyond_8_days():
@@ -170,7 +170,7 @@ def test_returns_not_integrated_within_8_days_percent_of_received():
 
     transfer_metrics = TransferMetrics(transfers=transfers)
 
-    assert transfer_metrics.not_integrated_within_8_days_percent_of_received() == 66.67
+    assert transfer_metrics.not_integrated_within_8_days_percent_of_received() == 66.7
 
 
 def test_returns_received_by_practice_total():
@@ -206,7 +206,7 @@ def test_returns_received_by_practice_percent_of_requested():
 
     transfer_metrics = TransferMetrics(transfers=transfers)
 
-    assert transfer_metrics.received_by_practice_percent_of_requested() == 55.56
+    assert transfer_metrics.received_by_practice_percent_of_requested() == 55.6
 
 
 def test_returns_requested_by_practice_total():
@@ -273,11 +273,20 @@ def test_returns_failures_percent_of_requested():
     ]
     transfer_metrics = TransferMetrics(transfers=transfers)
 
-    assert transfer_metrics.failures_percent_of_requested() == 66.67
+    assert transfer_metrics.failures_percent_of_requested() == 66.7
 
 
-def test_returns_zero_percent_when_divided_by_zero():
-    transfers = [a_transfer_integrated_within_3_days()]
+def test_returns_none_when_total_is_zero():
+    transfers = []  # type: ignore
+
     transfer_metrics = TransferMetrics(transfers=transfers)
 
-    assert transfer_metrics.failures_percent_of_requested() == 0
+    assert transfer_metrics.failures_percent_of_requested() is None
+
+
+def test_returns_zero_when_portion_is_zero():
+    transfers = [a_transfer_integrated_within_3_days()]
+
+    transfer_metrics = TransferMetrics(transfers=transfers)
+
+    assert transfer_metrics.failures_percent_of_requested() == 0.0

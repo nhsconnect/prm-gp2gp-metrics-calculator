@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
 from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
@@ -10,15 +10,15 @@ from prmcalculator.domain.reporting_window import ReportingWindow
 class RequestedTransferMetrics:
     requested_count: int
     received_count: int
-    received_percent_of_requested: float
+    received_percent_of_requested: Optional[float]
     integrated_within_3_days_count: int
-    integrated_within_3_days_percent_of_received: float
+    integrated_within_3_days_percent_of_received: Optional[float]
     integrated_within_8_days_count: int
-    integrated_within_8_days_percent_of_received: float
+    integrated_within_8_days_percent_of_received: Optional[float]
     not_integrated_within_8_days_total: int
-    not_integrated_within_8_days_percent_of_received: float
+    not_integrated_within_8_days_percent_of_received: Optional[float]
     failures_total_count: int
-    failures_total_percent_of_requested: float
+    failures_total_percent_of_requested: Optional[float]
     # deprecated fields
     integrated_count: int
     integrated_beyond_8_days_count: int
