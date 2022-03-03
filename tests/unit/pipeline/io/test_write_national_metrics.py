@@ -78,7 +78,7 @@ def test_given_national_metrics_object_will_generate_json():
     s3_manager = Mock()
     data_platform_metrics_bucket = a_string()
     s3_file_name = f"{_DATE_ANCHOR_YEAR}-{_DATE_ANCHOR_MONTH}-nationalMetrics.json"
-    s3_key = f"v7/{_DATE_ANCHOR_YEAR}/{_DATE_ANCHOR_MONTH}/{s3_file_name}"
+    s3_key = f"v8/{_DATE_ANCHOR_YEAR}/{_DATE_ANCHOR_MONTH}/{s3_file_name}"
     s3_uri = f"s3://{data_platform_metrics_bucket}/{s3_key}"
 
     output_metadata = {"metadata-field": "metadata_value"}

@@ -103,7 +103,7 @@ fake_s3_url = f"http://{fake_s3_host}:{fake_s3_port}"
 
 
 def _get_s3_path(bucket_name, year, month, day):
-    return f"{bucket_name}/v7/cutoff-14/{year}/{month}/{day}/{year}-{month}-{day}-transfers.parquet"
+    return f"{bucket_name}/v8/cutoff-14/{year}/{month}/{day}/{year}-{month}-{day}-transfers.parquet"
 
 
 def _upload_template_transfer_data(
