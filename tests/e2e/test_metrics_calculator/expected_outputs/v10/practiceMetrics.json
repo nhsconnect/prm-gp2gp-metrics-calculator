@@ -6,17 +6,17 @@
         {
           "month": 12,
           "requestedTransfers": {
-            "failuresTotalCount": 2,
-            "failuresTotalPercentOfRequested": 25.0,
+            "requestedCount": 8,
+            "receivedCount": 6,
+            "receivedPercentOfRequested": 75.0,
             "integratedWithin3DaysCount": 1,
             "integratedWithin3DaysPercentOfReceived": 16.7,
             "integratedWithin8DaysCount": 1,
             "integratedWithin8DaysPercentOfReceived": 16.7,
             "notIntegratedWithin8DaysPercentOfReceived": 66.7,
             "notIntegratedWithin8DaysTotal": 4,
-            "receivedCount": 6,
-            "receivedPercentOfRequested": 75.0,
-            "requestedCount": 8
+            "failuresTotalCount": 2,
+            "failuresTotalPercentOfRequested": 25.0
           },
           "year": 2019
         },
@@ -46,17 +46,17 @@
         {
           "month": 12,
           "requestedTransfers": {
-            "failuresTotalCount": 0,
-            "failuresTotalPercentOfRequested": null,
+            "receivedCount": 0,
+            "requestedCount": 0,
+            "receivedPercentOfRequested": null,
             "integratedWithin3DaysCount": 0,
             "integratedWithin3DaysPercentOfReceived": null,
             "integratedWithin8DaysCount": 0,
             "integratedWithin8DaysPercentOfReceived": null,
             "notIntegratedWithin8DaysPercentOfReceived": null,
             "notIntegratedWithin8DaysTotal": 0,
-            "receivedCount": 0,
-            "receivedPercentOfRequested": null,
-            "requestedCount": 0
+            "failuresTotalCount": 0,
+            "failuresTotalPercentOfRequested": null
           },
           "year": 2019
         },
@@ -86,6 +86,7 @@
         {
           "month": 12,
           "requestedTransfers": {
+            "requestedCount": 3,
             "failuresTotalCount": 1,
             "failuresTotalPercentOfRequested": 33.3,
             "integratedWithin3DaysCount": 1,
@@ -95,8 +96,7 @@
             "notIntegratedWithin8DaysPercentOfReceived": 0.0,
             "notIntegratedWithin8DaysTotal": 0,
             "receivedCount": 2,
-            "receivedPercentOfRequested": 66.7,
-            "requestedCount": 3
+            "receivedPercentOfRequested": 66.7
           },
           "year": 2019
         },

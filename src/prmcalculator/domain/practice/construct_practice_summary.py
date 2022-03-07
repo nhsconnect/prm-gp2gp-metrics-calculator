@@ -19,12 +19,6 @@ class RequestedTransferMetrics:
     not_integrated_within_8_days_percent_of_received: Optional[float]
     failures_total_count: int
     failures_total_percent_of_requested: Optional[float]
-    # deprecated fields
-    integrated_count: int
-    integrated_beyond_8_days_count: int
-    awaiting_integration_count: int
-    technical_failures_count: int
-    unclassified_failure_count: int
 
 
 @dataclass
@@ -60,12 +54,6 @@ def _construct_monthly_metrics_presentation(
             not_integrated_within_8_days_percent_of_received=transfer_month_metrics.not_integrated_within_8_days_percent_of_received(),
             failures_total_count=transfer_month_metrics.failures_total_count(),
             failures_total_percent_of_requested=transfer_month_metrics.failures_percent_of_requested(),
-            # deprecated fields
-            integrated_count=transfer_month_metrics.integrated_total(),
-            integrated_beyond_8_days_count=transfer_month_metrics.integrated_beyond_8_days(),
-            awaiting_integration_count=transfer_month_metrics.process_failure_not_integrated(),
-            technical_failures_count=transfer_month_metrics.technical_failures_total(),
-            unclassified_failure_count=transfer_month_metrics.unclassified_failure_total(),
         ),
     )
 

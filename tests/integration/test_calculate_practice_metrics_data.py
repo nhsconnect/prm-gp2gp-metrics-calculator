@@ -94,12 +94,6 @@ def test_calculates_correct_practice_metrics_given_transfers():
                             not_integrated_within_8_days_percent_of_received=50.00,
                             failures_total_count=0,
                             failures_total_percent_of_requested=0,
-                            # deprecated fields
-                            integrated_count=1,
-                            integrated_beyond_8_days_count=0,
-                            awaiting_integration_count=1,
-                            technical_failures_count=0,
-                            unclassified_failure_count=0,
                         ),
                     )
                 ],
@@ -168,12 +162,6 @@ def test_returns_default_metric_values_for_practice_without_transfers():
                             not_integrated_within_8_days_percent_of_received=None,
                             failures_total_count=0,
                             failures_total_percent_of_requested=None,
-                            # deprecated fields
-                            integrated_count=0,
-                            integrated_beyond_8_days_count=0,
-                            awaiting_integration_count=0,
-                            technical_failures_count=0,
-                            unclassified_failure_count=0,
                         ),
                     )
                 ],
@@ -309,12 +297,6 @@ def test_calculates_correct_practice_metrics_filtering_transfers_that_take_longe
                             not_integrated_within_8_days_percent_of_received=50.0,
                             failures_total_count=1,
                             failures_total_percent_of_requested=33.3,
-                            # deprecated fields
-                            integrated_count=1,
-                            integrated_beyond_8_days_count=0,
-                            awaiting_integration_count=1,
-                            technical_failures_count=1,
-                            unclassified_failure_count=0,
                         ),
                     )
                 ],
@@ -421,12 +403,6 @@ def test_calculates_correct_practice_metrics_without_filtering_transfers_if_conf
                             not_integrated_within_8_days_percent_of_received=60.0,
                             failures_total_count=0,
                             failures_total_percent_of_requested=0.0,
-                            # deprecated fields
-                            integrated_count=2,
-                            integrated_beyond_8_days_count=0,
-                            awaiting_integration_count=3,
-                            technical_failures_count=0,
-                            unclassified_failure_count=0,
                         ),
                     )
                 ],

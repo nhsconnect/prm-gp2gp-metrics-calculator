@@ -38,12 +38,6 @@ _PRACTICE_METRICS_OBJECT = PracticeMetricsPresentation(
                         not_integrated_within_8_days_percent_of_received=78.15,
                         failures_total_count=17,
                         failures_total_percent_of_requested=14.54,
-                        # deprecated fields
-                        integrated_count=2,
-                        integrated_beyond_8_days_count=1,
-                        awaiting_integration_count=1,
-                        technical_failures_count=3,
-                        unclassified_failure_count=4,
                     ),
                 )
             ],
@@ -74,12 +68,6 @@ _PRACTICE_METRICS_DICT = {
                         "notIntegratedWithin8DaysPercentOfReceived": 78.15,
                         "failuresTotalCount": 17,
                         "failuresTotalPercentOfRequested": 14.54,
-                        # deprecated fields
-                        "integratedCount": 2,
-                        "integratedBeyond8DaysCount": 1,
-                        "awaitingIntegrationCount": 1,
-                        "technicalFailuresCount": 3,
-                        "unclassifiedFailureCount": 4,
                     },
                 }
             ],
