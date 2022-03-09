@@ -20,8 +20,8 @@ def test_produces_empty_metrics_given_practices_with_no_transfers():
     )
 
     expected = [
-        PracticeTransfers(name="Practice 1", ods_code="A1234", transfers=()),
-        PracticeTransfers(name="Practice 2", ods_code="B5678", transfers=()),
+        PracticeTransfers(name="Practice 1", ods_code="A1234", ccg_ods_code=None, transfers=()),
+        PracticeTransfers(name="Practice 2", ods_code="B5678", ccg_ods_code=None, transfers=()),
     ]
 
     actual = group_transfers_by_practice(
@@ -41,14 +41,16 @@ def test_produces_an_empty_metrics_object_given_practice_with_no_matching_transf
         ]
     )
     transfer = build_transfer(
-        requesting_practice=build_practice(asid="565656565656"),
+        requesting_practice=build_practice(asid="565656565656", ccg_ods_code="12A"),
     )
 
     actual = group_transfers_by_practice(
         transfers=[transfer], practice_lookup=lookup, observability_probe=mock_probe
     )
 
-    expected = [PracticeTransfers(name="Test Practice", ods_code="A1234", transfers=())]
+    expected = [
+        PracticeTransfers(name="Test Practice", ods_code="A1234", ccg_ods_code=None, transfers=())
+    ]
 
     assert actual == expected
 
@@ -61,15 +63,18 @@ def test_produces_a_group_given_single_practice_with_transfers_matching_asid():
         [PracticeMetadata(asids=["121212121212"], ods_code=ods_code, name="Test Practice")]
     )
     transfer_one = build_transfer(
-        requesting_practice=build_practice(asid="121212121212"),
+        requesting_practice=build_practice(asid="121212121212", ccg_ods_code="16A"),
     )
     transfer_two = build_transfer(
-        requesting_practice=build_practice(asid="121212121212"),
+        requesting_practice=build_practice(asid="121212121212", ccg_ods_code="16A"),
     )
 
     expected = [
         PracticeTransfers(
-            name="Test Practice", ods_code="A1234", transfers=(transfer_one, transfer_two)
+            name="Test Practice",
+            ods_code="A1234",
+            ccg_ods_code="16A",
+            transfers=(transfer_one, transfer_two),
         )
     ]
 
@@ -94,16 +99,19 @@ def test_produces_a_group_given_single_practice_with_transfers_matching_asids():
     )
 
     transfer_one = build_transfer(
-        requesting_practice=build_practice(asid="343434343434"),
+        requesting_practice=build_practice(asid="343434343434", ccg_ods_code="18B"),
     )
 
     transfer_two = build_transfer(
-        requesting_practice=build_practice(asid="121212121212"),
+        requesting_practice=build_practice(asid="121212121212", ccg_ods_code="18B"),
     )
 
     expected = [
         PracticeTransfers(
-            name="Test Practice", ods_code="A1234", transfers=(transfer_one, transfer_two)
+            name="Test Practice",
+            ods_code="A1234",
+            ccg_ods_code="18B",
+            transfers=(transfer_one, transfer_two),
         )
     ]
 
@@ -133,18 +141,24 @@ def test_produces_correct_groups_given_two_practices_each_with_transfers():
         ]
     )
     practice_a_transfer = build_transfer(
-        requesting_practice=build_practice(asid=practice_a_asid),
+        requesting_practice=build_practice(asid=practice_a_asid, ccg_ods_code="19G"),
     )
     practice_b_transfer = build_transfer(
-        requesting_practice=build_practice(asid=practice_b_asid),
+        requesting_practice=build_practice(asid=practice_b_asid, ccg_ods_code="19G"),
     )
 
     expected = [
         PracticeTransfers(
-            name="Practice A", ods_code=practice_a_ods_code, transfers=(practice_a_transfer,)
+            name="Practice A",
+            ods_code=practice_a_ods_code,
+            ccg_ods_code="19G",
+            transfers=(practice_a_transfer,),
         ),
         PracticeTransfers(
-            name="Practice B", ods_code=practice_b_ods_code, transfers=(practice_b_transfer,)
+            name="Practice B",
+            ods_code=practice_b_ods_code,
+            ccg_ods_code="19G",
+            transfers=(practice_b_transfer,),
         ),
     ]
 

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from prmcalculator.domain.gp2gp.transfer import Transfer
 from prmcalculator.domain.ods_portal.organisation_metadata import PracticeMetadata
@@ -12,6 +12,7 @@ ODSCode = str
 class PracticeTransfers:
     ods_code: ODSCode
     name: str
+    ccg_ods_code: Optional[ODSCode]
     transfers: Tuple[Transfer, ...]
 
 
@@ -25,8 +26,16 @@ class TransferAccumulator:
         self._transfers.append(transfer)
 
     def into_group(self) -> PracticeTransfers:
+        ccg_ods_code = (
+            self._transfers[0].requesting_practice.ccg_ods_code
+            if len(self._transfers) > 0
+            else None
+        )
         return PracticeTransfers(
-            ods_code=self._ods_code, name=self._name, transfers=tuple(self._transfers)
+            ods_code=self._ods_code,
+            name=self._name,
+            ccg_ods_code=ccg_ods_code,
+            transfers=tuple(self._transfers),
         )
 
 

@@ -11,7 +11,11 @@ class PracticeTransferMetrics:
     @classmethod
     def from_group(cls, group: PracticeTransfers):
         return cls(
-            ods_code=group.ods_code, name=group.name, ccg_ods_code=None, transfers=group.transfers
+            # ccg_ods_code needs to be populated
+            ods_code=group.ods_code,
+            name=group.name,
+            ccg_ods_code=None,
+            transfers=group.transfers,
         )
 
     def __init__(
