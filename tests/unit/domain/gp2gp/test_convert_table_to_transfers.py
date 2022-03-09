@@ -4,7 +4,6 @@ import pyarrow as pa
 from dateutil.tz import UTC
 
 from prmcalculator.domain.gp2gp.transfer import (
-    Practice,
     Transfer,
     TransferFailureReason,
     TransferOutcome,
@@ -13,6 +12,7 @@ from prmcalculator.domain.gp2gp.transfer import (
     convert_table_to_transfers,
 )
 from tests.builders.common import a_datetime, a_string
+from tests.builders.gp2gp import build_practice
 
 
 def _build_transfer_table(**kwargs) -> pa.Table:
@@ -20,6 +20,9 @@ def _build_transfer_table(**kwargs) -> pa.Table:
         {
             "conversation_id": kwargs.get("conversation_id", [a_string(36)]),
             "sla_duration": kwargs.get("sla_duration", [1234]),
+            "requesting_practice_ccg_ods_code": kwargs.get(
+                "requesting_practice_ccg_ods_code", [a_string(5)]
+            ),
             "requesting_practice_asid": kwargs.get("requesting_practice_asid", [a_string(12)]),
             "requesting_supplier": kwargs.get("requesting_supplier", [a_string(12)]),
             "status": kwargs.get("status", ["Integrated on time"]),
@@ -72,6 +75,19 @@ def test_requesting_practice_asid_column_is_converted_to_a_transfer_field():
     actual_requesting_practice_asid = next(iter(transfers)).requesting_practice.asid
 
     assert actual_requesting_practice_asid == requesting_practice_asid
+
+
+def test_requesting_requesting_practice_ccg_ods_code_is_converted_to_a_transfer_field():
+    requesting_practice_ccg_ods_code = "10T"
+
+    table = _build_transfer_table(
+        requesting_practice_ccg_ods_code=[requesting_practice_ccg_ods_code]
+    )
+
+    transfers = convert_table_to_transfers(table)
+    actual_requesting_practice_ccg_ods_code = next(iter(transfers)).requesting_practice.ccg_ods_code
+
+    assert actual_requesting_practice_ccg_ods_code == requesting_practice_ccg_ods_code
 
 
 def test_requesting_supplier_column_is_converted_to_a_transfer_field():
@@ -176,6 +192,7 @@ def test_converts_multiple_rows_into_list_of_transfers():
         sla_duration=[241241, 12413],
         requesting_practice_asid=["213125436412", "124135423412"],
         requesting_supplier=["Vision", "Systm One"],
+        requesting_practice_ccg_ods_code=["11D", "14G"],
         status=["Integrated on time", "Technical failure"],
         failure_reason=[None, "Contains fatal sender error"],
         date_requested=[integrated_date_requested, technical_failure_date_request],
@@ -189,7 +206,9 @@ def test_converts_multiple_rows_into_list_of_transfers():
         Transfer(
             conversation_id="123",
             sla_duration=integrated_sla_duration,
-            requesting_practice=Practice(asid="213125436412", supplier="Vision"),
+            requesting_practice=build_practice(
+                asid="213125436412", supplier="Vision", ccg_ods_code="11D"
+            ),
             outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
             date_requested=integrated_date_requested,
             last_sender_message_timestamp=last_sender_message_timestamp,
@@ -197,7 +216,9 @@ def test_converts_multiple_rows_into_list_of_transfers():
         Transfer(
             conversation_id="2345",
             sla_duration=timedelta(hours=3, minutes=26, seconds=53),
-            requesting_practice=Practice(asid="124135423412", supplier="Systm One"),
+            requesting_practice=build_practice(
+                asid="124135423412", supplier="Systm One", ccg_ods_code="14G"
+            ),
             outcome=TransferOutcome(
                 status=TransferStatus.TECHNICAL_FAILURE,
                 failure_reason=TransferFailureReason.FATAL_SENDER_ERROR,
@@ -219,6 +240,7 @@ def test_convert_table_to_transfers_handles_none_values_gracefully():
         conversation_id=["123"],
         sla_duration=[None],
         requesting_practice_asid=["213125436412"],
+        requesting_practice_ccg_ods_code=[None],
         requesting_supplier=["Vision"],
         status=["Technical failure"],
         failure_reason=["Contains fatal sender error"],
@@ -231,7 +253,9 @@ def test_convert_table_to_transfers_handles_none_values_gracefully():
         Transfer(
             conversation_id="123",
             sla_duration=None,
-            requesting_practice=Practice(asid="213125436412", supplier="Vision"),
+            requesting_practice=build_practice(
+                asid="213125436412", supplier="Vision", ccg_ods_code=None
+            ),
             outcome=TransferOutcome(
                 status=TransferStatus.TECHNICAL_FAILURE,
                 failure_reason=TransferFailureReason.FATAL_SENDER_ERROR,

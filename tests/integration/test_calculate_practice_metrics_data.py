@@ -4,7 +4,6 @@ from unittest.mock import Mock
 from dateutil.tz import UTC
 from freezegun import freeze_time
 
-from prmcalculator.domain.gp2gp.transfer import Practice
 from prmcalculator.domain.ods_portal.organisation_metadata import (
     CcgDetails,
     OrganisationMetadata,
@@ -25,6 +24,7 @@ from tests.builders.gp2gp import (
     a_transfer_integrated_within_3_days,
     a_transfer_that_was_never_integrated,
     a_transfer_where_no_core_ehr_was_sent,
+    build_practice,
 )
 
 
@@ -41,7 +41,7 @@ def test_calculates_correct_practice_metrics_given_transfers():
 
     requesting_practice_name = "Test GP"
     requesting_ods_code = "A12345"
-    requesting_practice = Practice(asid="343434343434", supplier="SystemOne")
+    requesting_practice = build_practice(asid="343434343434", supplier="SystemOne")
     ccg_ods_code = "23B"
     ccg_name = "Test CCG"
 
@@ -218,7 +218,7 @@ def test_calculates_correct_practice_metrics_filtering_transfers_that_take_longe
 
     requesting_practice_name = "Test GP"
     requesting_ods_code = "A12345"
-    requesting_practice = Practice(asid="343434343434", supplier="SystemOne")
+    requesting_practice = build_practice(asid="343434343434", supplier="SystemOne")
     ccg_ods_code = "23B"
     ccg_name = "Test CCG"
 
@@ -329,7 +329,7 @@ def test_calculates_correct_practice_metrics_without_filtering_transfers_if_conf
 
     requesting_practice_name = "Test GP"
     requesting_ods_code = "A12345"
-    requesting_practice = Practice(asid="343434343434", supplier="SystemOne")
+    requesting_practice = build_practice(asid="343434343434", supplier="SystemOne")
     ccg_ods_code = "23B"
     ccg_name = "Test CCG"
 

@@ -2,6 +2,7 @@
   "conversation_id": [],
   "date_requested": [],
   "last_sender_message_timestamp": [],
+  "requesting_practice_ccg_ods_code": [],
   "requesting_practice_asid": [],
   "requesting_supplier": [],
   "sending_supplier": [],

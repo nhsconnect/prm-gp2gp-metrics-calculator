@@ -4,7 +4,6 @@ from unittest.mock import Mock, call
 import pyarrow as pa
 
 from prmcalculator.domain.gp2gp.transfer import (
-    Practice,
     Transfer,
     TransferFailureReason,
     TransferOutcome,
@@ -12,6 +11,7 @@ from prmcalculator.domain.gp2gp.transfer import (
 )
 from prmcalculator.pipeline.io import PlatformMetricsIO
 from tests.builders.common import a_datetime
+from tests.builders.gp2gp import build_practice
 
 _DATE_ANCHOR_MONTH = 1
 _DATE_ANCHOR_YEAR = 2021
@@ -34,7 +34,9 @@ _integrated_late_date_completed = _integrated_late_date_requested + _integrated_
 _INTEGRATED_TRANSFER = Transfer(
     conversation_id="123",
     sla_duration=_integrated_sla_duration,
-    requesting_practice=Practice(asid="213125436412", supplier="SupplierA"),
+    requesting_practice=build_practice(
+        asid="213125436412", supplier="SupplierA", ccg_ods_code="13D"
+    ),
     outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
     date_requested=_integrated_date_requested,
     last_sender_message_timestamp=_integrated_last_sender_message_timestamp,
@@ -44,7 +46,9 @@ _INTEGRATED_TRANSFER = Transfer(
 _INTEGRATED_LATE_TRANSFER = Transfer(
     conversation_id="456",
     sla_duration=_integrated_late_sla_duration,
-    requesting_practice=Practice(asid="121212121212", supplier="SupplierB"),
+    requesting_practice=build_practice(
+        asid="121212121212", supplier="SupplierB", ccg_ods_code="15C"
+    ),
     outcome=TransferOutcome(
         status=TransferStatus.PROCESS_FAILURE, failure_reason=TransferFailureReason.INTEGRATED_LATE
     ),
@@ -56,6 +60,7 @@ _INTEGRATED_LATE_TRANSFER = Transfer(
 _INTEGRATED_TRANSFER_DATA_DICT = {
     "conversation_id": ["123"],
     "sla_duration": [241241],
+    "requesting_practice_ccg_ods_code": ["13D"],
     "requesting_practice_asid": ["213125436412"],
     "requesting_supplier": ["SupplierA"],
     "status": ["Integrated on time"],
@@ -68,6 +73,7 @@ _INTEGRATED_TRANSFER_DATA_DICT = {
 _INTEGRATED_LATE_TRANSFER_DATA_DICT = {
     "conversation_id": ["456"],
     "sla_duration": [777600],
+    "requesting_practice_ccg_ods_code": ["15C"],
     "requesting_practice_asid": ["121212121212"],
     "requesting_supplier": ["SupplierB"],
     "status": ["Process failure"],
@@ -80,6 +86,7 @@ _SCHEMA = pa.schema(
     [
         ("conversation_id", pa.string()),
         ("sla_duration", pa.uint64()),
+        ("requesting_practice_ccg_ods_code", pa.string()),
         ("requesting_practice_asid", pa.string()),
         ("requesting_supplier", pa.string()),
         ("status", pa.string()),

@@ -11,14 +11,20 @@ from prmcalculator.domain.gp2gp.transfer import (
 from tests.builders.common import a_datetime, a_duration, a_string
 
 
+def build_practice(**kwargs) -> Practice:
+    return Practice(
+        asid=kwargs.get("asid", a_string(12)),
+        supplier=kwargs.get("supplier", a_string(12)),
+        ccg_ods_code=kwargs.get("ccg_ods_code", a_string(4)),
+    )
+
+
 def build_transfer(**kwargs) -> Transfer:
     date_requested = kwargs.get("date_requested", a_datetime())
     return Transfer(
         conversation_id=kwargs.get("conversation_id", a_string(36)),
         sla_duration=kwargs.get("sla_duration", a_duration()),
-        requesting_practice=kwargs.get(
-            "requesting_practice", Practice(asid=a_string(12), supplier=a_string(12))
-        ),
+        requesting_practice=kwargs.get("requesting_practice", build_practice()),
         outcome=kwargs.get(
             "outcome",
             TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
@@ -54,9 +60,7 @@ def a_transfer_integrated_within_3_days(**kwargs):
     return build_transfer(
         outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
         sla_duration=timedelta(seconds=THREE_DAYS_IN_SECONDS),
-        requesting_practice=kwargs.get(
-            "requesting_practice", Practice(asid=a_string(12), supplier=a_string(12))
-        ),
+        requesting_practice=kwargs.get("requesting_practice", build_practice()),
         date_requested=kwargs.get("date_requested", a_datetime()),
         last_sender_message_timestamp=kwargs.get(
             "last_sender_message_timestamp", date_requested + timedelta(minutes=1)
@@ -79,9 +83,7 @@ def a_transfer_integrated_beyond_8_days(**kwargs):
             failure_reason=TransferFailureReason.INTEGRATED_LATE,
         ),
         sla_duration=timedelta(seconds=EIGHT_DAYS_IN_SECONDS + 1),
-        requesting_practice=kwargs.get(
-            "requesting_practice", Practice(asid=a_string(12), supplier=a_string(12))
-        ),
+        requesting_practice=kwargs.get("requesting_practice", build_practice()),
         date_requested=kwargs.get("date_requested", a_datetime()),
     )
 
@@ -106,9 +108,7 @@ def a_transfer_that_was_never_integrated(**kwargs):
             failure_reason=TransferFailureReason.TRANSFERRED_NOT_INTEGRATED,
         ),
         conversation_id=kwargs.get("conversation_id", a_string(36)),
-        requesting_practice=kwargs.get(
-            "requesting_practice", Practice(asid=a_string(12), supplier=a_string(12))
-        ),
+        requesting_practice=kwargs.get("requesting_practice", build_practice()),
         date_requested=date_requested,
         last_sender_message_timestamp=kwargs.get(
             "last_sender_message_timestamp", date_requested + timedelta(minutes=1)
@@ -133,9 +133,7 @@ def a_transfer_where_no_core_ehr_was_sent(**kwargs):
             status=TransferStatus.TECHNICAL_FAILURE,
             failure_reason=TransferFailureReason.CORE_EHR_NOT_SENT,
         ),
-        requesting_practice=kwargs.get(
-            "requesting_practice", Practice(asid=a_string(12), supplier=a_string(12))
-        ),
+        requesting_practice=kwargs.get("requesting_practice", build_practice()),
         date_requested=date_requested,
         last_sender_message_timestamp=kwargs.get(
             "last_sender_message_timestamp", date_requested + timedelta(minutes=1)

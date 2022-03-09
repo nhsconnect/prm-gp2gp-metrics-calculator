@@ -66,6 +66,7 @@ def _write_transfer_parquet(input_transfer_parquet_columns_json, s3_path: str):
         [
             ("conversation_id", pa.string()),
             ("sla_duration", pa.uint64()),
+            ("requesting_practice_ccg_ods_code", pa.string()),
             ("requesting_practice_asid", pa.string()),
             ("requesting_supplier", pa.string()),
             ("status", pa.string()),
