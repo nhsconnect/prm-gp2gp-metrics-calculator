@@ -6,13 +6,13 @@ from typing import List, Optional
 from dateutil.tz import tzutc
 
 from prmcalculator.domain.gp2gp.transfer import Transfer
+from prmcalculator.domain.ods_portal.organisation_lookup import OrganisationLookup
 from prmcalculator.domain.ods_portal.organisation_metadata import CcgMetadata, OrganisationMetadata
 from prmcalculator.domain.practice.construct_practice_summary import (
     PracticeSummary,
     construct_practice_summary,
 )
 from prmcalculator.domain.practice.group_transfers_by_practice import group_transfers_by_practice
-from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
 from prmcalculator.domain.reporting_window import ReportingWindow
 
@@ -58,7 +58,7 @@ def calculate_practice_metrics(
     hide_slow_transferred_records_after_days: Optional[int] = None,
 ) -> PracticeMetricsPresentation:
     observability_probe.record_calculating_practice_metrics(reporting_window)
-    practice_lookup = PracticeLookup(practices=organisation_metadata.practices, ccgs=[])
+    organisation_lookup = OrganisationLookup(practices=organisation_metadata.practices, ccgs=[])
 
     transfers = (
         _filter_out_slow_transfers(transfers, hide_slow_transferred_records_after_days)
@@ -68,7 +68,7 @@ def calculate_practice_metrics(
 
     grouped_transfers = group_transfers_by_practice(
         transfers=transfers,
-        practice_lookup=practice_lookup,
+        organisation_lookup=organisation_lookup,
         observability_probe=observability_probe,
     )
 

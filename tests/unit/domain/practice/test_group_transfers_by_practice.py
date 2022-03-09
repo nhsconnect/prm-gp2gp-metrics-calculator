@@ -1,18 +1,18 @@
 from unittest.mock import Mock
 
+from prmcalculator.domain.ods_portal.organisation_lookup import OrganisationLookup
 from prmcalculator.domain.ods_portal.organisation_metadata import PracticeMetadata
 from prmcalculator.domain.practice.group_transfers_by_practice import (
     PracticeTransfers,
     group_transfers_by_practice,
 )
-from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 from tests.builders.common import a_string
 from tests.builders.gp2gp import build_practice, build_transfer
 
 
 def test_produces_empty_metrics_given_practices_with_no_transfers():
     mock_probe = Mock()
-    lookup = PracticeLookup(
+    lookup = OrganisationLookup(
         practices=[
             PracticeMetadata(asids=[a_string()], ods_code="A1234", name="Practice 1"),
             PracticeMetadata(asids=[a_string()], ods_code="B5678", name="Practice 2"),
@@ -26,7 +26,7 @@ def test_produces_empty_metrics_given_practices_with_no_transfers():
     ]
 
     actual = group_transfers_by_practice(
-        transfers=[], practice_lookup=lookup, observability_probe=mock_probe
+        transfers=[], organisation_lookup=lookup, observability_probe=mock_probe
     )
     assert set(actual) == set(expected)
 
@@ -34,7 +34,7 @@ def test_produces_empty_metrics_given_practices_with_no_transfers():
 def test_produces_an_empty_metrics_object_given_practice_with_no_matching_transfers():
     mock_probe = Mock()
     ods_code = "A1234"
-    lookup = PracticeLookup(
+    lookup = OrganisationLookup(
         practices=[
             PracticeMetadata(
                 asids=["121212121212", "343434343434"], ods_code=ods_code, name="Test Practice"
@@ -47,7 +47,7 @@ def test_produces_an_empty_metrics_object_given_practice_with_no_matching_transf
     )
 
     actual = group_transfers_by_practice(
-        transfers=[transfer], practice_lookup=lookup, observability_probe=mock_probe
+        transfers=[transfer], organisation_lookup=lookup, observability_probe=mock_probe
     )
 
     expected = [
@@ -61,7 +61,7 @@ def test_produces_a_group_given_single_practice_with_transfers_matching_asid():
     mock_probe = Mock()
     ods_code = "A1234"
 
-    lookup = PracticeLookup(
+    lookup = OrganisationLookup(
         practices=[
             PracticeMetadata(asids=["121212121212"], ods_code=ods_code, name="Test Practice")
         ],
@@ -85,7 +85,7 @@ def test_produces_a_group_given_single_practice_with_transfers_matching_asid():
 
     actual = group_transfers_by_practice(
         transfers=[transfer_one, transfer_two],
-        practice_lookup=lookup,
+        organisation_lookup=lookup,
         observability_probe=mock_probe,
     )
 
@@ -95,7 +95,7 @@ def test_produces_a_group_given_single_practice_with_transfers_matching_asid():
 def test_produces_a_group_given_single_practice_with_transfers_matching_asids():
     mock_probe = Mock()
     ods_code = "A1234"
-    lookup = PracticeLookup(
+    lookup = OrganisationLookup(
         practices=[
             PracticeMetadata(
                 asids=["121212121212", "343434343434"], ods_code=ods_code, name="Test Practice"
@@ -123,7 +123,7 @@ def test_produces_a_group_given_single_practice_with_transfers_matching_asids():
 
     actual = group_transfers_by_practice(
         transfers=[transfer_one, transfer_two],
-        practice_lookup=lookup,
+        organisation_lookup=lookup,
         observability_probe=mock_probe,
     )
 
@@ -136,7 +136,7 @@ def test_produces_correct_groups_given_two_practices_each_with_transfers():
     practice_a_asid = "121212121212"
     practice_b_ods_code = "B4567"
     practice_b_asid = "3512352431233"
-    lookup = PracticeLookup(
+    lookup = OrganisationLookup(
         practices=[
             PracticeMetadata(
                 asids=[practice_a_asid], ods_code=practice_a_ods_code, name="Practice A"
@@ -171,7 +171,7 @@ def test_produces_correct_groups_given_two_practices_each_with_transfers():
 
     actual = group_transfers_by_practice(
         transfers=[practice_a_transfer, practice_b_transfer],
-        practice_lookup=lookup,
+        organisation_lookup=lookup,
         observability_probe=mock_probe,
     )
 
@@ -181,14 +181,14 @@ def test_produces_correct_groups_given_two_practices_each_with_transfers():
 def test_calls_observability_probe_when_multiple_unknown_practices_for_transfers():
     mock_probe = Mock()
 
-    lookup = PracticeLookup(practices=[], ccgs=[])
+    lookup = OrganisationLookup(practices=[], ccgs=[])
     unknown_practice_transfer = build_transfer(
         requesting_practice=build_practice(asid="121212121212")
     )
 
     group_transfers_by_practice(
         transfers=[unknown_practice_transfer],
-        practice_lookup=lookup,
+        organisation_lookup=lookup,
         observability_probe=mock_probe,
     )
 

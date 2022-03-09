@@ -3,7 +3,7 @@ from typing import Iterable, List, Optional
 from prmcalculator.domain.ods_portal.organisation_metadata import CcgMetadata, PracticeMetadata
 
 
-class PracticeLookup:
+class OrganisationLookup:
     def __init__(self, practices: List[PracticeMetadata], ccgs: List[CcgMetadata]):
         self._practices = practices
         self._asid_to_ods_mapping = {
