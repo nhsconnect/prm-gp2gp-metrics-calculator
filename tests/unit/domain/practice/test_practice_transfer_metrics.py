@@ -20,7 +20,7 @@ def test_returns_transfer_metrics():
     ]
 
     practice_transfers = PracticeTransferMetrics(
-        ods_code=a_string(), name=a_string(), transfers=transfers
+        ods_code=a_string(5), name=a_string(12), ccg_ods_code=a_string(5), transfers=transfers
     )
 
     july_transfer_metrics = practice_transfers.monthly_metrics(2021, 7)
@@ -35,30 +35,39 @@ def test_returns_transfer_metrics():
 
 
 def test_returns_empty_transfer_metrics_given_month_with_no_transfers():
-    practice_transfers = PracticeTransferMetrics(ods_code=a_string(), name=a_string(), transfers=[])
+    practice_transfers = PracticeTransferMetrics(
+        ods_code=a_string(5), name=a_string(12), ccg_ods_code=a_string(5), transfers=[]
+    )
     expected_transfer_count = 0
 
     actual = practice_transfers.monthly_metrics(2021, 7)
-
     actual_transfer_count = actual.received_by_practice_total()
+
     assert actual_transfer_count == expected_transfer_count
 
 
 def test_returns_ods_code():
     practice_transfers = PracticeTransferMetrics(
-        ods_code="ABC123",
-        name=a_string(),
-        transfers=[],
+        ods_code="ABC123", name=a_string(12), ccg_ods_code=a_string(5), transfers=[]
     )
+    actual_ods_code = practice_transfers.ods_code
 
-    assert practice_transfers.ods_code == "ABC123"
+    assert actual_ods_code == "ABC123"
 
 
 def test_returns_practice_name():
     practice_transfers = PracticeTransferMetrics(
-        ods_code=a_string(),
-        name="Test Practice",
-        transfers=[],
+        ods_code=a_string(5), name="Test Practice", ccg_ods_code=a_string(5), transfers=[]
     )
+    actual_name = practice_transfers.name
 
-    assert practice_transfers.name == "Test Practice"
+    assert actual_name == "Test Practice"
+
+
+def test_returns_practice_ccg_ods_code():
+    practice_transfers = PracticeTransferMetrics(
+        ods_code=a_string(), name=a_string(12), ccg_ods_code="14A", transfers=[]
+    )
+    actual_ccg_ods_code = practice_transfers.ccg_ods_code
+
+    assert actual_ccg_ods_code == "14A"
