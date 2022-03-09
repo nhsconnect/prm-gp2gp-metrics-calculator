@@ -6,7 +6,7 @@ from typing import List, Optional
 from dateutil.tz import tzutc
 
 from prmcalculator.domain.gp2gp.transfer import Transfer
-from prmcalculator.domain.ods_portal.organisation_metadata import CcgDetails, OrganisationMetadata
+from prmcalculator.domain.ods_portal.organisation_metadata import CcgMetadata, OrganisationMetadata
 from prmcalculator.domain.practice.construct_practice_summary import (
     PracticeSummary,
     construct_practice_summary,
@@ -47,7 +47,7 @@ class PracticeMetricsObservabilityProbe:
 class PracticeMetricsPresentation:
     generated_on: datetime
     practices: List[PracticeSummary]
-    ccgs: List[CcgDetails]
+    ccgs: List[CcgMetadata]
 
 
 def calculate_practice_metrics(

@@ -1,15 +1,15 @@
 from typing import List
 
-from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
+from prmcalculator.domain.ods_portal.organisation_metadata import PracticeMetadata
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 from tests.builders.ods_portal import build_practice_details
 
 
 def test_all_practices_returns_nothing_given_no_practices():
-    practices: List[PracticeDetails] = []
+    practices: List[PracticeMetadata] = []
     practice_lookup = PracticeLookup(practices)
 
-    expected: List[PracticeDetails] = []
+    expected: List[PracticeMetadata] = []
 
     actual = list(practice_lookup.all_practices())
 
@@ -80,7 +80,7 @@ def test_has_asid_code_returns_true_given_multiple_practices():
 
 
 def test_ods_code_from_asid_returns_none_given_no_practices():
-    practices: List[PracticeDetails] = []
+    practices: List[PracticeMetadata] = []
     practice_lookup = PracticeLookup(practices)
 
     expected = None

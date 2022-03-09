@@ -1,7 +1,7 @@
 from datetime import datetime
 from unittest.mock import Mock
 
-from prmcalculator.domain.ods_portal.organisation_metadata import CcgDetails
+from prmcalculator.domain.ods_portal.organisation_metadata import CcgMetadata
 from prmcalculator.domain.practice.calculate_practice_metrics import PracticeMetricsPresentation
 from prmcalculator.domain.practice.construct_practice_summary import (
     MonthlyMetricsPresentation,
@@ -43,7 +43,7 @@ _PRACTICE_METRICS_OBJECT = PracticeMetricsPresentation(
             ],
         )
     ],
-    ccgs=[CcgDetails(name="A test CCG", ods_code="12A", practices=["A12345"])],
+    ccgs=[CcgMetadata(name="A test CCG", ods_code="12A", practices=["A12345"])],
 )
 
 _PRACTICE_METRICS_DICT = {

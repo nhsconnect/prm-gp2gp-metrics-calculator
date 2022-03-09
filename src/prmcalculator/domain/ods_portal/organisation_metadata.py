@@ -6,14 +6,14 @@ from dateutil import parser
 
 
 @dataclass
-class PracticeDetails:
+class PracticeMetadata:
     ods_code: str
     name: str
     asids: List[str]
 
 
 @dataclass
-class CcgDetails:
+class CcgMetadata:
     ods_code: str
     name: str
     practices: List[str]
@@ -22,21 +22,21 @@ class CcgDetails:
 @dataclass
 class OrganisationMetadata:
     generated_on: datetime
-    practices: List[PracticeDetails]
-    ccgs: List[CcgDetails]
+    practices: List[PracticeMetadata]
+    ccgs: List[CcgMetadata]
 
     @classmethod
     def from_dict(cls, data):
         return OrganisationMetadata(
             generated_on=parser.isoparse(data["generated_on"]),
             practices=[
-                PracticeDetails(
+                PracticeMetadata(
                     asids=practice["asids"], ods_code=practice["ods_code"], name=practice["name"]
                 )
                 for practice in data["practices"]
             ],
             ccgs=[
-                CcgDetails(ods_code=ccg["ods_code"], name=ccg["name"], practices=ccg["practices"])
+                CcgMetadata(ods_code=ccg["ods_code"], name=ccg["name"], practices=ccg["practices"])
                 for ccg in data["ccgs"]
             ],
         )

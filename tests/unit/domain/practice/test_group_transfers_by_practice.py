@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
+from prmcalculator.domain.ods_portal.organisation_metadata import PracticeMetadata
 from prmcalculator.domain.practice.group_transfers_by_practice import (
     PracticeTransfers,
     group_transfers_by_practice,
@@ -14,8 +14,8 @@ def test_produces_empty_metrics_given_practices_with_no_transfers():
     mock_probe = Mock()
     lookup = PracticeLookup(
         [
-            PracticeDetails(asids=[a_string()], ods_code="A1234", name="Practice 1"),
-            PracticeDetails(asids=[a_string()], ods_code="B5678", name="Practice 2"),
+            PracticeMetadata(asids=[a_string()], ods_code="A1234", name="Practice 1"),
+            PracticeMetadata(asids=[a_string()], ods_code="B5678", name="Practice 2"),
         ]
     )
 
@@ -35,7 +35,7 @@ def test_produces_an_empty_metrics_object_given_practice_with_no_matching_transf
     ods_code = "A1234"
     lookup = PracticeLookup(
         [
-            PracticeDetails(
+            PracticeMetadata(
                 asids=["121212121212", "343434343434"], ods_code=ods_code, name="Test Practice"
             )
         ]
@@ -58,7 +58,7 @@ def test_produces_a_group_given_single_practice_with_transfers_matching_asid():
     ods_code = "A1234"
 
     lookup = PracticeLookup(
-        [PracticeDetails(asids=["121212121212"], ods_code=ods_code, name="Test Practice")]
+        [PracticeMetadata(asids=["121212121212"], ods_code=ods_code, name="Test Practice")]
     )
     transfer_one = build_transfer(
         requesting_practice=build_practice(asid="121212121212"),
@@ -87,7 +87,7 @@ def test_produces_a_group_given_single_practice_with_transfers_matching_asids():
     ods_code = "A1234"
     lookup = PracticeLookup(
         [
-            PracticeDetails(
+            PracticeMetadata(
                 asids=["121212121212", "343434343434"], ods_code=ods_code, name="Test Practice"
             )
         ]
@@ -124,10 +124,10 @@ def test_produces_correct_groups_given_two_practices_each_with_transfers():
     practice_b_asid = "3512352431233"
     lookup = PracticeLookup(
         [
-            PracticeDetails(
+            PracticeMetadata(
                 asids=[practice_a_asid], ods_code=practice_a_ods_code, name="Practice A"
             ),
-            PracticeDetails(
+            PracticeMetadata(
                 asids=[practice_b_asid], ods_code=practice_b_ods_code, name="Practice B"
             ),
         ]

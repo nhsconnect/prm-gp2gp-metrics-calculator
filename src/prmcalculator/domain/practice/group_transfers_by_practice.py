@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Dict, List, Tuple
 
 from prmcalculator.domain.gp2gp.transfer import Transfer
-from prmcalculator.domain.ods_portal.organisation_metadata import PracticeDetails
+from prmcalculator.domain.ods_portal.organisation_metadata import PracticeMetadata
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 
 ODSCode = str
@@ -16,7 +16,7 @@ class PracticeTransfers:
 
 
 class TransferAccumulator:
-    def __init__(self, practice: PracticeDetails):
+    def __init__(self, practice: PracticeMetadata):
         self._name = practice.name
         self._ods_code = practice.ods_code
         self._transfers: List[Transfer] = []

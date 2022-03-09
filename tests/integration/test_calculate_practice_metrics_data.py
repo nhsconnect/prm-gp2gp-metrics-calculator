@@ -5,9 +5,9 @@ from dateutil.tz import UTC
 from freezegun import freeze_time
 
 from prmcalculator.domain.ods_portal.organisation_metadata import (
-    CcgDetails,
+    CcgMetadata,
     OrganisationMetadata,
-    PracticeDetails,
+    PracticeMetadata,
 )
 from prmcalculator.domain.practice.calculate_practice_metrics import (
     PracticeMetricsPresentation,
@@ -57,14 +57,14 @@ def test_calculates_correct_practice_metrics_given_transfers():
     ]
 
     practice_list = [
-        PracticeDetails(
+        PracticeMetadata(
             asids=[requesting_practice.asid],
             ods_code=requesting_ods_code,
             name=requesting_practice_name,
         )
     ]
 
-    ccg_list = [CcgDetails(name=ccg_name, ods_code=ccg_ods_code, practices=[requesting_ods_code])]
+    ccg_list = [CcgMetadata(name=ccg_name, ods_code=ccg_ods_code, practices=[requesting_ods_code])]
 
     organisation_metadata = OrganisationMetadata(
         generated_on=datetime(year=2020, month=1, day=15, hour=23, second=42, tzinfo=UTC),
@@ -127,7 +127,7 @@ def test_returns_default_metric_values_for_practice_without_transfers():
     requesting_ods_code = "A4656"
 
     practice_list = [
-        PracticeDetails(
+        PracticeMetadata(
             asids=["12431"],
             ods_code=requesting_ods_code,
             name=requesting_practice_name,
@@ -260,14 +260,14 @@ def test_calculates_correct_practice_metrics_filtering_transfers_that_take_longe
     ]
 
     practice_list = [
-        PracticeDetails(
+        PracticeMetadata(
             asids=[requesting_practice.asid],
             ods_code=requesting_ods_code,
             name=requesting_practice_name,
         )
     ]
 
-    ccg_list = [CcgDetails(name=ccg_name, ods_code=ccg_ods_code, practices=[requesting_ods_code])]
+    ccg_list = [CcgMetadata(name=ccg_name, ods_code=ccg_ods_code, practices=[requesting_ods_code])]
 
     organisation_metadata = OrganisationMetadata(
         generated_on=datetime(year=2020, month=1, day=15, hour=23, second=42, tzinfo=UTC),
@@ -366,14 +366,14 @@ def test_calculates_correct_practice_metrics_without_filtering_transfers_if_conf
     ]
 
     practice_list = [
-        PracticeDetails(
+        PracticeMetadata(
             asids=[requesting_practice.asid],
             ods_code=requesting_ods_code,
             name=requesting_practice_name,
         )
     ]
 
-    ccg_list = [CcgDetails(name=ccg_name, ods_code=ccg_ods_code, practices=[requesting_ods_code])]
+    ccg_list = [CcgMetadata(name=ccg_name, ods_code=ccg_ods_code, practices=[requesting_ods_code])]
 
     organisation_metadata = OrganisationMetadata(
         generated_on=datetime(year=2020, month=1, day=15, hour=23, second=42, tzinfo=UTC),
