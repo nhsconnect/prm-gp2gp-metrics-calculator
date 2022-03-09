@@ -13,10 +13,11 @@ from tests.builders.gp2gp import build_practice, build_transfer
 def test_produces_empty_metrics_given_practices_with_no_transfers():
     mock_probe = Mock()
     lookup = PracticeLookup(
-        [
+        practices=[
             PracticeMetadata(asids=[a_string()], ods_code="A1234", name="Practice 1"),
             PracticeMetadata(asids=[a_string()], ods_code="B5678", name="Practice 2"),
-        ]
+        ],
+        ccgs=[],
     )
 
     expected = [
@@ -34,11 +35,12 @@ def test_produces_an_empty_metrics_object_given_practice_with_no_matching_transf
     mock_probe = Mock()
     ods_code = "A1234"
     lookup = PracticeLookup(
-        [
+        practices=[
             PracticeMetadata(
                 asids=["121212121212", "343434343434"], ods_code=ods_code, name="Test Practice"
             )
-        ]
+        ],
+        ccgs=[],
     )
     transfer = build_transfer(
         requesting_practice=build_practice(asid="565656565656", ccg_ods_code="12A"),
@@ -60,7 +62,10 @@ def test_produces_a_group_given_single_practice_with_transfers_matching_asid():
     ods_code = "A1234"
 
     lookup = PracticeLookup(
-        [PracticeMetadata(asids=["121212121212"], ods_code=ods_code, name="Test Practice")]
+        practices=[
+            PracticeMetadata(asids=["121212121212"], ods_code=ods_code, name="Test Practice")
+        ],
+        ccgs=[],
     )
     transfer_one = build_transfer(
         requesting_practice=build_practice(asid="121212121212", ccg_ods_code="16A"),
@@ -91,11 +96,12 @@ def test_produces_a_group_given_single_practice_with_transfers_matching_asids():
     mock_probe = Mock()
     ods_code = "A1234"
     lookup = PracticeLookup(
-        [
+        practices=[
             PracticeMetadata(
                 asids=["121212121212", "343434343434"], ods_code=ods_code, name="Test Practice"
             )
-        ]
+        ],
+        ccgs=[],
     )
 
     transfer_one = build_transfer(
@@ -131,14 +137,15 @@ def test_produces_correct_groups_given_two_practices_each_with_transfers():
     practice_b_ods_code = "B4567"
     practice_b_asid = "3512352431233"
     lookup = PracticeLookup(
-        [
+        practices=[
             PracticeMetadata(
                 asids=[practice_a_asid], ods_code=practice_a_ods_code, name="Practice A"
             ),
             PracticeMetadata(
                 asids=[practice_b_asid], ods_code=practice_b_ods_code, name="Practice B"
             ),
-        ]
+        ],
+        ccgs=[],
     )
     practice_a_transfer = build_transfer(
         requesting_practice=build_practice(asid=practice_a_asid, ccg_ods_code="19G"),
@@ -174,7 +181,7 @@ def test_produces_correct_groups_given_two_practices_each_with_transfers():
 def test_calls_observability_probe_when_multiple_unknown_practices_for_transfers():
     mock_probe = Mock()
 
-    lookup = PracticeLookup([])
+    lookup = PracticeLookup(practices=[], ccgs=[])
     unknown_practice_transfer = build_transfer(
         requesting_practice=build_practice(asid="121212121212")
     )

@@ -31,7 +31,7 @@ class MonthlyMetricsPresentation:
 @dataclass
 class PracticeSummary:
     name: str
-    ods_code: str
+    ods_code: Optional[str]
     ccg_ods_code: Optional[str]
     metrics: List[MonthlyMetricsPresentation]
 

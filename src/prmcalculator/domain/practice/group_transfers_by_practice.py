@@ -5,7 +5,7 @@ from prmcalculator.domain.gp2gp.transfer import Transfer
 from prmcalculator.domain.ods_portal.organisation_metadata import PracticeMetadata
 from prmcalculator.domain.practice.practice_lookup import PracticeLookup
 
-ODSCode = str
+ODSCode = Optional[str]
 
 
 @dataclass(frozen=True)

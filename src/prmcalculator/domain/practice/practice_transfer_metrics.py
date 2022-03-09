@@ -38,7 +38,7 @@ class PracticeTransferMetrics:
         return TransferMetrics(transfers=transfers_in_month)
 
     @property
-    def ods_code(self) -> str:
+    def ods_code(self) -> Optional[str]:
         return self._ods_code
 
     @property
