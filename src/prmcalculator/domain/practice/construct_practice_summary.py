@@ -32,6 +32,7 @@ class MonthlyMetricsPresentation:
 class PracticeSummary:
     name: str
     ods_code: str
+    ccg_ods_code: Optional[str]
     metrics: List[MonthlyMetricsPresentation]
 
 
@@ -65,6 +66,7 @@ def construct_practice_summary(
     return PracticeSummary(
         name=practice_metrics.name,
         ods_code=practice_metrics.ods_code,
+        ccg_ods_code=practice_metrics.ccg_ods_code,
         metrics=[
             _construct_monthly_metrics_presentation(
                 transfer_month_metrics=practice_metrics.monthly_metrics(year=year, month=month),

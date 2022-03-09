@@ -2,7 +2,7 @@ from collections import defaultdict
 from typing import Dict, Iterable, List, Optional
 
 from prmcalculator.domain.gp2gp.transfer import Transfer
-from prmcalculator.domain.practice.group_transfers_by_practice import PracticeTransfers
+from prmcalculator.domain.practice.group_transfers_by_practice import ODSCode, PracticeTransfers
 from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
 from prmcalculator.domain.reporting_window import MonthNumber, YearMonth, YearNumber
 
@@ -11,15 +11,18 @@ class PracticeTransferMetrics:
     @classmethod
     def from_group(cls, group: PracticeTransfers):
         return cls(
-            # ccg_ods_code needs to be populated
             ods_code=group.ods_code,
             name=group.name,
-            ccg_ods_code=None,
+            ccg_ods_code=group.ccg_ods_code,
             transfers=group.transfers,
         )
 
     def __init__(
-        self, ods_code: str, name: str, ccg_ods_code: Optional[str], transfers=Iterable[Transfer]
+        self,
+        ods_code: ODSCode,
+        name: str,
+        ccg_ods_code: Optional[ODSCode],
+        transfers=Iterable[Transfer],
     ):
         self._ods_code = ods_code
         self._name = name

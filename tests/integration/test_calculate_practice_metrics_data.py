@@ -41,9 +41,11 @@ def test_calculates_correct_practice_metrics_given_transfers():
 
     requesting_practice_name = "Test GP"
     requesting_ods_code = "A12345"
-    requesting_practice = build_practice(asid="343434343434", supplier="SystemOne")
     ccg_ods_code = "23B"
     ccg_name = "Test CCG"
+    requesting_practice = build_practice(
+        asid="343434343434", supplier="SystemOne", ccg_ods_code=ccg_ods_code
+    )
 
     transfers = [
         a_transfer_integrated_within_3_days(
@@ -78,6 +80,7 @@ def test_calculates_correct_practice_metrics_given_transfers():
             PracticeSummary(
                 name=requesting_practice_name,
                 ods_code=requesting_ods_code,
+                ccg_ods_code=ccg_ods_code,
                 metrics=[
                     MonthlyMetricsPresentation(
                         year=2019,
@@ -146,6 +149,7 @@ def test_returns_default_metric_values_for_practice_without_transfers():
             PracticeSummary(
                 name=requesting_practice_name,
                 ods_code=requesting_ods_code,
+                ccg_ods_code=None,
                 metrics=[
                     MonthlyMetricsPresentation(
                         year=2019,
@@ -218,9 +222,11 @@ def test_calculates_correct_practice_metrics_filtering_transfers_that_take_longe
 
     requesting_practice_name = "Test GP"
     requesting_ods_code = "A12345"
-    requesting_practice = build_practice(asid="343434343434", supplier="SystemOne")
     ccg_ods_code = "23B"
     ccg_name = "Test CCG"
+    requesting_practice = build_practice(
+        asid="343434343434", supplier="SystemOne", ccg_ods_code=ccg_ods_code
+    )
 
     date_requested = datetime(2019, 12, 30, 18, 2, 29, tzinfo=UTC)
     transferred_within_a_day_timestamp = date_requested + timedelta(hours=1)
@@ -281,6 +287,7 @@ def test_calculates_correct_practice_metrics_filtering_transfers_that_take_longe
             PracticeSummary(
                 name=requesting_practice_name,
                 ods_code=requesting_ods_code,
+                ccg_ods_code=ccg_ods_code,
                 metrics=[
                     MonthlyMetricsPresentation(
                         year=2019,
@@ -329,9 +336,11 @@ def test_calculates_correct_practice_metrics_without_filtering_transfers_if_conf
 
     requesting_practice_name = "Test GP"
     requesting_ods_code = "A12345"
-    requesting_practice = build_practice(asid="343434343434", supplier="SystemOne")
     ccg_ods_code = "23B"
     ccg_name = "Test CCG"
+    requesting_practice = build_practice(
+        asid="343434343434", supplier="SystemOne", ccg_ods_code=ccg_ods_code
+    )
 
     date_requested = datetime(2019, 12, 30, 18, 2, 29, tzinfo=UTC)
     transferred_within_a_day_timestamp = date_requested + timedelta(hours=1)
@@ -387,6 +396,7 @@ def test_calculates_correct_practice_metrics_without_filtering_transfers_if_conf
             PracticeSummary(
                 name=requesting_practice_name,
                 ods_code=requesting_ods_code,
+                ccg_ods_code=ccg_ods_code,
                 metrics=[
                     MonthlyMetricsPresentation(
                         year=2019,
