@@ -58,7 +58,9 @@ def calculate_practice_metrics(
     hide_slow_transferred_records_after_days: Optional[int] = None,
 ) -> PracticeMetricsPresentation:
     observability_probe.record_calculating_practice_metrics(reporting_window)
-    organisation_lookup = OrganisationLookup(practices=organisation_metadata.practices, ccgs=[])
+    organisation_lookup = OrganisationLookup(
+        practices=organisation_metadata.practices, ccgs=organisation_metadata.ccgs
+    )
 
     transfers = (
         _filter_out_slow_transfers(transfers, hide_slow_transferred_records_after_days)
@@ -77,6 +79,7 @@ def calculate_practice_metrics(
         practices=[
             construct_practice_summary(
                 practice_metrics=PracticeTransferMetrics.from_group(practice_transfers),
+                organisation_lookup=organisation_lookup,
                 reporting_window=reporting_window,
             )
             for practice_transfers in grouped_transfers

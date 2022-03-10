@@ -25,7 +25,7 @@ class OrganisationLookup:
     def ods_code_from_asid(self, asid: str) -> Optional[str]:
         return self._asid_to_ods_mapping.get(asid)
 
-    def ccg_ods_code_from_practice_ods_code(self, ods_code: str) -> Optional[str]:
+    def ccg_ods_code_from_practice_ods_code(self, ods_code) -> Optional[str]:
         return self._ods_to_ccg_ods_mapping.get(ods_code)
 
     def ccg_name_from_practice_ods_code(self, ods_code: str) -> Optional[str]:

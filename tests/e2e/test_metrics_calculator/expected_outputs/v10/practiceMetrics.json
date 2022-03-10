@@ -81,7 +81,7 @@
       ],
       "name": "Test GP Practice with no Integrations",
       "odsCode": "A12346",
-      "ccgOdsCode": null
+      "ccgOdsCode": "11D"
     },
     {
       "metrics": [

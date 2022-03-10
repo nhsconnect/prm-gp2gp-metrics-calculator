@@ -14,7 +14,6 @@ def test_returns_a_practice_summary_for_one_month_of_metrics():
     mock_transfer_metrics = Mock()
     mock_transfer_metrics.ods_code = "ABC123"
     mock_transfer_metrics.name = "Test Practice"
-    mock_transfer_metrics.ccg_ods_code = "12D"
     mock_monthly_metrics = Mock()
     mock_transfer_metrics.monthly_metrics.return_value = mock_monthly_metrics
     mock_monthly_metrics.requested_by_practice_total.return_value = 1
@@ -29,12 +28,15 @@ def test_returns_a_practice_summary_for_one_month_of_metrics():
     mock_monthly_metrics.failures_total_count.return_value = 17
     mock_monthly_metrics.failures_percent_of_requested.return_value = 14.54
 
+    mock_organisation_lookup = Mock()
+    mock_organisation_lookup.ccg_ods_code_from_practice_ods_code.return_value = "11S"
+
     reporting_window = ReportingWindow.prior_to(a_datetime(year=2021, month=7), number_of_months=1)
 
     expected = PracticeSummary(
         ods_code="ABC123",
         name="Test Practice",
-        ccg_ods_code="12D",
+        ccg_ods_code="11S",
         metrics=[
             MonthlyMetricsPresentation(
                 year=2021,
@@ -58,6 +60,7 @@ def test_returns_a_practice_summary_for_one_month_of_metrics():
 
     actual = construct_practice_summary(
         practice_metrics=mock_transfer_metrics,
+        organisation_lookup=mock_organisation_lookup,
         reporting_window=reporting_window,
     )
 
@@ -72,6 +75,7 @@ def test_returns_a_practice_summary_for_multiple_months():
 
     actual = construct_practice_summary(
         practice_metrics=mock_transfer_metrics,
+        organisation_lookup=Mock(),
         reporting_window=reporting_window,
     )
 
