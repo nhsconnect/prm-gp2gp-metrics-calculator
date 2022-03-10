@@ -12,7 +12,6 @@ ODSCode = Optional[str]
 class PracticeTransfers:
     ods_code: ODSCode
     name: str
-    ccg_ods_code: Optional[ODSCode]
     transfers: Tuple[Transfer, ...]
 
 
@@ -20,18 +19,15 @@ class TransferAccumulator:
     def __init__(self, practice: PracticeMetadata):
         self._name = practice.name
         self._ods_code = practice.ods_code
-        self._ccg_ods_code: Optional[str] = None
         self._transfers: List[Transfer] = []
 
     def add_transfer(self, transfer: Transfer):
-        self._ccg_ods_code = transfer.requesting_practice.ccg_ods_code
         self._transfers.append(transfer)
 
     def into_group(self) -> PracticeTransfers:
         return PracticeTransfers(
             ods_code=self._ods_code,
             name=self._name,
-            ccg_ods_code=self._ccg_ods_code,
             transfers=tuple(self._transfers),
         )
 

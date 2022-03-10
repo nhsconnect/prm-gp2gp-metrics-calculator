@@ -43,7 +43,6 @@ class TransferOutcome:
 class Practice:
     asid: str
     supplier: str
-    ccg_ods_code: Optional[str]
 
 
 class Transfer(NamedTuple):
@@ -103,7 +102,6 @@ def convert_table_to_transfers(table: pa.Table) -> List[Transfer]:
             requesting_practice=Practice(
                 asid=transfer["requesting_practice_asid"],
                 supplier=transfer["requesting_supplier"],
-                ccg_ods_code=transfer["requesting_practice_ccg_ods_code"],
             ),
             outcome=TransferOutcome(
                 status=_map_transfer_status(transfer["status"]),

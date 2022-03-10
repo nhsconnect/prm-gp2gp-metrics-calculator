@@ -20,7 +20,7 @@ def test_returns_transfer_metrics():
     ]
 
     practice_transfers = PracticeTransferMetrics(
-        ods_code=a_string(5), name=a_string(12), ccg_ods_code=a_string(5), transfers=transfers
+        ods_code=a_string(5), name=a_string(12), transfers=transfers
     )
 
     july_transfer_metrics = practice_transfers.monthly_metrics(2021, 7)
@@ -36,7 +36,7 @@ def test_returns_transfer_metrics():
 
 def test_returns_empty_transfer_metrics_given_month_with_no_transfers():
     practice_transfers = PracticeTransferMetrics(
-        ods_code=a_string(5), name=a_string(12), ccg_ods_code=a_string(5), transfers=[]
+        ods_code=a_string(5), name=a_string(12), transfers=[]
     )
     expected_transfer_count = 0
 
@@ -47,9 +47,7 @@ def test_returns_empty_transfer_metrics_given_month_with_no_transfers():
 
 
 def test_returns_ods_code():
-    practice_transfers = PracticeTransferMetrics(
-        ods_code="ABC123", name=a_string(12), ccg_ods_code=a_string(5), transfers=[]
-    )
+    practice_transfers = PracticeTransferMetrics(ods_code="ABC123", name=a_string(12), transfers=[])
     actual_ods_code = practice_transfers.ods_code
 
     assert actual_ods_code == "ABC123"
@@ -57,17 +55,8 @@ def test_returns_ods_code():
 
 def test_returns_practice_name():
     practice_transfers = PracticeTransferMetrics(
-        ods_code=a_string(5), name="Test Practice", ccg_ods_code=a_string(5), transfers=[]
+        ods_code=a_string(5), name="Test Practice", transfers=[]
     )
     actual_name = practice_transfers.name
 
     assert actual_name == "Test Practice"
-
-
-def test_returns_practice_ccg_ods_code():
-    practice_transfers = PracticeTransferMetrics(
-        ods_code=a_string(), name=a_string(12), ccg_ods_code="14A", transfers=[]
-    )
-    actual_ccg_ods_code = practice_transfers.ccg_ods_code
-
-    assert actual_ccg_ods_code == "14A"
