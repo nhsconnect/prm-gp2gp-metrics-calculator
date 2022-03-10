@@ -22,7 +22,8 @@ _PRACTICE_METRICS_OBJECT = PracticeMetricsPresentation(
         PracticeSummary(
             ods_code="A12345",
             name="A test GP practice",
-            ccg_ods_code="13A",
+            ccg_ods_code="12A",
+            ccg_name="A test CCG",
             metrics=[
                 MonthlyMetricsPresentation(
                     year=2021,
@@ -53,7 +54,8 @@ _PRACTICE_METRICS_DICT = {
         {
             "odsCode": "A12345",
             "name": "A test GP practice",
-            "ccgOdsCode": "13A",
+            "ccgOdsCode": "12A",
+            "ccgName": "A test CCG",
             "metrics": [
                 {
                     "year": 2021,

@@ -30,6 +30,7 @@ def test_returns_a_practice_summary_for_one_month_of_metrics():
 
     mock_organisation_lookup = Mock()
     mock_organisation_lookup.ccg_ods_code_from_practice_ods_code.return_value = "11S"
+    mock_organisation_lookup.ccg_name_from_practice_ods_code.return_value = "Test CCG 11S"
 
     reporting_window = ReportingWindow.prior_to(a_datetime(year=2021, month=7), number_of_months=1)
 
@@ -37,6 +38,7 @@ def test_returns_a_practice_summary_for_one_month_of_metrics():
         ods_code="ABC123",
         name="Test Practice",
         ccg_ods_code="11S",
+        ccg_name="Test CCG 11S",
         metrics=[
             MonthlyMetricsPresentation(
                 year=2021,

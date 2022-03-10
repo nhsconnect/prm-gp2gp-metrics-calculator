@@ -79,6 +79,7 @@ def test_calculates_correct_practice_metrics_given_transfers():
                 name=requesting_practice_name,
                 ods_code=requesting_ods_code,
                 ccg_ods_code=ccg_ods_code,
+                ccg_name=ccg_name,
                 metrics=[
                     MonthlyMetricsPresentation(
                         year=2019,
@@ -148,6 +149,7 @@ def test_returns_default_metric_values_for_practice_without_transfers():
                 name=requesting_practice_name,
                 ods_code=requesting_ods_code,
                 ccg_ods_code=None,
+                ccg_name=None,
                 metrics=[
                     MonthlyMetricsPresentation(
                         year=2019,
@@ -284,6 +286,7 @@ def test_calculates_correct_practice_metrics_filtering_transfers_that_take_longe
                 name=requesting_practice_name,
                 ods_code=requesting_ods_code,
                 ccg_ods_code=ccg_ods_code,
+                ccg_name=ccg_name,
                 metrics=[
                     MonthlyMetricsPresentation(
                         year=2019,
@@ -391,6 +394,7 @@ def test_calculates_correct_practice_metrics_without_filtering_transfers_if_conf
                 name=requesting_practice_name,
                 ods_code=requesting_ods_code,
                 ccg_ods_code=ccg_ods_code,
+                ccg_name=ccg_name,
                 metrics=[
                     MonthlyMetricsPresentation(
                         year=2019,

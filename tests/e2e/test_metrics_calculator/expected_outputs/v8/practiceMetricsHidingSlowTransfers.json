@@ -40,7 +40,8 @@
       ],
       "name": "Test GP Practice with Integrations",
       "odsCode": "A12345",
-      "ccgOdsCode": "10D"
+      "ccgOdsCode": "10D",
+      "ccgName": "Test CCG"
     },
     {
       "metrics": [
@@ -81,7 +82,8 @@
       ],
       "name": "Test GP Practice with no Integrations",
       "odsCode": "A12346",
-      "ccgOdsCode": "11D"
+      "ccgOdsCode": "11D",
+      "ccgName": "Another Test CCG"
     },
     {
       "metrics": [
@@ -122,7 +124,8 @@
       ],
       "name": "Test GP Practice with some Integrations",
       "odsCode": "A12347",
-      "ccgOdsCode": "11D"
+      "ccgOdsCode": "11D",
+      "ccgName": "Another Test CCG"
     }
   ],
   "ccgs": [

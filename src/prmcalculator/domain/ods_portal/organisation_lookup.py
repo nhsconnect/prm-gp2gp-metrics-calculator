@@ -28,5 +28,5 @@ class OrganisationLookup:
     def ccg_ods_code_from_practice_ods_code(self, ods_code) -> Optional[str]:
         return self._ods_to_ccg_ods_mapping.get(ods_code)
 
-    def ccg_name_from_practice_ods_code(self, ods_code: str) -> Optional[str]:
+    def ccg_name_from_practice_ods_code(self, ods_code) -> Optional[str]:
         return self._ods_to_ccg_name_mapping.get(ods_code)
