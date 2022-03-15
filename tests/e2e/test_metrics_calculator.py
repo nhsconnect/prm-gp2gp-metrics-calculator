@@ -172,7 +172,7 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_hiding_slow_transfers
 
     organisation_metadata_file = str(datadir / "inputs" / "organisationMetadata.json")
     organisation_metadata_bucket.upload_file(
-        organisation_metadata_file, "v2/2020/1/organisationMetadata.json"
+        organisation_metadata_file, "v3/2020/1/organisationMetadata.json"
     )
 
     input_transfer_bucket = _build_fake_s3_bucket(s3_input_transfer_data_bucket_name, s3)
@@ -291,7 +291,7 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
 
     organisation_metadata_file = str(datadir / "inputs" / "organisationMetadata.json")
     organisation_metadata_bucket.upload_file(
-        organisation_metadata_file, "v2/2020/1/organisationMetadata.json"
+        organisation_metadata_file, "v3/2020/1/organisationMetadata.json"
     )
 
     input_transfer_bucket = _build_fake_s3_bucket(s3_input_transfer_data_bucket_name, s3)

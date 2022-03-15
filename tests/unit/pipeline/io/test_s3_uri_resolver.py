@@ -18,7 +18,7 @@ def test_resolver_returns_correct_ods_metadata_uri():
 
     actual = uri_resolver.ods_metadata((year, month))
 
-    expected = f"s3://{ods_bucket_name}/v2/{year}/{month}/organisationMetadata.json"
+    expected = f"s3://{ods_bucket_name}/v3/{year}/{month}/organisationMetadata.json"
 
     assert actual == expected
 
@@ -54,10 +54,10 @@ def test_resolver_returns_correct_practice_metrics_uri_with_specified_version():
         transfer_data_bucket=a_string(),
     )
 
-    actual = uri_resolver.practice_metrics((year, month), "v2")
+    actual = uri_resolver.practice_metrics((year, month), "v3")
 
     expected = (
-        f"s3://{data_platform_metrics_bucket}/v2/{year}/{month}/{year}-{month}-practiceMetrics.json"
+        f"s3://{data_platform_metrics_bucket}/v3/{year}/{month}/{year}-{month}-practiceMetrics.json"
     )
 
     assert actual == expected
