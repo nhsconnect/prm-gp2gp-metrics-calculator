@@ -11,3 +11,4 @@ gp2gp_metrics_calculator.egg-info
 .tox
 .coverage
 audit-output.txt
+*.iml
