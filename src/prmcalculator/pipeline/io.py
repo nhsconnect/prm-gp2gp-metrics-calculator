@@ -1,8 +1,10 @@
 import logging
+import sys
 from dataclasses import asdict
 from typing import Dict, List
 
 import pyarrow as pa
+from botocore.exceptions import ClientError
 
 from prmcalculator.domain.gp2gp.transfer import Transfer, convert_table_to_transfers
 from prmcalculator.domain.national.construct_national_metrics_presentation import (
@@ -19,8 +21,10 @@ class PlatformMetricsIO:
     def __init__(
         self,
         s3_data_manager: S3DataManager,
+        ssm_manager,
         output_metadata: Dict[str, str],
     ):
+        self._ssm_manager = ssm_manager
         self._s3_manager = s3_data_manager
         self._output_metadata = output_metadata
 
@@ -51,6 +55,19 @@ class PlatformMetricsIO:
             data=self._create_platform_json_object(national_metrics_presentation_data),
             metadata=self._output_metadata,
         )
+
+    def store_national_metrics_uri_ssm_param(
+            self, s3_uri: str
+    ):
+        try:
+            self._ssm_manager.put_parameter(
+                Name="NATIONAL_METRICS_LOCATION",
+                Value=s3_uri,
+                Type="String"
+            )
+        except ClientError as e:
+            logger.error(e)
+            sys.exit(1)
 
     def write_practice_metrics(self, practice_metrics_presentation_data, s3_uri: str):
         self._s3_manager.write_json(
