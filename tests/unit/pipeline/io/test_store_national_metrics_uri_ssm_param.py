@@ -23,9 +23,7 @@ def test_store_national_metrics_uri_ssm():
     )
 
     ssm_manager.put_parameter.assert_called_once_with(
-        Name=national_metrics_s3_uri_param_name,
-        Value=s3_uri,
-        Type="String",
+        Name=national_metrics_s3_uri_param_name, Value=s3_uri, Type="String", Overwrite=True
     )
 
 

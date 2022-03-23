@@ -63,9 +63,7 @@ class PlatformMetricsIO:
                 + s3_uri
             )
             self._ssm_manager.put_parameter(
-                Name=national_metrics_s3_uri_param_name,
-                Value=s3_uri,
-                Type="String",
+                Name=national_metrics_s3_uri_param_name, Value=s3_uri, Type="String", Overwrite=True
             )
             logger.info(f"Successfully stored SSM param {national_metrics_s3_uri_param_name} value")
         except ClientError as e:
