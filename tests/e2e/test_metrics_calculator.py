@@ -163,6 +163,7 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_hiding_slow_transfers
     environ["S3_ENDPOINT_URL"] = fake_s3_url
     environ["BUILD_TAG"] = build_tag
     environ["NATIONAL_METRICS_S3_URI_PARAM_NAME"] = "a/param/name"
+    environ["PRACTICE_METRICS_S3_URI_PARAM_NAME"] = "another/param/name"
 
     s3 = boto3.resource(
         "s3",
@@ -285,6 +286,7 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
     environ["S3_ENDPOINT_URL"] = fake_s3_url
     environ["BUILD_TAG"] = build_tag
     environ["NATIONAL_METRICS_S3_URI_PARAM_NAME"] = "a/param/name"
+    environ["PRACTICE_METRICS_S3_URI_PARAM_NAME"] = "another/param/name"
 
     s3 = boto3.resource(
         "s3",

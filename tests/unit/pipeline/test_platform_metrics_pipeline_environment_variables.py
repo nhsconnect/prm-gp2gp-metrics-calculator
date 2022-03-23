@@ -23,6 +23,7 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
         "BUILD_TAG": build_tag,
         "HIDE_SLOW_TRANSFERRED_RECORDS_AFTER_DAYS": "3",
         "NATIONAL_METRICS_S3_URI_PARAM_NAME": "a/param/name",
+        "PRACTICE_METRICS_S3_URI_PARAM_NAME": "another/param/name",
     }
 
     expected_config = PipelineConfig(
@@ -37,6 +38,7 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
         build_tag=build_tag,
         hide_slow_transferred_records_after_days=3,
         national_metrics_s3_uri_param_name="a/param/name",
+        practice_metrics_s3_uri_param_name="another/param/name",
     )
 
     actual_config = PipelineConfig.from_environment_variables(environment)
@@ -53,6 +55,7 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
         "DATE_ANCHOR": "2020-01-30T18:44:49Z",
         "BUILD_TAG": build_tag,
         "NATIONAL_METRICS_S3_URI_PARAM_NAME": "a/param/name",
+        "PRACTICE_METRICS_S3_URI_PARAM_NAME": "another/param/name",
     }
 
     expected_config = PipelineConfig(
@@ -67,6 +70,7 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
         build_tag=build_tag,
         hide_slow_transferred_records_after_days=1,
         national_metrics_s3_uri_param_name="a/param/name",
+        practice_metrics_s3_uri_param_name="another/param/name",
     )
 
     actual_config = PipelineConfig.from_environment_variables(environment)

@@ -56,16 +56,13 @@ class PlatformMetricsIO:
             metadata=self._output_metadata,
         )
 
-    def store_national_metrics_uri_ssm_param(self, national_metrics_s3_uri_param_name, s3_uri: str):
+    def store_ssm_param(self, ssm_param_name, ssm_param_value: str):
         try:
-            logger.info(
-                f"Attempting to store SSM param {national_metrics_s3_uri_param_name}: {s3_uri}"
-                + s3_uri
-            )
+            logger.info(f"Attempting to store SSM param {ssm_param_name}: {ssm_param_value}")
             self._ssm_manager.put_parameter(
-                Name=national_metrics_s3_uri_param_name, Value=s3_uri, Type="String", Overwrite=True
+                Name=ssm_param_name, Value=ssm_param_value, Type="String", Overwrite=True
             )
-            logger.info(f"Successfully stored SSM param {national_metrics_s3_uri_param_name} value")
+            logger.info(f"Successfully stored value for SSM param {ssm_param_name}")
         except ClientError as e:
             logger.error(e)
             sys.exit(1)
