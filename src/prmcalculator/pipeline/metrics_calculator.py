@@ -24,6 +24,7 @@ class MetricsCalculator:
     def __init__(self, config: PipelineConfig):
         s3 = boto3.resource("s3", endpoint_url=config.s3_endpoint_url)
         s3_manager = S3DataManager(s3)
+        ssm_manager = boto3.client("ssm")
 
         self._reporting_window = ReportingWindow.prior_to(
             config.date_anchor, config.number_of_months
@@ -47,6 +48,7 @@ class MetricsCalculator:
 
         self._io = PlatformMetricsIO(
             s3_data_manager=s3_manager,
+            ssm_manager=ssm_manager,
             output_metadata=output_metadata,
         )
 
@@ -96,6 +98,11 @@ class MetricsCalculator:
             s3_uri=self._uris.national_metrics(month),
         )
 
+    def _store_national_metrics_uri_ssm_param(self, month):
+        self._io.store_national_metrics_uri_ssm_param(
+            s3_uri=self._uris.national_metrics(month),
+        )
+
     def run(self):
         date_anchor_month = self._reporting_window.date_anchor_month
         dates = self._reporting_window.dates
@@ -116,3 +123,5 @@ class MetricsCalculator:
             practice_metrics_hiding_slow_transfers, last_month, data_platform_metrics_version="v8"
         )
         self._write_practice_metrics(practice_metrics_including_slow_transfers, last_month)
+
+        self._store_national_metrics_uri_ssm_param(last_month)

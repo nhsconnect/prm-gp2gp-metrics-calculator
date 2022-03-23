@@ -101,6 +101,7 @@ def test_read_transfer_data():
 
     metrics_io = PlatformMetricsIO(
         s3_data_manager=s3_manager,
+        ssm_manager=Mock(),
         output_metadata={},
     )
 
@@ -124,6 +125,7 @@ def test_read_transfer_data_from_multiple_files():
 
     metrics_io = PlatformMetricsIO(
         s3_data_manager=s3_manager,
+        ssm_manager=Mock(),
         output_metadata={},
     )
 

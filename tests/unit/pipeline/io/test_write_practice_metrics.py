@@ -92,6 +92,7 @@ def test_given_practice_metrics_object_will_generate_json():
     output_metadata = {"metadata-field": "metadata_value"}
     metrics_io = PlatformMetricsIO(
         s3_data_manager=s3_manager,
+        ssm_manager=Mock(),
         output_metadata=output_metadata,
     )
 
@@ -119,6 +120,7 @@ def test_given_data_platform_metrics_version_will_override_default():
 
     metrics_io = PlatformMetricsIO(
         s3_data_manager=s3_manager,
+        ssm_manager=Mock(),
         output_metadata={},
     )
 

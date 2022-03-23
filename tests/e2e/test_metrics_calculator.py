@@ -1,14 +1,17 @@
 import json
 import logging
+import os
 from datetime import datetime
 from io import BytesIO
 from os import environ
 from threading import Thread
+from unittest import mock
 
 import boto3
 import pyarrow as pa
 import pytest
 from botocore.config import Config
+from moto import mock_ssm
 from moto.server import DomainDispatcherApplication, create_backend_app
 from pyarrow._s3fs import S3FileSystem
 from pyarrow.parquet import write_table
@@ -132,6 +135,8 @@ def _override_transfer_data(
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
+@mock_ssm
+@mock.patch.dict(os.environ, {"AWS_ACCESS_KEY_ID": "testing"})
 def test_reads_daily_input_files_and_outputs_metrics_to_s3_hiding_slow_transfers(datadir):
     fake_s3_access_key = "testing"
     fake_s3_secret_key = "testing"
@@ -251,6 +256,8 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_hiding_slow_transfers
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
+@mock_ssm
+@mock.patch.dict(os.environ, {"AWS_ACCESS_KEY_ID": "testing"})
 def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transfers(datadir):
     fake_s3_access_key = "testing"
     fake_s3_secret_key = "testing"

@@ -29,6 +29,7 @@ def test_read_transfer_table():
 
     metrics_io = PlatformMetricsIO(
         s3_data_manager=s3_manager,
+        ssm_manager=Mock(),
         output_metadata={},
     )
 

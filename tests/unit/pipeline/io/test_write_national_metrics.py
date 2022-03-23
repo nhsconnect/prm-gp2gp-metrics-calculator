@@ -85,6 +85,7 @@ def test_given_national_metrics_object_will_generate_json():
 
     metrics_io = PlatformMetricsIO(
         s3_data_manager=s3_manager,
+        ssm_manager=Mock(),
         output_metadata=output_metadata,
     )
 
