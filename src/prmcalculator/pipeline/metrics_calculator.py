@@ -26,6 +26,8 @@ class MetricsCalculator:
         s3_manager = S3DataManager(s3)
         ssm_manager = boto3.client("ssm")
 
+        self._national_metrics_s3_uri_param_name = config.national_metrics_s3_uri_param_name
+
         self._reporting_window = ReportingWindow.prior_to(
             config.date_anchor, config.number_of_months
         )
@@ -98,8 +100,11 @@ class MetricsCalculator:
             s3_uri=self._uris.national_metrics(month),
         )
 
-    def _store_national_metrics_uri_ssm_param(self, month):
+    def _store_national_metrics_uri_ssm_param(
+        self, national_metrics_s3_uri_param_name: str, month: YearMonth
+    ):
         self._io.store_national_metrics_uri_ssm_param(
+            national_metrics_s3_uri_param_name=national_metrics_s3_uri_param_name,
             s3_uri=self._uris.national_metrics(month),
         )
 
@@ -124,4 +129,6 @@ class MetricsCalculator:
         )
         self._write_practice_metrics(practice_metrics_including_slow_transfers, last_month)
 
-        self._store_national_metrics_uri_ssm_param(last_month)
+        self._store_national_metrics_uri_ssm_param(
+            self._national_metrics_s3_uri_param_name, last_month
+        )

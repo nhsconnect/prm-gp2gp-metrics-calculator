@@ -67,6 +67,7 @@ class PipelineConfig:
     number_of_months: int
     s3_endpoint_url: Optional[str]
     hide_slow_transferred_records_after_days: int
+    national_metrics_s3_uri_param_name: str
 
     @classmethod
     def from_environment_variables(cls, env_vars):
@@ -82,4 +83,5 @@ class PipelineConfig:
             hide_slow_transferred_records_after_days=env.read_optional_int(
                 "HIDE_SLOW_TRANSFERRED_RECORDS_AFTER_DAYS", default=1
             ),
+            national_metrics_s3_uri_param_name=env.read_str("NATIONAL_METRICS_S3_URI_PARAM_NAME"),
         )
