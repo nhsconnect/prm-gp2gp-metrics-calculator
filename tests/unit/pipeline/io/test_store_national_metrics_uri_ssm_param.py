@@ -20,7 +20,9 @@ def test_store_national_metrics_uri_ssm():
     metrics_io.store_national_metrics_uri_ssm_param(s3_uri=s3_uri)
 
     ssm_manager.put_parameter.assert_called_once_with(
-        Name="NATIONAL_METRICS_LOCATION", Value=s3_uri, Type="String"
+        Name="/registrations/dev/data-pipeline/metrics-calculator/national-metrics-location",
+        Value=s3_uri,
+        Type="String",
     )
 
 

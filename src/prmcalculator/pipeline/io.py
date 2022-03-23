@@ -63,7 +63,10 @@ class PlatformMetricsIO:
                 + s3_uri
             )
             self._ssm_manager.put_parameter(
-                Name="NATIONAL_METRICS_LOCATION", Value=s3_uri, Type="String"
+                Name="/registrations/dev/data-pipeline/metrics-calculator/"
+                "national-metrics-location",
+                Value=s3_uri,
+                Type="String",
             )
             logger.info(
                 "Successfully stored national metrics URI SSM param for NATIONAL_METRICS_LOCATION"
