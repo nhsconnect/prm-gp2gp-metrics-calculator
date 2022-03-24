@@ -118,6 +118,24 @@ def test_resolver_returns_correct_national_metrics_uri():
     assert actual == expected
 
 
+def test_resolver_returns_correct_national_metrics_s3_key():
+    date_anchor = a_datetime()
+    year = date_anchor.year
+    month = date_anchor.month
+
+    uri_resolver = PlatformMetricsS3UriResolver(
+        ods_bucket=a_string(),
+        data_platform_metrics_bucket=a_string(),
+        transfer_data_bucket=a_string(),
+    )
+
+    actual = uri_resolver.national_metrics_key((year, month))
+
+    expected = f"v10/{year}/{month}/{year}-{month}-nationalMetrics.json"
+
+    assert actual == expected
+
+
 def test_resolver_returns_correct_transfer_data_uris():
     transfer_data_bucket = a_string()
 

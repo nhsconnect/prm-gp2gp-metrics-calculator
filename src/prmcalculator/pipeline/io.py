@@ -56,7 +56,7 @@ class PlatformMetricsIO:
             metadata=self._output_metadata,
         )
 
-    def store_ssm_param(self, ssm_param_name, ssm_param_value: str):
+    def store_ssm_param(self, ssm_param_name: str, ssm_param_value: str):
         try:
             logger.info(f"Attempting to store SSM param {ssm_param_name}: {ssm_param_value}")
             self._ssm_manager.put_parameter(

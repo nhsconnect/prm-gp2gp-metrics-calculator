@@ -41,7 +41,7 @@ class PlatformMetricsS3UriResolver:
         )
         return f"s3://{s3_key}"
 
-    def _practice_metrics_bucket(self) -> str:
+    def _data_platform_metrics_bucket_s3_prefix(self) -> str:
         return f"s3://{self._data_platform_metrics_bucket}/"
 
     def practice_metrics_key(
@@ -59,21 +59,24 @@ class PlatformMetricsS3UriResolver:
     def practice_metrics(
         self, year_month: YearMonth, data_platform_metrics_version: Optional[str] = None
     ) -> str:
-        return self._practice_metrics_bucket() + self.practice_metrics_key(
+        return self._data_platform_metrics_bucket_s3_prefix() + self.practice_metrics_key(
             year_month, data_platform_metrics_version
         )
 
-    def national_metrics(self, year_month: YearMonth) -> str:
+    def national_metrics_key(self, year_month: YearMonth) -> str:
         year, month = year_month
-        s3_key = "/".join(
+        return "/".join(
             [
-                self._data_platform_metrics_bucket,
                 self._data_platform_metrics_version,
                 f"{year}/{month}",
                 f"{year}-{month}-{self._NATIONAL_METRICS_FILE_NAME}",
             ]
         )
-        return f"s3://{s3_key}"
+
+    def national_metrics(self, year_month: YearMonth) -> str:
+        return self._data_platform_metrics_bucket_s3_prefix() + self.national_metrics_key(
+            year_month
+        )
 
     def _transfer_data_uri(self, a_date: datetime) -> str:
         year = a_date.year

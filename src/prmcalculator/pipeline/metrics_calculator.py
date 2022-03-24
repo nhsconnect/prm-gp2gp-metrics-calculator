@@ -106,7 +106,7 @@ class MetricsCalculator:
     ):
         self._io.store_ssm_param(
             ssm_param_name=national_metrics_s3_uri_param_name,
-            ssm_param_value=self._uris.national_metrics(month),
+            ssm_param_value=self._uris.national_metrics_key(month),
         )
 
     def _store_practice_metrics_uri_ssm_param(
@@ -114,7 +114,7 @@ class MetricsCalculator:
     ):
         self._io.store_ssm_param(
             ssm_param_name=practice_metrics_s3_uri_param_name,
-            ssm_param_value=self._uris.practice_metrics(month),
+            ssm_param_value=self._uris.practice_metrics_key(month),
         )
 
     def run(self):
