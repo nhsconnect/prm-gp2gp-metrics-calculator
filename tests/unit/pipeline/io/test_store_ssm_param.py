@@ -9,7 +9,7 @@ from prmcalculator.pipeline.io import PlatformMetricsIO, logger
 
 def test_store_ssm_param():
     ssm_manager = Mock()
-    s3_uri = "some/uri/nationalMetrics.json"
+    s3_key = "some/uri/nationalMetrics.json"
     ssm_param_name = "a/param/name"
 
     metrics_io = PlatformMetricsIO(
@@ -18,10 +18,10 @@ def test_store_ssm_param():
         output_metadata={},
     )
 
-    metrics_io.store_ssm_param(ssm_param_name=ssm_param_name, ssm_param_value=s3_uri)
+    metrics_io.store_ssm_param(ssm_param_name=ssm_param_name, ssm_param_value=s3_key)
 
     ssm_manager.put_parameter.assert_called_once_with(
-        Name=ssm_param_name, Value=s3_uri, Type="String", Overwrite=True
+        Name=ssm_param_name, Value=s3_key, Type="String", Overwrite=True
     )
 
 

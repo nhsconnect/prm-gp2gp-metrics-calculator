@@ -63,6 +63,42 @@ def test_resolver_returns_correct_practice_metrics_uri_with_specified_version():
     assert actual == expected
 
 
+def test_resolver_returns_correct_practice_metrics_s3_key_with_specified_version():
+    date_anchor = a_datetime()
+    year = date_anchor.year
+    month = date_anchor.month
+
+    uri_resolver = PlatformMetricsS3UriResolver(
+        ods_bucket=a_string(),
+        data_platform_metrics_bucket=a_string(),
+        transfer_data_bucket=a_string(),
+    )
+
+    actual = uri_resolver.practice_metrics_key((year, month), "v4")
+
+    expected = f"v4/{year}/{month}/{year}-{month}-practiceMetrics.json"
+
+    assert actual == expected
+
+
+def test_resolver_returns_correct_practice_metrics_s3_key():
+    date_anchor = a_datetime()
+    year = date_anchor.year
+    month = date_anchor.month
+
+    uri_resolver = PlatformMetricsS3UriResolver(
+        ods_bucket=a_string(),
+        data_platform_metrics_bucket=a_string(),
+        transfer_data_bucket=a_string(),
+    )
+
+    actual = uri_resolver.practice_metrics_key((year, month))
+
+    expected = f"v10/{year}/{month}/{year}-{month}-practiceMetrics.json"
+
+    assert actual == expected
+
+
 def test_resolver_returns_correct_national_metrics_uri():
     data_platform_metrics_bucket = a_string()
     date_anchor = a_datetime()
