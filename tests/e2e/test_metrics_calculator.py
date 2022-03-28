@@ -37,6 +37,51 @@ class ThreadedServer:
         self._thread.join()
 
 
+FAKE_AWS_HOST = "127.0.0.1"
+FAKE_AWS_PORT = 8887
+FAKE_AWS_URL = f"http://{FAKE_AWS_HOST}:{FAKE_AWS_PORT}"
+FAKE_S3_ACCESS_KEY = "testing"
+FAKE_S3_SECRET_KEY = "testing"
+FAKE_S3_REGION = "eu-west-2"
+
+S3_OUTPUT_METRICS_BUCKET_NAME = "output-metrics-bucket"
+S3_INPUT_TRANSFER_DATA_BUCKET_NAME = "input-transfer-data-bucket"
+S3_INPUT_ORGANISATION_METADATA_BUCKET_NAME = "organisation-metadata-bucket"
+
+NATIONAL_METRICS_S3_URI_PARAM_NAME = "registrations/national-metrics/test-param-name"
+PRACTICE_METRICS_S3_URI_PARAM_NAME = "registrations/practice-metrics/test-param-name"
+
+BUILD_TAG = a_string(7)
+
+
+def _setup():
+    s3_client = boto3.resource(
+        "s3",
+        endpoint_url=FAKE_AWS_URL,
+        aws_access_key_id=FAKE_S3_ACCESS_KEY,
+        aws_secret_access_key=FAKE_S3_SECRET_KEY,
+        config=Config(signature_version="s3v4"),
+        region_name=FAKE_S3_REGION,
+    )
+
+    environ["AWS_ACCESS_KEY_ID"] = FAKE_S3_ACCESS_KEY
+    environ["AWS_SECRET_ACCESS_KEY"] = FAKE_S3_SECRET_KEY
+    environ["AWS_DEFAULT_REGION"] = FAKE_S3_REGION
+
+    environ["INPUT_TRANSFER_DATA_BUCKET"] = S3_INPUT_TRANSFER_DATA_BUCKET_NAME
+    environ["OUTPUT_METRICS_BUCKET"] = S3_OUTPUT_METRICS_BUCKET_NAME
+    environ["ORGANISATION_METADATA_BUCKET"] = S3_INPUT_ORGANISATION_METADATA_BUCKET_NAME
+
+    environ["NATIONAL_METRICS_S3_URI_PARAM_NAME"] = NATIONAL_METRICS_S3_URI_PARAM_NAME
+    environ["PRACTICE_METRICS_S3_URI_PARAM_NAME"] = PRACTICE_METRICS_S3_URI_PARAM_NAME
+
+    environ["S3_ENDPOINT_URL"] = FAKE_AWS_URL
+    environ["BUILD_TAG"] = BUILD_TAG
+
+    fake_s3 = _build_fake_s3(FAKE_AWS_HOST, FAKE_AWS_PORT)
+    return fake_s3, s3_client
+
+
 def _read_json(path):
     return json.loads(path.read_text())
 
@@ -58,6 +103,18 @@ def _read_s3_json(bucket, key):
     bucket.download_fileobj(key, f)
     f.seek(0)
     return json.loads(f.read().decode("utf-8"))
+
+
+def _build_fake_s3(host, port):
+    app = DomainDispatcherApplication(create_backend_app, "s3")
+    server = make_server(host, port, app)
+    return ThreadedServer(server)
+
+
+def _build_fake_s3_bucket(bucket_name: str, s3):
+    s3_fake_bucket = s3.Bucket(bucket_name)
+    s3_fake_bucket.create()
+    return s3_fake_bucket
 
 
 def _read_s3_metadata(bucket, key):
@@ -84,25 +141,8 @@ def _write_transfer_parquet(input_transfer_parquet_columns_json, s3_path: str):
     write_table(
         table=transfers_table,
         where=s3_path,
-        filesystem=S3FileSystem(endpoint_override=fake_s3_url),
+        filesystem=S3FileSystem(endpoint_override=FAKE_AWS_URL),
     )
-
-
-def _build_fake_s3(host, port):
-    app = DomainDispatcherApplication(create_backend_app, "s3")
-    server = make_server(host, port, app)
-    return ThreadedServer(server)
-
-
-def _build_fake_s3_bucket(bucket_name: str, s3):
-    s3_fake_bucket = s3.Bucket(bucket_name)
-    s3_fake_bucket.create()
-    return s3_fake_bucket
-
-
-fake_s3_host = "127.0.0.1"
-fake_s3_port = 8887
-fake_s3_url = f"http://{fake_s3_host}:{fake_s3_port}"
 
 
 def _get_s3_path(bucket_name, year, month, day):
@@ -134,7 +174,7 @@ def _override_transfer_data(
     )
 
 
-def get_ssm_param(ssm_parameter_name):
+def _get_ssm_param(ssm_parameter_name):
     session = boto3.Session()
     ssm_client = session.client("ssm")
     param = ssm_client.get_parameter(Name=ssm_parameter_name, WithDecryption=True)
@@ -143,68 +183,36 @@ def get_ssm_param(ssm_parameter_name):
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
 @mock_ssm
-@mock.patch.dict(os.environ, {"AWS_ACCESS_KEY_ID": "testing"})
+@mock.patch.dict(os.environ, {"AWS_ACCESS_KEY_ID": FAKE_S3_ACCESS_KEY})
 def test_reads_daily_input_files_and_outputs_metrics_to_s3_hiding_slow_transfers(datadir):
-    fake_s3_access_key = "testing"
-    fake_s3_secret_key = "testing"
-    fake_s3_region = "eu-west-2"
-    build_tag = a_string(7)
-
-    s3_output_metrics_bucket_name = "output-metrics-bucket"
-    s3_input_transfer_data_bucket_name = "input-transfer-data-bucket"
-    s3_organisation_metadata_bucket_name = "organisation-metadata-bucket"
-    national_metrics_s3_uri_param_name = "registrations/national-metrics/test-param-name"
-    practice_metrics_s3_uri_param_name = "registrations/practice-metrics/test-param-name"
-
-    fake_s3 = _build_fake_s3(fake_s3_host, fake_s3_port)
+    fake_s3, s3_client = _setup()
     fake_s3.start()
 
-    date_anchor = "2020-01-30T18:44:49Z"
-
-    environ["AWS_ACCESS_KEY_ID"] = fake_s3_access_key
-    environ["AWS_SECRET_ACCESS_KEY"] = fake_s3_secret_key
-    environ["AWS_DEFAULT_REGION"] = fake_s3_region
-
-    environ["INPUT_TRANSFER_DATA_BUCKET"] = s3_input_transfer_data_bucket_name
-    environ["OUTPUT_METRICS_BUCKET"] = s3_output_metrics_bucket_name
-    environ["ORGANISATION_METADATA_BUCKET"] = s3_organisation_metadata_bucket_name
-    environ["NATIONAL_METRICS_S3_URI_PARAM_NAME"] = national_metrics_s3_uri_param_name
-    environ["PRACTICE_METRICS_S3_URI_PARAM_NAME"] = practice_metrics_s3_uri_param_name
-
     environ["NUMBER_OF_MONTHS"] = "2"
-    environ["DATE_ANCHOR"] = date_anchor
-    environ["S3_ENDPOINT_URL"] = fake_s3_url
-    environ["BUILD_TAG"] = build_tag
+    environ["DATE_ANCHOR"] = "2020-01-30T18:44:49Z"
 
-    s3 = boto3.resource(
-        "s3",
-        endpoint_url=fake_s3_url,
-        aws_access_key_id=fake_s3_access_key,
-        aws_secret_access_key=fake_s3_secret_key,
-        config=Config(signature_version="s3v4"),
-        region_name=fake_s3_region,
+    output_metrics_bucket = _build_fake_s3_bucket(S3_OUTPUT_METRICS_BUCKET_NAME, s3_client)
+    organisation_metadata_bucket = _build_fake_s3_bucket(
+        S3_INPUT_ORGANISATION_METADATA_BUCKET_NAME, s3_client
     )
-
-    output_metrics_bucket = _build_fake_s3_bucket(s3_output_metrics_bucket_name, s3)
-    organisation_metadata_bucket = _build_fake_s3_bucket(s3_organisation_metadata_bucket_name, s3)
 
     organisation_metadata_file = str(datadir / "inputs" / "organisationMetadata.json")
     organisation_metadata_bucket.upload_file(
         organisation_metadata_file, "v3/2020/1/organisationMetadata.json"
     )
 
-    input_transfer_bucket = _build_fake_s3_bucket(s3_input_transfer_data_bucket_name, s3)
+    input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET_NAME, s3_client)
 
     _upload_template_transfer_data(
         datadir,
-        s3_input_transfer_data_bucket_name,
+        S3_INPUT_TRANSFER_DATA_BUCKET_NAME,
         year=2019,
         data_month=11,
         time_range=range(1, 31),
     )
     _override_transfer_data(
         datadir,
-        s3_input_transfer_data_bucket_name,
+        S3_INPUT_TRANSFER_DATA_BUCKET_NAME,
         year=2019,
         data_month=11,
         data_day=1,
@@ -213,7 +221,7 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_hiding_slow_transfers
 
     _upload_template_transfer_data(
         datadir,
-        s3_input_transfer_data_bucket_name,
+        S3_INPUT_TRANSFER_DATA_BUCKET_NAME,
         year=2019,
         data_month=12,
         time_range=range(1, 32),
@@ -222,7 +230,7 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_hiding_slow_transfers
     for day in [1, 3, 5, 19, 20, 23, 24, 25, 29, 30, 31]:
         _override_transfer_data(
             datadir,
-            s3_input_transfer_data_bucket_name,
+            S3_INPUT_TRANSFER_DATA_BUCKET_NAME,
             year=2019,
             data_month=12,
             data_day=day,
@@ -236,7 +244,7 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_hiding_slow_transfers
     )
 
     expected_metadata = {
-        "metrics-calculator-version": build_tag,
+        "metrics-calculator-version": BUILD_TAG,
         "date-anchor": "2020-01-30T18:44:49+00:00",
         "number-of-months": "2",
     }
@@ -260,11 +268,11 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_hiding_slow_transfers
         assert actual_practice_metrics_s3_metadata == expected_metadata
 
         assert (
-            get_ssm_param(national_metrics_s3_uri_param_name)
+            _get_ssm_param(NATIONAL_METRICS_S3_URI_PARAM_NAME)
             == "v10/2019/12/2019-12-nationalMetrics.json"
         )
         assert (
-            get_ssm_param(practice_metrics_s3_uri_param_name)
+            _get_ssm_param(PRACTICE_METRICS_S3_URI_PARAM_NAME)
             == "v10/2019/12/2019-12-practiceMetrics.json"
         )
     finally:
@@ -278,68 +286,36 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_hiding_slow_transfers
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
 @mock_ssm
-@mock.patch.dict(os.environ, {"AWS_ACCESS_KEY_ID": "testing"})
+@mock.patch.dict(os.environ, {"AWS_ACCESS_KEY_ID": FAKE_S3_ACCESS_KEY})
 def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transfers(datadir):
-    fake_s3_access_key = "testing"
-    fake_s3_secret_key = "testing"
-    fake_s3_region = "eu-west-2"
-    build_tag = a_string(7)
-
-    s3_output_metrics_bucket_name = "output-metrics-bucket"
-    s3_input_transfer_data_bucket_name = "input-transfer-data-bucket"
-    s3_organisation_metadata_bucket_name = "organisation-metadata-bucket"
-    national_metrics_s3_uri_param_name = "registrations/national-metrics/test-param-name"
-    practice_metrics_s3_uri_param_name = "registrations/practice-metrics/test-param-name"
-
-    fake_s3 = _build_fake_s3(fake_s3_host, fake_s3_port)
+    fake_s3, s3_client = _setup()
     fake_s3.start()
 
-    date_anchor = "2020-01-30T18:44:49Z"
-
-    environ["AWS_ACCESS_KEY_ID"] = fake_s3_access_key
-    environ["AWS_SECRET_ACCESS_KEY"] = fake_s3_secret_key
-    environ["AWS_DEFAULT_REGION"] = fake_s3_region
-
-    environ["INPUT_TRANSFER_DATA_BUCKET"] = s3_input_transfer_data_bucket_name
-    environ["OUTPUT_METRICS_BUCKET"] = s3_output_metrics_bucket_name
-    environ["ORGANISATION_METADATA_BUCKET"] = s3_organisation_metadata_bucket_name
-    environ["NATIONAL_METRICS_S3_URI_PARAM_NAME"] = national_metrics_s3_uri_param_name
-    environ["PRACTICE_METRICS_S3_URI_PARAM_NAME"] = practice_metrics_s3_uri_param_name
-
     environ["NUMBER_OF_MONTHS"] = "2"
-    environ["DATE_ANCHOR"] = date_anchor
-    environ["S3_ENDPOINT_URL"] = fake_s3_url
-    environ["BUILD_TAG"] = build_tag
+    environ["DATE_ANCHOR"] = "2020-01-30T18:44:49Z"
 
-    s3 = boto3.resource(
-        "s3",
-        endpoint_url=fake_s3_url,
-        aws_access_key_id=fake_s3_access_key,
-        aws_secret_access_key=fake_s3_secret_key,
-        config=Config(signature_version="s3v4"),
-        region_name=fake_s3_region,
+    output_metrics_bucket = _build_fake_s3_bucket(S3_OUTPUT_METRICS_BUCKET_NAME, s3_client)
+    organisation_metadata_bucket = _build_fake_s3_bucket(
+        S3_INPUT_ORGANISATION_METADATA_BUCKET_NAME, s3_client
     )
-
-    output_metrics_bucket = _build_fake_s3_bucket(s3_output_metrics_bucket_name, s3)
-    organisation_metadata_bucket = _build_fake_s3_bucket(s3_organisation_metadata_bucket_name, s3)
 
     organisation_metadata_file = str(datadir / "inputs" / "organisationMetadata.json")
     organisation_metadata_bucket.upload_file(
         organisation_metadata_file, "v3/2020/1/organisationMetadata.json"
     )
 
-    input_transfer_bucket = _build_fake_s3_bucket(s3_input_transfer_data_bucket_name, s3)
+    input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET_NAME, s3_client)
 
     _upload_template_transfer_data(
         datadir,
-        s3_input_transfer_data_bucket_name,
+        S3_INPUT_TRANSFER_DATA_BUCKET_NAME,
         year=2019,
         data_month=11,
         time_range=range(1, 31),
     )
     _override_transfer_data(
         datadir,
-        s3_input_transfer_data_bucket_name,
+        S3_INPUT_TRANSFER_DATA_BUCKET_NAME,
         year=2019,
         data_month=11,
         data_day=1,
@@ -348,7 +324,7 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
 
     _upload_template_transfer_data(
         datadir,
-        s3_input_transfer_data_bucket_name,
+        S3_INPUT_TRANSFER_DATA_BUCKET_NAME,
         year=2019,
         data_month=12,
         time_range=range(1, 32),
@@ -357,7 +333,7 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
     for day in [1, 3, 5, 19, 20, 23, 24, 25, 30, 31]:
         _override_transfer_data(
             datadir,
-            s3_input_transfer_data_bucket_name,
+            S3_INPUT_TRANSFER_DATA_BUCKET_NAME,
             year=2019,
             data_month=12,
             data_day=day,
@@ -375,7 +351,7 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
     )
 
     expected_metadata = {
-        "metrics-calculator-version": build_tag,
+        "metrics-calculator-version": BUILD_TAG,
         "date-anchor": "2020-01-30T18:44:49+00:00",
         "number-of-months": "2",
     }
@@ -417,11 +393,11 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
         assert actual_national_metrics_s3_metadata == expected_metadata
 
         assert (
-            get_ssm_param(national_metrics_s3_uri_param_name)
+            _get_ssm_param(NATIONAL_METRICS_S3_URI_PARAM_NAME)
             == "v10/2019/12/2019-12-nationalMetrics.json"
         )
         assert (
-            get_ssm_param(practice_metrics_s3_uri_param_name)
+            _get_ssm_param(PRACTICE_METRICS_S3_URI_PARAM_NAME)
             == "v10/2019/12/2019-12-practiceMetrics.json"
         )
     finally:
