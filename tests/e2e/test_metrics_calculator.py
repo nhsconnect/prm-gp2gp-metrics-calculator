@@ -134,6 +134,13 @@ def _override_transfer_data(
     )
 
 
+def get_ssm_param(ssm_parameter_name):
+    session = boto3.Session()
+    ssm_client = session.client("ssm")
+    param = ssm_client.get_parameter(Name=ssm_parameter_name, WithDecryption=True)
+    return param["Parameter"]["Value"]
+
+
 @pytest.mark.filterwarnings("ignore:Conversion of")
 @mock_ssm
 @mock.patch.dict(os.environ, {"AWS_ACCESS_KEY_ID": "testing"})
@@ -141,10 +148,13 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_hiding_slow_transfers
     fake_s3_access_key = "testing"
     fake_s3_secret_key = "testing"
     fake_s3_region = "eu-west-2"
+    build_tag = a_string(7)
+
     s3_output_metrics_bucket_name = "output-metrics-bucket"
     s3_input_transfer_data_bucket_name = "input-transfer-data-bucket"
     s3_organisation_metadata_bucket_name = "organisation-metadata-bucket"
-    build_tag = a_string(7)
+    national_metrics_s3_uri_param_name = "registrations/national-metrics/test-param-name"
+    practice_metrics_s3_uri_param_name = "registrations/practice-metrics/test-param-name"
 
     fake_s3 = _build_fake_s3(fake_s3_host, fake_s3_port)
     fake_s3.start()
@@ -158,12 +168,13 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_hiding_slow_transfers
     environ["INPUT_TRANSFER_DATA_BUCKET"] = s3_input_transfer_data_bucket_name
     environ["OUTPUT_METRICS_BUCKET"] = s3_output_metrics_bucket_name
     environ["ORGANISATION_METADATA_BUCKET"] = s3_organisation_metadata_bucket_name
+    environ["NATIONAL_METRICS_S3_URI_PARAM_NAME"] = national_metrics_s3_uri_param_name
+    environ["PRACTICE_METRICS_S3_URI_PARAM_NAME"] = practice_metrics_s3_uri_param_name
+
     environ["NUMBER_OF_MONTHS"] = "2"
     environ["DATE_ANCHOR"] = date_anchor
     environ["S3_ENDPOINT_URL"] = fake_s3_url
     environ["BUILD_TAG"] = build_tag
-    environ["NATIONAL_METRICS_S3_URI_PARAM_NAME"] = "a/param/name"
-    environ["PRACTICE_METRICS_S3_URI_PARAM_NAME"] = "another/param/name"
 
     s3 = boto3.resource(
         "s3",
@@ -248,6 +259,14 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_hiding_slow_transfers
         assert actual_practice_metrics["ccgs"] == expected_practice_metrics["ccgs"]
         assert actual_practice_metrics_s3_metadata == expected_metadata
 
+        assert (
+            get_ssm_param(national_metrics_s3_uri_param_name)
+            == "v10/2019/12/2019-12-nationalMetrics.json"
+        )
+        assert (
+            get_ssm_param(practice_metrics_s3_uri_param_name)
+            == "v10/2019/12/2019-12-practiceMetrics.json"
+        )
     finally:
         output_metrics_bucket.objects.all().delete()
         output_metrics_bucket.delete()
@@ -264,10 +283,13 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
     fake_s3_access_key = "testing"
     fake_s3_secret_key = "testing"
     fake_s3_region = "eu-west-2"
+    build_tag = a_string(7)
+
     s3_output_metrics_bucket_name = "output-metrics-bucket"
     s3_input_transfer_data_bucket_name = "input-transfer-data-bucket"
     s3_organisation_metadata_bucket_name = "organisation-metadata-bucket"
-    build_tag = a_string(7)
+    national_metrics_s3_uri_param_name = "registrations/national-metrics/test-param-name"
+    practice_metrics_s3_uri_param_name = "registrations/practice-metrics/test-param-name"
 
     fake_s3 = _build_fake_s3(fake_s3_host, fake_s3_port)
     fake_s3.start()
@@ -281,12 +303,13 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
     environ["INPUT_TRANSFER_DATA_BUCKET"] = s3_input_transfer_data_bucket_name
     environ["OUTPUT_METRICS_BUCKET"] = s3_output_metrics_bucket_name
     environ["ORGANISATION_METADATA_BUCKET"] = s3_organisation_metadata_bucket_name
+    environ["NATIONAL_METRICS_S3_URI_PARAM_NAME"] = national_metrics_s3_uri_param_name
+    environ["PRACTICE_METRICS_S3_URI_PARAM_NAME"] = practice_metrics_s3_uri_param_name
+
     environ["NUMBER_OF_MONTHS"] = "2"
     environ["DATE_ANCHOR"] = date_anchor
     environ["S3_ENDPOINT_URL"] = fake_s3_url
     environ["BUILD_TAG"] = build_tag
-    environ["NATIONAL_METRICS_S3_URI_PARAM_NAME"] = "a/param/name"
-    environ["PRACTICE_METRICS_S3_URI_PARAM_NAME"] = "another/param/name"
 
     s3 = boto3.resource(
         "s3",
@@ -393,6 +416,14 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
         assert actual_practice_metrics_s3_metadata_including_slow_transfers == expected_metadata
         assert actual_national_metrics_s3_metadata == expected_metadata
 
+        assert (
+            get_ssm_param(national_metrics_s3_uri_param_name)
+            == "v10/2019/12/2019-12-nationalMetrics.json"
+        )
+        assert (
+            get_ssm_param(practice_metrics_s3_uri_param_name)
+            == "v10/2019/12/2019-12-practiceMetrics.json"
+        )
     finally:
         output_metrics_bucket.objects.all().delete()
         output_metrics_bucket.delete()
