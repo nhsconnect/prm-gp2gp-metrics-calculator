@@ -121,6 +121,11 @@ def _read_s3_metadata(bucket, key):
     return bucket.Object(key).get()["Metadata"]
 
 
+def _delete_bucket_with_objects(s3_bucket):
+    s3_bucket.objects.all().delete()
+    s3_bucket.delete()
+
+
 def _write_transfer_parquet(input_transfer_parquet_columns_json, s3_path: str):
     transfer_parquet_schema = pa.schema(
         [
@@ -276,10 +281,9 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_hiding_slow_transfers
             == "v10/2019/12/2019-12-practiceMetrics.json"
         )
     finally:
-        output_metrics_bucket.objects.all().delete()
-        output_metrics_bucket.delete()
-        input_transfer_bucket.objects.all().delete()
-        input_transfer_bucket.delete()
+        _delete_bucket_with_objects(organisation_metadata_bucket)
+        _delete_bucket_with_objects(output_metrics_bucket)
+        _delete_bucket_with_objects(input_transfer_bucket)
         fake_s3.stop()
         environ.clear()
 
@@ -401,9 +405,8 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
             == "v10/2019/12/2019-12-practiceMetrics.json"
         )
     finally:
-        output_metrics_bucket.objects.all().delete()
-        output_metrics_bucket.delete()
-        input_transfer_bucket.objects.all().delete()
-        input_transfer_bucket.delete()
+        _delete_bucket_with_objects(organisation_metadata_bucket)
+        _delete_bucket_with_objects(output_metrics_bucket)
+        _delete_bucket_with_objects(input_transfer_bucket)
         fake_s3.stop()
         environ.clear()
