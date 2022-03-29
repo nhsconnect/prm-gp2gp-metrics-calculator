@@ -49,6 +49,13 @@ class MetricsCalculator:
             data_platform_metrics_bucket=config.output_metrics_bucket,
         )
 
+        self._uris_v8_deprecated = PlatformMetricsS3UriResolver(
+            ods_bucket=config.organisation_metadata_bucket,
+            transfer_data_bucket=config.input_transfer_data_bucket,
+            data_platform_metrics_bucket=config.output_metrics_bucket,
+            data_platform_metrics_version="v8",
+        )
+
         self._io = PlatformMetricsIO(
             s3_data_manager=s3_manager,
             ssm_manager=ssm_manager,
@@ -88,11 +95,20 @@ class MetricsCalculator:
         self,
         practice_metrics: PracticeMetricsPresentation,
         year_month: YearMonth,
-        data_platform_metrics_version: Optional[str] = None,
     ):
         self._io.write_practice_metrics(
             practice_metrics_presentation_data=practice_metrics,
-            s3_uri=self._uris.practice_metrics(year_month, data_platform_metrics_version),
+            s3_uri=self._uris.practice_metrics(year_month),
+        )
+
+    def _write_practice_metrics_deprecated(
+        self,
+        practice_metrics: PracticeMetricsPresentation,
+        year_month: YearMonth,
+    ):
+        self._io.write_practice_metrics(
+            practice_metrics_presentation_data=practice_metrics,
+            s3_uri=self._uris_v8_deprecated.practice_metrics(year_month),
         )
 
     def _write_national_metrics(self, national_metrics, month):
@@ -133,9 +149,7 @@ class MetricsCalculator:
             hide_slow_transferred_records_after_days=self._hide_slow_transferred_records_after_days,
         )
         self._write_national_metrics(national_metrics, last_month)
-        self._write_practice_metrics(
-            practice_metrics_hiding_slow_transfers, last_month, data_platform_metrics_version="v8"
-        )
+        self._write_practice_metrics_deprecated(practice_metrics_hiding_slow_transfers, last_month)
         self._write_practice_metrics(practice_metrics_including_slow_transfers, last_month)
 
         self._store_national_metrics_uri_ssm_param(

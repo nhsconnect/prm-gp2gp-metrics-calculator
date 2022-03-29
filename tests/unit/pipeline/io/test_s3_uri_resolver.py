@@ -37,7 +37,8 @@ def test_resolver_returns_correct_practice_metrics_uri_with_default_version():
 
     actual = uri_resolver.practice_metrics((year, month))
 
-    expected = f"s3://{data_platform_metrics_bucket}/v10/{year}/{month}/{year}-{month}-practiceMetrics.json"
+    expected_filename = f"{year}-{month}-practiceMetrics.json"
+    expected = f"s3://{data_platform_metrics_bucket}/v10/{year}/{month}/{expected_filename}"
 
     assert actual == expected
 
@@ -51,14 +52,14 @@ def test_resolver_returns_correct_practice_metrics_uri_with_specified_version():
     uri_resolver = PlatformMetricsS3UriResolver(
         ods_bucket=a_string(),
         data_platform_metrics_bucket=data_platform_metrics_bucket,
+        data_platform_metrics_version="v3",
         transfer_data_bucket=a_string(),
     )
 
-    actual = uri_resolver.practice_metrics((year, month), "v3")
+    actual = uri_resolver.practice_metrics((year, month))
 
-    expected = (
-        f"s3://{data_platform_metrics_bucket}/v3/{year}/{month}/{year}-{month}-practiceMetrics.json"
-    )
+    expected_filename = f"{year}-{month}-practiceMetrics.json"
+    expected = f"s3://{data_platform_metrics_bucket}/v3/{year}/{month}/{expected_filename}"
 
     assert actual == expected
 
@@ -94,8 +95,28 @@ def test_resolver_returns_correct_national_metrics_uri():
     )
 
     actual = uri_resolver.national_metrics((year, month))
-    # flake8: noqa: E501
-    expected = f"s3://{data_platform_metrics_bucket}/v10/{year}/{month}/{year}-{month}-nationalMetrics.json"
+    expected_filename = f"{year}-{month}-nationalMetrics.json"
+    expected = f"s3://{data_platform_metrics_bucket}/v10/{year}/{month}/{expected_filename}"
+
+    assert actual == expected
+
+
+def test_resolver_returns_correct_national_metrics_uri_with_specified_version():
+    data_platform_metrics_bucket = a_string()
+    date_anchor = a_datetime()
+    year = date_anchor.year
+    month = date_anchor.month
+
+    uri_resolver = PlatformMetricsS3UriResolver(
+        ods_bucket=a_string(),
+        data_platform_metrics_bucket=data_platform_metrics_bucket,
+        data_platform_metrics_version="v3",
+        transfer_data_bucket=a_string(),
+    )
+
+    actual = uri_resolver.national_metrics((year, month))
+    expected_filename = f"{year}-{month}-nationalMetrics.json"
+    expected = f"s3://{data_platform_metrics_bucket}/v3/{year}/{month}/{expected_filename}"
 
     assert actual == expected
 

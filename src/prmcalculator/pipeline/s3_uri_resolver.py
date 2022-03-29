@@ -23,11 +23,14 @@ class PlatformMetricsS3UriResolver:
         ods_bucket: str,
         transfer_data_bucket: str,
         data_platform_metrics_bucket: str,
+        data_platform_metrics_version: Optional[str] = None,
     ):
         self._ods_bucket_name = ods_bucket
         self._transfer_data_bucket = transfer_data_bucket
         self._data_platform_metrics_bucket = data_platform_metrics_bucket
-        self._data_platform_metrics_version = self._DEFAULT_DATA_PLATFORM_METRICS_VERSION
+        self._data_platform_metrics_version = (
+            data_platform_metrics_version or self._DEFAULT_DATA_PLATFORM_METRICS_VERSION
+        )
 
     def ods_metadata(self, year_month: YearMonth) -> str:
         year, month = year_month
@@ -41,11 +44,8 @@ class PlatformMetricsS3UriResolver:
         )
         return f"s3://{s3_key}"
 
-    def _data_platform_metrics_s3_prefix(
-        self, data_platform_metrics_version: Optional[str] = None
-    ) -> str:
-        metrics_version = data_platform_metrics_version or self._data_platform_metrics_version
-        return f"s3://{self._data_platform_metrics_bucket}/{metrics_version}/"
+    def _data_platform_metrics_s3_prefix(self) -> str:
+        return f"s3://{self._data_platform_metrics_bucket}/{self._data_platform_metrics_version}/"
 
     def practice_metrics_key(self, year_month: YearMonth) -> str:
         year, month = year_month
@@ -56,12 +56,8 @@ class PlatformMetricsS3UriResolver:
             ]
         )
 
-    def practice_metrics(
-        self, year_month: YearMonth, data_platform_metrics_version: Optional[str] = None
-    ) -> str:
-        return self._data_platform_metrics_s3_prefix(
-            data_platform_metrics_version
-        ) + self.practice_metrics_key(year_month)
+    def practice_metrics(self, year_month: YearMonth) -> str:
+        return self._data_platform_metrics_s3_prefix() + self.practice_metrics_key(year_month)
 
     def national_metrics_key(self, year_month: YearMonth) -> str:
         year, month = year_month
