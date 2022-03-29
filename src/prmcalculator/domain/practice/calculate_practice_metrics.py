@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 from logging import Logger, getLogger
-from typing import List, Optional
+from typing import List
 
 from dateutil.tz import tzutc
 
@@ -55,17 +55,10 @@ def calculate_practice_metrics(
     organisation_metadata: OrganisationMetadata,
     reporting_window: ReportingWindow,
     observability_probe: PracticeMetricsObservabilityProbe,
-    hide_slow_transferred_records_after_days: Optional[int] = None,
 ) -> PracticeMetricsPresentation:
     observability_probe.record_calculating_practice_metrics(reporting_window)
     organisation_lookup = OrganisationLookup(
         practices=organisation_metadata.practices, ccgs=organisation_metadata.ccgs
-    )
-
-    transfers = (
-        _filter_out_slow_transfers(transfers, hide_slow_transferred_records_after_days)
-        if hide_slow_transferred_records_after_days
-        else transfers
     )
 
     grouped_transfers = group_transfers_by_practice(
@@ -86,23 +79,3 @@ def calculate_practice_metrics(
         ],
         ccgs=organisation_metadata.ccgs,
     )
-
-
-def _filter_out_slow_transfers(
-    transfers: List[Transfer], hide_slow_transferred_records_after_days: int
-) -> List[Transfer]:
-    filtered_transfers = []
-
-    for transfer in transfers:
-
-        if transfer.last_sender_message_timestamp is None:
-            filtered_transfers.append(transfer)
-
-        else:
-            allowed_time_for_transfer = transfer.date_requested + timedelta(
-                hide_slow_transferred_records_after_days
-            )
-            if allowed_time_for_transfer > transfer.last_sender_message_timestamp:
-                filtered_transfers.append(transfer)
-
-    return filtered_transfers

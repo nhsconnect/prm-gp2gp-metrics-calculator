@@ -14,7 +14,6 @@ Configuration is achieved via the following environment variables:
 | NUMBER_OF_MONTHS                         | Optional Number of months to create metrics for (historical data). Defaults to 6                  |
 | BUILD_TAG                                | Unique identifier for version of code build tag (e.g. short git hash)                             |
 | DATE_ANCHOR                              | ISO-8601 datetime specifying "now". Example date "2022-01-15T10:16:00Z"                           |
-| HIDE_SLOW_TRANSFERRED_RECORDS_AFTER_DAYS | Optional Ignores all transfers that took longer than 24 hours to be sent. Defaults to 1           |
 
 ## Developing
 

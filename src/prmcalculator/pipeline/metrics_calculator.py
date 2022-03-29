@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 import boto3
 
@@ -33,10 +33,6 @@ class MetricsCalculator:
             config.date_anchor, config.number_of_months
         )
 
-        self._hide_slow_transferred_records_after_days = (
-            config.hide_slow_transferred_records_after_days
-        )
-
         output_metadata = {
             "metrics-calculator-version": config.build_tag,
             "date-anchor": config.date_anchor.isoformat(),
@@ -47,13 +43,6 @@ class MetricsCalculator:
             ods_bucket=config.organisation_metadata_bucket,
             transfer_data_bucket=config.input_transfer_data_bucket,
             data_platform_metrics_bucket=config.output_metrics_bucket,
-        )
-
-        self._uris_v8_deprecated = PlatformMetricsS3UriResolver(
-            ods_bucket=config.organisation_metadata_bucket,
-            transfer_data_bucket=config.input_transfer_data_bucket,
-            data_platform_metrics_bucket=config.output_metrics_bucket,
-            data_platform_metrics_version="v8",
         )
 
         self._io = PlatformMetricsIO(
@@ -81,14 +70,12 @@ class MetricsCalculator:
         self,
         transfers: List[Transfer],
         ods_metadata: OrganisationMetadata,
-        hide_slow_transferred_records_after_days: Optional[int],
     ):
         return calculate_practice_metrics(
             transfers=transfers,
             organisation_metadata=ods_metadata,
             reporting_window=self._reporting_window,
             observability_probe=PracticeMetricsObservabilityProbe(),
-            hide_slow_transferred_records_after_days=hide_slow_transferred_records_after_days,
         )
 
     def _write_practice_metrics(
@@ -99,16 +86,6 @@ class MetricsCalculator:
         self._io.write_practice_metrics(
             practice_metrics_presentation_data=practice_metrics,
             s3_uri=self._uris.practice_metrics(year_month),
-        )
-
-    def _write_practice_metrics_deprecated(
-        self,
-        practice_metrics: PracticeMetricsPresentation,
-        year_month: YearMonth,
-    ):
-        self._io.write_practice_metrics(
-            practice_metrics_presentation_data=practice_metrics,
-            s3_uri=self._uris_v8_deprecated.practice_metrics(year_month),
         )
 
     def _write_national_metrics(self, national_metrics, month):
@@ -141,15 +118,10 @@ class MetricsCalculator:
         transfers = self._read_transfer_data(dates)
         national_metrics = self._calculate_national_metrics(transfers)
         practice_metrics_including_slow_transfers = self._calculate_practice_metrics(
-            transfers, ods_metadata, hide_slow_transferred_records_after_days=None
+            transfers, ods_metadata
         )
-        practice_metrics_hiding_slow_transfers = self._calculate_practice_metrics(
-            transfers,
-            ods_metadata,
-            hide_slow_transferred_records_after_days=self._hide_slow_transferred_records_after_days,
-        )
+
         self._write_national_metrics(national_metrics, last_month)
-        self._write_practice_metrics_deprecated(practice_metrics_hiding_slow_transfers, last_month)
         self._write_practice_metrics(practice_metrics_including_slow_transfers, last_month)
 
         self._store_national_metrics_uri_ssm_param(

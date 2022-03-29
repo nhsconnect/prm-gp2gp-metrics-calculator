@@ -23,7 +23,6 @@ from tests.builders.common import a_datetime
 from tests.builders.gp2gp import (
     a_transfer_integrated_within_3_days,
     a_transfer_that_was_never_integrated,
-    a_transfer_where_no_core_ehr_was_sent,
     build_practice,
 )
 
@@ -210,120 +209,7 @@ def test_calls_observability_probe_calculating_practice_metrics():
 
 
 @freeze_time(datetime(year=2020, month=1, day=15, hour=23, second=42), tz_offset=0)
-def test_calculates_correct_practice_metrics_filtering_transfers_that_take_longer_than_config_day():
-    mock_probe = Mock()
-    metric_month_start = a_datetime(year=2019, month=12, day=1)
-
-    reporting_window = ReportingWindow(
-        date_anchor_month_start=a_datetime(year=2020, month=1, day=1),
-        dates=[],
-        metric_months_datetimes=[metric_month_start],
-    )
-
-    requesting_practice_name = "Test GP"
-    requesting_ods_code = "A12345"
-    ccg_ods_code = "23B"
-    ccg_name = "Test CCG"
-    requesting_practice = build_practice(asid="343434343434", supplier="SystemOne")
-
-    date_requested = datetime(2019, 12, 30, 18, 2, 29, tzinfo=UTC)
-    transferred_within_a_day_timestamp = date_requested + timedelta(hours=1)
-    transferred_longer_than_a_day_timestamp = date_requested + timedelta(days=1, hours=1)
-
-    transfers = [
-        a_transfer_integrated_within_3_days(
-            requesting_practice=requesting_practice,
-            date_requested=date_requested,
-            last_sender_message_timestamp=transferred_within_a_day_timestamp,
-        ),
-        a_transfer_integrated_within_3_days(
-            requesting_practice=requesting_practice,
-            date_requested=date_requested,
-            last_sender_message_timestamp=transferred_longer_than_a_day_timestamp,
-        ),
-        a_transfer_that_was_never_integrated(
-            requesting_practice=requesting_practice,
-            date_requested=date_requested,
-            last_sender_message_timestamp=transferred_within_a_day_timestamp,
-        ),
-        a_transfer_that_was_never_integrated(
-            requesting_practice=requesting_practice,
-            date_requested=date_requested,
-            last_sender_message_timestamp=transferred_longer_than_a_day_timestamp,
-        ),
-        a_transfer_that_was_never_integrated(
-            requesting_practice=requesting_practice,
-            date_requested=date_requested,
-            last_sender_message_timestamp=transferred_longer_than_a_day_timestamp,
-        ),
-        a_transfer_where_no_core_ehr_was_sent(
-            requesting_practice=requesting_practice,
-            date_requested=date_requested,
-            last_sender_message_timestamp=None,
-        ),
-    ]
-
-    practice_list = [
-        PracticeMetadata(
-            asids=[requesting_practice.asid],
-            ods_code=requesting_ods_code,
-            name=requesting_practice_name,
-        )
-    ]
-
-    ccg_list = [CcgMetadata(name=ccg_name, ods_code=ccg_ods_code, practices=[requesting_ods_code])]
-
-    organisation_metadata = OrganisationMetadata(
-        generated_on=datetime(year=2020, month=1, day=15, hour=23, second=42, tzinfo=UTC),
-        practices=practice_list,
-        ccgs=ccg_list,
-    )
-
-    expected = PracticeMetricsPresentation(
-        generated_on=datetime(year=2020, month=1, day=15, hour=23, second=42, tzinfo=UTC),
-        practices=[
-            PracticeSummary(
-                name=requesting_practice_name,
-                ods_code=requesting_ods_code,
-                ccg_ods_code=ccg_ods_code,
-                ccg_name=ccg_name,
-                metrics=[
-                    MonthlyMetricsPresentation(
-                        year=2019,
-                        month=12,
-                        requested_transfers=RequestedTransferMetrics(
-                            requested_count=3,
-                            received_count=2,
-                            integrated_within_3_days_count=1,
-                            integrated_within_8_days_count=0,
-                            received_percent_of_requested=66.7,
-                            integrated_within_3_days_percent_of_received=50.0,
-                            integrated_within_8_days_percent_of_received=0.0,
-                            not_integrated_within_8_days_total=1,
-                            not_integrated_within_8_days_percent_of_received=50.0,
-                            failures_total_count=1,
-                            failures_total_percent_of_requested=33.3,
-                        ),
-                    )
-                ],
-            )
-        ],
-        ccgs=ccg_list,
-    )
-
-    actual = calculate_practice_metrics(
-        transfers=transfers,
-        organisation_metadata=organisation_metadata,
-        reporting_window=reporting_window,
-        observability_probe=mock_probe,
-        hide_slow_transferred_records_after_days=1,
-    )
-
-    assert actual == expected
-
-
-@freeze_time(datetime(year=2020, month=1, day=15, hour=23, second=42), tz_offset=0)
-def test_calculates_correct_practice_metrics_without_filtering_transfers_if_config_day_not_set():
+def test_calculates_correct_practice_metrics_without_filtering_transfers():
     mock_probe = Mock()
     metric_month_start = a_datetime(year=2019, month=12, day=1)
 
