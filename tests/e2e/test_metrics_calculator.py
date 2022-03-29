@@ -273,9 +273,9 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_hiding_slow_transfers
         assert actual_practice_metrics_s3_metadata == expected_metadata
 
         national_metrics_s3_uri_ssm_value = _get_ssm_param(NATIONAL_METRICS_S3_URI_PARAM_NAME)
-        assert national_metrics_s3_uri_ssm_value == "v10/2019/12/2019-12-nationalMetrics.json"
+        assert national_metrics_s3_uri_ssm_value == "2019/12/2019-12-nationalMetrics.json"
         practice_metrics_s3_uri_ssm_value = _get_ssm_param(PRACTICE_METRICS_S3_URI_PARAM_NAME)
-        assert practice_metrics_s3_uri_ssm_value == "v10/2019/12/2019-12-practiceMetrics.json"
+        assert practice_metrics_s3_uri_ssm_value == "2019/12/2019-12-practiceMetrics.json"
     finally:
         _delete_bucket_with_objects(organisation_metadata_bucket)
         _delete_bucket_with_objects(output_metrics_bucket)
@@ -393,9 +393,9 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
         assert actual_national_metrics_s3_metadata == expected_metadata
 
         national_metrics_s3_uri_ssm_value = _get_ssm_param(NATIONAL_METRICS_S3_URI_PARAM_NAME)
-        assert national_metrics_s3_uri_ssm_value == "v10/2019/12/2019-12-nationalMetrics.json"
+        assert national_metrics_s3_uri_ssm_value == "2019/12/2019-12-nationalMetrics.json"
         practice_metrics_s3_uri_ssm_value = _get_ssm_param(PRACTICE_METRICS_S3_URI_PARAM_NAME)
-        assert practice_metrics_s3_uri_ssm_value == "v10/2019/12/2019-12-practiceMetrics.json"
+        assert practice_metrics_s3_uri_ssm_value == "2019/12/2019-12-practiceMetrics.json"
     finally:
         _delete_bucket_with_objects(organisation_metadata_bucket)
         _delete_bucket_with_objects(output_metrics_bucket)
