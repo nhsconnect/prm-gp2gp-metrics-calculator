@@ -14,6 +14,8 @@ Configuration is achieved via the following environment variables:
 | NUMBER_OF_MONTHS                         | Optional Number of months to create metrics for (historical data). Defaults to 6                  |
 | BUILD_TAG                                | Unique identifier for version of code build tag (e.g. short git hash)                             |
 | DATE_ANCHOR                              | ISO-8601 datetime specifying "now". Example date "2022-01-15T10:16:00Z"                           |
+| NATIONAL_METRICS_S3_PATH_PARAM_NAME      | String that is the AWS SSM Parameter Name where the National Metrics S3 path will be outputted to |
+| PRACTICE_METRICS_S3_PATH_PARAM_NAME      | String that is the AWS SSM Parameter Name where the Practice Metrics S3 path will be outputted to |
 
 ## Developing
 

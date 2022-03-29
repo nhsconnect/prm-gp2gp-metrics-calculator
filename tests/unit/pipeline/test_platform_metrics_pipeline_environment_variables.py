@@ -21,8 +21,8 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
         "DATE_ANCHOR": "2020-01-30T18:44:49Z",
         "S3_ENDPOINT_URL": "a_url",
         "BUILD_TAG": build_tag,
-        "NATIONAL_METRICS_S3_URI_PARAM_NAME": "a/param/name",
-        "PRACTICE_METRICS_S3_URI_PARAM_NAME": "another/param/name",
+        "NATIONAL_METRICS_S3_PATH_PARAM_NAME": "a/param/name",
+        "PRACTICE_METRICS_S3_PATH_PARAM_NAME": "another/param/name",
     }
 
     expected_config = PipelineConfig(
@@ -35,8 +35,8 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
         ),
         s3_endpoint_url="a_url",
         build_tag=build_tag,
-        national_metrics_s3_uri_param_name="a/param/name",
-        practice_metrics_s3_uri_param_name="another/param/name",
+        national_metrics_s3_path_param_name="a/param/name",
+        practice_metrics_s3_path_param_name="another/param/name",
     )
 
     actual_config = PipelineConfig.from_environment_variables(environment)
@@ -52,8 +52,8 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
         "OUTPUT_METRICS_BUCKET": "output-metrics-bucket",
         "DATE_ANCHOR": "2020-01-30T18:44:49Z",
         "BUILD_TAG": build_tag,
-        "NATIONAL_METRICS_S3_URI_PARAM_NAME": "a/param/name",
-        "PRACTICE_METRICS_S3_URI_PARAM_NAME": "another/param/name",
+        "NATIONAL_METRICS_S3_PATH_PARAM_NAME": "a/param/name",
+        "PRACTICE_METRICS_S3_PATH_PARAM_NAME": "another/param/name",
     }
 
     expected_config = PipelineConfig(
@@ -66,8 +66,8 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
         ),
         s3_endpoint_url=None,
         build_tag=build_tag,
-        national_metrics_s3_uri_param_name="a/param/name",
-        practice_metrics_s3_uri_param_name="another/param/name",
+        national_metrics_s3_path_param_name="a/param/name",
+        practice_metrics_s3_path_param_name="another/param/name",
     )
 
     actual_config = PipelineConfig.from_environment_variables(environment)

@@ -48,8 +48,8 @@ S3_OUTPUT_METRICS_BUCKET_NAME = "output-metrics-bucket"
 S3_INPUT_TRANSFER_DATA_BUCKET_NAME = "input-transfer-data-bucket"
 S3_INPUT_ORGANISATION_METADATA_BUCKET_NAME = "organisation-metadata-bucket"
 
-NATIONAL_METRICS_S3_URI_PARAM_NAME = "registrations/national-metrics/test-param-name"
-PRACTICE_METRICS_S3_URI_PARAM_NAME = "registrations/practice-metrics/test-param-name"
+NATIONAL_METRICS_S3_PATH_PARAM_NAME = "registrations/national-metrics/test-param-name"
+PRACTICE_METRICS_S3_PATH_PARAM_NAME = "registrations/practice-metrics/test-param-name"
 
 BUILD_TAG = a_string(7)
 
@@ -72,8 +72,8 @@ def _setup():
     environ["OUTPUT_METRICS_BUCKET"] = S3_OUTPUT_METRICS_BUCKET_NAME
     environ["ORGANISATION_METADATA_BUCKET"] = S3_INPUT_ORGANISATION_METADATA_BUCKET_NAME
 
-    environ["NATIONAL_METRICS_S3_URI_PARAM_NAME"] = NATIONAL_METRICS_S3_URI_PARAM_NAME
-    environ["PRACTICE_METRICS_S3_URI_PARAM_NAME"] = PRACTICE_METRICS_S3_URI_PARAM_NAME
+    environ["NATIONAL_METRICS_S3_PATH_PARAM_NAME"] = NATIONAL_METRICS_S3_PATH_PARAM_NAME
+    environ["PRACTICE_METRICS_S3_PATH_PARAM_NAME"] = PRACTICE_METRICS_S3_PATH_PARAM_NAME
 
     environ["S3_ENDPOINT_URL"] = FAKE_AWS_URL
     environ["BUILD_TAG"] = BUILD_TAG
@@ -294,9 +294,9 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
         assert actual_practice_metrics_s3_metadata_including_slow_transfers == expected_metadata
         assert actual_national_metrics_s3_metadata == expected_metadata
 
-        national_metrics_s3_uri_ssm_value = _get_ssm_param(NATIONAL_METRICS_S3_URI_PARAM_NAME)
+        national_metrics_s3_uri_ssm_value = _get_ssm_param(NATIONAL_METRICS_S3_PATH_PARAM_NAME)
         assert national_metrics_s3_uri_ssm_value == "2019/12/2019-12-nationalMetrics.json"
-        practice_metrics_s3_uri_ssm_value = _get_ssm_param(PRACTICE_METRICS_S3_URI_PARAM_NAME)
+        practice_metrics_s3_uri_ssm_value = _get_ssm_param(PRACTICE_METRICS_S3_PATH_PARAM_NAME)
         assert practice_metrics_s3_uri_ssm_value == "2019/12/2019-12-practiceMetrics.json"
     finally:
         _delete_bucket_with_objects(organisation_metadata_bucket)

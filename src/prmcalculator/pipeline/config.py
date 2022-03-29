@@ -66,8 +66,8 @@ class PipelineConfig:
     date_anchor: datetime
     number_of_months: int
     s3_endpoint_url: Optional[str]
-    national_metrics_s3_uri_param_name: str
-    practice_metrics_s3_uri_param_name: str
+    national_metrics_s3_path_param_name: str
+    practice_metrics_s3_path_param_name: str
 
     @classmethod
     def from_environment_variables(cls, env_vars):
@@ -80,6 +80,6 @@ class PipelineConfig:
             date_anchor=env.read_datetime("DATE_ANCHOR"),
             number_of_months=env.read_optional_int("NUMBER_OF_MONTHS", default=6),
             s3_endpoint_url=env.read_optional_str("S3_ENDPOINT_URL"),
-            national_metrics_s3_uri_param_name=env.read_str("NATIONAL_METRICS_S3_URI_PARAM_NAME"),
-            practice_metrics_s3_uri_param_name=env.read_str("PRACTICE_METRICS_S3_URI_PARAM_NAME"),
+            national_metrics_s3_path_param_name=env.read_str("NATIONAL_METRICS_S3_PATH_PARAM_NAME"),
+            practice_metrics_s3_path_param_name=env.read_str("PRACTICE_METRICS_S3_PATH_PARAM_NAME"),
         )
