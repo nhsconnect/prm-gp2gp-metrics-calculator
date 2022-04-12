@@ -3,11 +3,15 @@ import logging
 import sys
 from datetime import datetime
 from io import BytesIO
-from typing import Dict
+from typing import Dict, Union
 from urllib.parse import urlparse
 
 import pyarrow.parquet as pq
 from pyarrow.lib import Table
+
+from prmcalculator.domain.national.construct_national_metrics_presentation import (
+    NationalMetricsPresentation,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +52,11 @@ class S3DataManager:
         return json.loads(body.decode("utf8"))
 
     def write_json(
-        self, object_uri: str, data: dict, metadata: Dict[str, str], log_data: bool = False
+        self,
+        object_uri: str,
+        data: Union[dict, NationalMetricsPresentation],
+        metadata: Dict[str, str],
+        log_data: bool = False,
     ):
         logger.info(
             "Attempting to upload: " + object_uri,
@@ -60,7 +68,19 @@ class S3DataManager:
         if log_data:
             logger.info(
                 "Successfully uploaded to: " + object_uri,
-                extra={"event": "UPLOADED_JSON_TO_S3", "object_uri": object_uri, "data": data},
+                extra={
+                    "event": "UPLOADED_JSON_TO_S3",
+                    "object_uri": object_uri,
+                    "data": json.dumps(data, default=_serialize_datetime),
+                },
+            )
+            logger.info(
+                "Successfully uploaded to: " + object_uri,
+                extra={
+                    "event": "UPLOADED_JSON_TO_S3_STR",
+                    "object_uri": object_uri,
+                    "data": str(data),
+                },
             )
         else:
             logger.info(
