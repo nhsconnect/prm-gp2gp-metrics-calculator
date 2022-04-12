@@ -96,5 +96,8 @@ def test_given_national_metrics_object_will_generate_json():
     expected_national_metrics_dict = _NATIONAL_METRICS_DICT
 
     s3_manager.write_json.assert_called_once_with(
-        object_uri=s3_uri, data=expected_national_metrics_dict, metadata=output_metadata
+        object_uri=s3_uri,
+        data=expected_national_metrics_dict,
+        metadata=output_metadata,
+        log_data=True,
     )

@@ -54,6 +54,7 @@ class PlatformMetricsIO:
             object_uri=s3_uri,
             data=self._create_platform_json_object(national_metrics_presentation_data),
             metadata=self._output_metadata,
+            log_data=True,
         )
 
     def store_ssm_param(self, ssm_param_name: str, ssm_param_value: str):

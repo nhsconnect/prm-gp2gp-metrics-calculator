@@ -99,7 +99,9 @@ def test_will_log_writing_file_events():
     object_uri = f"s3://{bucket_name}/test_object.json"
 
     with mock.patch.object(logger, "info") as mock_log_info:
-        s3_manager.write_json(object_uri=object_uri, data=data, metadata=SOME_METADATA)
+        s3_manager.write_json(
+            object_uri=object_uri, data=data, metadata=SOME_METADATA, log_data=True
+        )
         mock_log_info.assert_has_calls(
             [
                 mock.call(
@@ -108,7 +110,11 @@ def test_will_log_writing_file_events():
                 ),
                 mock.call(
                     f"Successfully uploaded to: {object_uri}",
-                    extra={"event": "UPLOADED_JSON_TO_S3", "object_uri": object_uri},
+                    extra={
+                        "event": "UPLOADED_JSON_TO_S3",
+                        "object_uri": object_uri,
+                        "data": {"fruit": "mango"},
+                    },
                 ),
             ]
         )
