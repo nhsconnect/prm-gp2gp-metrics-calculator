@@ -113,14 +113,6 @@ def test_will_log_writing_file_events():
                     extra={
                         "event": "UPLOADED_JSON_TO_S3",
                         "object_uri": object_uri,
-                        "data": '{"fruit": "mango"}',
-                    },
-                ),
-                mock.call(
-                    f"Successfully uploaded to: {object_uri}",
-                    extra={
-                        "event": "UPLOADED_JSON_TO_S3_STR",
-                        "object_uri": object_uri,
                         "data": "{'fruit': 'mango'}",
                     },
                 ),

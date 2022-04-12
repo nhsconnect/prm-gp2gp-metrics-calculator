@@ -71,14 +71,6 @@ class S3DataManager:
                 extra={
                     "event": "UPLOADED_JSON_TO_S3",
                     "object_uri": object_uri,
-                    "data": json.dumps(data, default=_serialize_datetime),
-                },
-            )
-            logger.info(
-                "Successfully uploaded to: " + object_uri,
-                extra={
-                    "event": "UPLOADED_JSON_TO_S3_STR",
-                    "object_uri": object_uri,
                     "data": str(data),
                 },
             )
