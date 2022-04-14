@@ -66,7 +66,7 @@ def test_read_parquet_logs_error_when_s3_parquet_file_not_found(capsys):
     s3_manager = S3DataManager(conn)
     object_uri = f"s3://{bucket_name}/fruits.parquet"
 
-    with pytest.raises(SystemExit):
+    with pytest.raises(FileNotFoundError) as e:
         with mock.patch.object(logger, "error") as mock_log_error:
             s3_manager.read_parquet(object_uri)
 
@@ -74,6 +74,8 @@ def test_read_parquet_logs_error_when_s3_parquet_file_not_found(capsys):
         f"File not found: {object_uri}, exiting...",
         extra={"event": "FILE_NOT_FOUND_IN_S3"},
     )
+
+    assert str(e.value) == object_uri
 
 
 @mock_s3
@@ -85,7 +87,7 @@ def test_read_json_logs_error_when_s3_json_file_not_found():
     s3_manager = S3DataManager(conn)
     object_uri = f"s3://{bucket_name}/fruits.parquet"
 
-    with pytest.raises(SystemExit):
+    with pytest.raises(FileNotFoundError) as e:
         with mock.patch.object(logger, "error") as mock_log_error:
             s3_manager.read_json(object_uri)
 
@@ -93,3 +95,5 @@ def test_read_json_logs_error_when_s3_json_file_not_found():
         f"File not found: {object_uri}, exiting...",
         extra={"event": "FILE_NOT_FOUND_IN_S3"},
     )
+
+    assert str(e.value) == object_uri

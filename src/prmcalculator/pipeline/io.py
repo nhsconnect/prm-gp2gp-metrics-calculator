@@ -1,5 +1,4 @@
 import logging
-import sys
 from dataclasses import asdict
 from typing import Dict, List
 
@@ -65,8 +64,15 @@ class PlatformMetricsIO:
             )
             logger.info(f"Successfully stored value for SSM param {ssm_param_name}")
         except ClientError as e:
-            logger.error(e)
-            sys.exit(1)
+            logger.error(
+                str(e),
+                extra={
+                    "event": "FAILED_TO_STORE_SSM",
+                    "ssm_param_name": ssm_param_name,
+                    "ssm_param_value": ssm_param_value,
+                },
+            )
+            raise e
 
     def write_practice_metrics(self, practice_metrics_presentation_data, s3_uri: str):
         self._s3_manager.write_json(

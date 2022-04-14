@@ -1,6 +1,5 @@
 import json
 import logging
-import sys
 from datetime import datetime
 from io import BytesIO
 from typing import Dict, Union
@@ -46,7 +45,7 @@ class S3DataManager:
                 f"File not found: {object_uri}, exiting...",
                 extra={"event": "FILE_NOT_FOUND_IN_S3"},
             )
-            sys.exit(1)
+            raise FileNotFoundError(object_uri)
 
         body = response["Body"].read()
         return json.loads(body.decode("utf8"))
@@ -94,7 +93,7 @@ class S3DataManager:
                 f"File not found: {object_uri}, exiting...",
                 extra={"event": "FILE_NOT_FOUND_IN_S3"},
             )
-            sys.exit(1)
+            raise FileNotFoundError(object_uri)
 
         body = BytesIO(response["Body"].read())
         return pq.read_table(body)

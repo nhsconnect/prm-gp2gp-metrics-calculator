@@ -41,8 +41,15 @@ def test_exit_when_fails_to_store_ssm_param():
         output_metadata={},
     )
 
-    with pytest.raises(SystemExit):
+    with pytest.raises(ClientError):
         with mock.patch.object(logger, "error") as mock_log_error:
             metrics_io.store_ssm_param(ssm_param_name=ssm_param_name, ssm_param_value=s3_uri)
 
-    mock_log_error.assert_called_once_with(client_error)
+    mock_log_error.assert_called_once_with(
+        "An error occurred (500) when calling the operation_name operation: Error Uploading",
+        extra={
+            "event": "FAILED_TO_STORE_SSM",
+            "ssm_param_name": ssm_param_name,
+            "ssm_param_value": s3_uri,
+        },
+    )
