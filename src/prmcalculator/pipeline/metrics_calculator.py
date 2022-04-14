@@ -14,14 +14,13 @@ from prmcalculator.domain.practice.calculate_practice_metrics import (
     calculate_practice_metrics,
 )
 from prmcalculator.domain.reporting_window import ReportingWindow, YearMonth
-from prmcalculator.pipeline.config import PipelineConfig
 from prmcalculator.pipeline.io import PlatformMetricsIO
 from prmcalculator.pipeline.s3_uri_resolver import PlatformMetricsS3UriResolver
 from prmcalculator.utils.io.s3 import S3DataManager
 
 
 class MetricsCalculator:
-    def __init__(self, config: PipelineConfig):
+    def __init__(self, config):
         s3 = boto3.resource("s3", endpoint_url=config.s3_endpoint_url)
         s3_manager = S3DataManager(s3)
         ssm_manager = boto3.client("ssm")

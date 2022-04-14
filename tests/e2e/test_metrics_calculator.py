@@ -1,11 +1,12 @@
 import json
-import logging
 import os
+import sys
 from datetime import datetime
 from io import BytesIO
 from os import environ
 from threading import Thread
 from unittest import mock
+from unittest.mock import ANY
 
 import boto3
 import pyarrow as pa
@@ -17,11 +18,9 @@ from pyarrow._s3fs import S3FileSystem
 from pyarrow.parquet import write_table
 from werkzeug.serving import make_server
 
-from prmcalculator.pipeline.main import main
+from prmcalculator.pipeline.main import logger, main
 from prmcalculator.utils.add_leading_zero import add_leading_zero
 from tests.builders.common import a_string
-
-logger = logging.getLogger(__name__)
 
 
 class ThreadedServer:
@@ -304,3 +303,16 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
         _delete_bucket_with_objects(input_transfer_bucket)
         fake_s3.stop()
         environ.clear()
+
+
+def test_exception_in_main():
+    with mock.patch.object(sys, "exit") as exitSpy:
+        with mock.patch.object(logger, "error") as mock_log_error:
+            main()
+
+    mock_log_error.assert_called_with(
+        ANY,
+        extra={"event": "FAILED_TO_RUN_MAIN", "config": "{}"},
+    )
+
+    exitSpy.assert_called_with("Failed to run main, exiting...")

@@ -69,6 +69,9 @@ class PipelineConfig:
     national_metrics_s3_path_param_name: str
     practice_metrics_s3_path_param_name: str
 
+    def __str__(self):
+        return str(self.__dict__)
+
     @classmethod
     def from_environment_variables(cls, env_vars):
         env = EnvConfig(env_vars)
