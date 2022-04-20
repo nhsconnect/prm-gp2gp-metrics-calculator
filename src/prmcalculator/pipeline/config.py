@@ -1,10 +1,9 @@
 import logging
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date, datetime
 from typing import Optional
 
 from dateutil.parser import isoparse
-from dateutil.tz import tzutc
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +50,10 @@ class EnvConfig:
 
     def read__optional_datetime(self, name: str) -> datetime:
         return self._read_env(
-            name, optional=True, converter=isoparse, default=datetime.now(tzutc())
+            name,
+            optional=True,
+            converter=isoparse,
+            default=datetime.combine(date.today(), datetime.min.time()),
         )
 
     def read_optional_bool(self, name: str, default: bool) -> bool:

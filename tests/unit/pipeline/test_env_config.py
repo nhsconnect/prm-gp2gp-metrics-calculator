@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 
 import pytest
 from dateutil.tz import tzutc
@@ -59,7 +59,7 @@ def test_read_optional_datetime_returns_specific_datetime_given_a_datetime():
 
 def test_read_optional_datetime_returns_now_if_no_env_variable_is_provided():
     env = EnvConfig({"OPTIONAL_INT_CONFIG": "one"})
-    actual = env.read__optional_datetime(name="OPTIONAL_DATETIME_CONFIG").date()
-    expected = datetime.now(tzutc()).date()
+    actual = env.read__optional_datetime(name="OPTIONAL_DATETIME_CONFIG")
+    expected = datetime.combine(date.today(), datetime.min.time())
 
     assert actual == expected

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 
 import pytest
 from dateutil.tz import tzutc
@@ -50,7 +50,6 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
         "INPUT_TRANSFER_DATA_BUCKET": "input-transfer-data-bucket",
         "ORGANISATION_METADATA_BUCKET": "metadata-bucket",
         "OUTPUT_METRICS_BUCKET": "output-metrics-bucket",
-        "DATE_ANCHOR": "2020-01-30T18:44:49Z",
         "BUILD_TAG": build_tag,
         "NATIONAL_METRICS_S3_PATH_PARAM_NAME": "a/param/name",
         "PRACTICE_METRICS_S3_PATH_PARAM_NAME": "another/param/name",
@@ -61,9 +60,7 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
         organisation_metadata_bucket="metadata-bucket",
         output_metrics_bucket="output-metrics-bucket",
         number_of_months=6,
-        date_anchor=datetime(
-            year=2020, month=1, day=30, hour=18, minute=44, second=49, tzinfo=tzutc()
-        ),
+        date_anchor=datetime.combine(date.today(), datetime.min.time()),
         s3_endpoint_url=None,
         build_tag=build_tag,
         national_metrics_s3_path_param_name="a/param/name",
