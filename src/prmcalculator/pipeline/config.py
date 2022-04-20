@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Optional
 
 from dateutil.parser import isoparse
+from dateutil.tz import tzutc
 
 logger = logging.getLogger(__name__)
 
@@ -48,8 +49,10 @@ class EnvConfig:
     def read_optional_str(self, name: str) -> Optional[str]:
         return self._read_env(name, optional=True)
 
-    def read_datetime(self, name: str) -> datetime:
-        return self._read_env(name, optional=False, converter=isoparse)
+    def read__optional_datetime(self, name: str) -> datetime:
+        return self._read_env(
+            name, optional=True, converter=isoparse, default=datetime.now(tzutc())
+        )
 
     def read_optional_bool(self, name: str, default: bool) -> bool:
         return self._read_env(
@@ -80,7 +83,7 @@ class PipelineConfig:
             input_transfer_data_bucket=env.read_str("INPUT_TRANSFER_DATA_BUCKET"),
             organisation_metadata_bucket=env.read_str("ORGANISATION_METADATA_BUCKET"),
             output_metrics_bucket=env.read_str("OUTPUT_METRICS_BUCKET"),
-            date_anchor=env.read_datetime("DATE_ANCHOR"),
+            date_anchor=env.read__optional_datetime("DATE_ANCHOR"),
             number_of_months=env.read_optional_int("NUMBER_OF_MONTHS", default=6),
             s3_endpoint_url=env.read_optional_str("S3_ENDPOINT_URL"),
             national_metrics_s3_path_param_name=env.read_str("NATIONAL_METRICS_S3_PATH_PARAM_NAME"),
