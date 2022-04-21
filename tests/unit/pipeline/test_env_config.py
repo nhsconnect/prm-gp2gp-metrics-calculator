@@ -51,15 +51,15 @@ def test_read_optional_int_throws_exception_given_invalid_string():
 
 def test_read_optional_datetime_returns_specific_datetime_given_a_datetime():
     env = EnvConfig({"OPTIONAL_DATETIME_CONFIG": "2020-01-30T18:44:49Z"})
-    actual = env.read__optional_datetime(name="OPTIONAL_DATETIME_CONFIG")
+    actual = env.read_optional_datetime(name="OPTIONAL_DATETIME_CONFIG")
     expected = datetime(2020, 1, 30, 18, 44, 49, tzinfo=tzutc())
 
     assert actual == expected
 
 
 def test_read_optional_datetime_returns_now_if_no_env_variable_is_provided():
-    env = EnvConfig({"OPTIONAL_INT_CONFIG": "one"})
-    actual = env.read__optional_datetime(name="OPTIONAL_DATETIME_CONFIG")
+    env = EnvConfig({})
+    actual = env.read_optional_datetime(name="OPTIONAL_DATETIME_CONFIG")
     expected = datetime.combine(date.today(), datetime.min.time())
 
     assert actual == expected
