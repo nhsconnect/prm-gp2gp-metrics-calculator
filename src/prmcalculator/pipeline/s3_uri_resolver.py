@@ -7,9 +7,9 @@ from prmcalculator.utils.add_leading_zero import add_leading_zero
 
 class PlatformMetricsS3UriResolver:
 
-    _TRANSFER_DATA_VERSION = "v9"
+    _TRANSFER_DATA_VERSION = "v10"
     _DEFAULT_DATA_PLATFORM_METRICS_VERSION = "v10"
-    _ORG_METADATA_VERSION = "v3"
+    _ORG_METADATA_VERSION = "v4"
 
     _ORG_METADATA_FILE_NAME = "organisationMetadata.json"
     _PRACTICE_METRICS_FILE_NAME = "practiceMetrics.json"

@@ -18,7 +18,7 @@ def test_resolver_returns_correct_ods_metadata_uri():
 
     actual = uri_resolver.ods_metadata((year, month))
 
-    expected = f"s3://{ods_bucket_name}/v3/{year}/{month}/organisationMetadata.json"
+    expected = f"s3://{ods_bucket_name}/v4/{year}/{month}/organisationMetadata.json"
 
     assert actual == expected
 
@@ -52,14 +52,14 @@ def test_resolver_returns_correct_practice_metrics_uri_with_specified_version():
     uri_resolver = PlatformMetricsS3UriResolver(
         ods_bucket=a_string(),
         data_platform_metrics_bucket=data_platform_metrics_bucket,
-        data_platform_metrics_version="v3",
+        data_platform_metrics_version="v4",
         transfer_data_bucket=a_string(),
     )
 
     actual = uri_resolver.practice_metrics((year, month))
 
     expected_filename = f"{year}-{month}-practiceMetrics.json"
-    expected = f"s3://{data_platform_metrics_bucket}/v3/{year}/{month}/{expected_filename}"
+    expected = f"s3://{data_platform_metrics_bucket}/v4/{year}/{month}/{expected_filename}"
 
     assert actual == expected
 
@@ -110,13 +110,13 @@ def test_resolver_returns_correct_national_metrics_uri_with_specified_version():
     uri_resolver = PlatformMetricsS3UriResolver(
         ods_bucket=a_string(),
         data_platform_metrics_bucket=data_platform_metrics_bucket,
-        data_platform_metrics_version="v3",
+        data_platform_metrics_version="v4",
         transfer_data_bucket=a_string(),
     )
 
     actual = uri_resolver.national_metrics((year, month))
     expected_filename = f"{year}-{month}-nationalMetrics.json"
-    expected = f"s3://{data_platform_metrics_bucket}/v3/{year}/{month}/{expected_filename}"
+    expected = f"s3://{data_platform_metrics_bucket}/v4/{year}/{month}/{expected_filename}"
 
     assert actual == expected
 
@@ -157,9 +157,9 @@ def test_resolver_returns_correct_transfer_data_uris():
     actual = uri_resolver.transfer_data(datetimes)
 
     expected = [
-        f"s3://{transfer_data_bucket}/v9/cutoff-14/2021/12/01/2021-12-01-transfers.parquet",
-        f"s3://{transfer_data_bucket}/v9/cutoff-14/2021/12/02/2021-12-02-transfers.parquet",
-        f"s3://{transfer_data_bucket}/v9/cutoff-14/2021/12/03/2021-12-03-transfers.parquet",
+        f"s3://{transfer_data_bucket}/v10/cutoff-14/2021/12/01/2021-12-01-transfers.parquet",
+        f"s3://{transfer_data_bucket}/v10/cutoff-14/2021/12/02/2021-12-02-transfers.parquet",
+        f"s3://{transfer_data_bucket}/v10/cutoff-14/2021/12/03/2021-12-03-transfers.parquet",
     ]
 
     assert actual == expected

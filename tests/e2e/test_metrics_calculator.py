@@ -150,7 +150,9 @@ def _write_transfer_parquet(input_transfer_parquet_columns_json, s3_path: str):
 
 
 def _get_s3_path(bucket_name, year, month, day):
-    return f"{bucket_name}/v9/cutoff-14/{year}/{month}/{day}/{year}-{month}-{day}-transfers.parquet"
+    return (
+        f"{bucket_name}/v10/cutoff-14/{year}/{month}/{day}/{year}-{month}-{day}-transfers.parquet"
+    )
 
 
 def _upload_template_transfer_data(
@@ -202,7 +204,7 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
 
     organisation_metadata_file = str(datadir / "inputs" / "organisationMetadata.json")
     organisation_metadata_bucket.upload_file(
-        organisation_metadata_file, "v3/2020/1/organisationMetadata.json"
+        organisation_metadata_file, "v4/2020/1/organisationMetadata.json"
     )
 
     input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET_NAME, s3_client)
