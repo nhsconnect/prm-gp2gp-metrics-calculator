@@ -13,7 +13,12 @@ from tests.builders.common import a_datetime, a_duration, a_string
 
 def build_practice(**kwargs) -> Practice:
     return Practice(
-        asid=kwargs.get("asid", a_string(12)), supplier=kwargs.get("supplier", a_string(12))
+        asid=kwargs.get("asid", a_string(12)),
+        supplier=kwargs.get("supplier", a_string(12)),
+        name=kwargs.get("name", a_string(12)),
+        ods_code=kwargs.get("ods_code", a_string(6)),
+        ccg_name=kwargs.get("ccg_name", a_string(12)),
+        ccg_ods_code=kwargs.get("ccg_ods_code", a_string(6)),
     )
 
 

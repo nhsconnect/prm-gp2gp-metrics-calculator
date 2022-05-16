@@ -20,5 +20,9 @@
     "failure_reason": [""],
     "final_error_codes": [[0]],
     "sender_error_codes": [[0]],
-    "intermediate_error_codes": [[0]]
+    "intermediate_error_codes": [[0]],
+    "requesting_practice_ods_code": ["A12345"],
+    "requesting_practice_name": ["Test GP Practice with Integrations"],
+    "requesting_practice_ccg_ods_code": ["AA12345"],
+    "requesting_practice_ccg_name": ["Test CCG Practice with Integrations"]
 }

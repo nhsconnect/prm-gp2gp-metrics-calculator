@@ -20,7 +20,7 @@ from werkzeug.serving import make_server
 
 from prmcalculator.pipeline.main import logger, main
 from prmcalculator.utils.add_leading_zero import add_leading_zero
-from tests.builders.common import a_string
+from tests.builders.common import a_string, an_integer
 
 
 class ThreadedServer:
@@ -37,7 +37,7 @@ class ThreadedServer:
 
 
 FAKE_AWS_HOST = "127.0.0.1"
-FAKE_AWS_PORT = 8887
+FAKE_AWS_PORT = an_integer(8000, 8080)
 FAKE_AWS_URL = f"http://{FAKE_AWS_HOST}:{FAKE_AWS_PORT}"
 FAKE_S3_ACCESS_KEY = "testing"
 FAKE_S3_SECRET_KEY = "testing"
@@ -136,6 +136,10 @@ def _write_transfer_parquet(input_transfer_parquet_columns_json, s3_path: str):
             ("failure_reason", pa.string()),
             ("date_requested", pa.timestamp("us", tz="utc")),
             ("last_sender_message_timestamp", pa.timestamp("us", tz="utc")),
+            ("requesting_practice_name", pa.string()),
+            ("requesting_practice_ods_code", pa.string()),
+            ("requesting_practice_ccg_name", pa.string()),
+            ("requesting_practice_ccg_ods_code", pa.string()),
         ]
     )
 

@@ -34,6 +34,10 @@
   ],
   "intermediate_error_codes": [
     []
-  ]
+  ],
+  "requesting_practice_ods_code": ["A12345"],
+  "requesting_practice_name": ["Test GP Practice with some Integrations"],
+  "requesting_practice_ccg_ods_code": ["AA12345"],
+  "requesting_practice_ccg_name": ["Test CCG Practice with Integrations"]
 }
 

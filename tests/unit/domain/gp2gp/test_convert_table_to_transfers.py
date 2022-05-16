@@ -28,6 +28,16 @@ def _build_transfer_table(**kwargs) -> pa.Table:
             "last_sender_message_timestamp": kwargs.get(
                 "last_sender_message_timestamp", [a_datetime()]
             ),
+            "requesting_practice_ods_code": kwargs.get(
+                "requesting_practice_ods_code", [a_string(6)]
+            ),
+            "requesting_practice_name": kwargs.get("requesting_practice_name", [a_string(12)]),
+            "requesting_practice_ccg_ods_code": kwargs.get(
+                "requesting_practice_ccg_ods_code", [a_string(6)]
+            ),
+            "requesting_practice_ccg_name": kwargs.get(
+                "requesting_practice_ccg_name", [a_string(12)]
+            ),
         }
     )
 
@@ -183,13 +193,24 @@ def test_converts_multiple_rows_into_list_of_transfers():
             last_sender_message_timestamp,
             last_sender_message_timestamp,
         ],
+        requesting_practice_ods_code=["A123", "B123"],
+        requesting_practice_name=["Practice 1", "Practice 2"],
+        requesting_practice_ccg_ods_code=["AA123", "BB123"],
+        requesting_practice_ccg_name=["CCG 1", "CCG 2"],
     )
 
     expected_transfers = [
         Transfer(
             conversation_id="123",
             sla_duration=integrated_sla_duration,
-            requesting_practice=build_practice(asid="213125436412", supplier="Vision"),
+            requesting_practice=build_practice(
+                asid="213125436412",
+                supplier="Vision",
+                name="Practice 1",
+                ods_code="A123",
+                ccg_name="CCG 1",
+                ccg_ods_code="AA123",
+            ),
             outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
             date_requested=integrated_date_requested,
             last_sender_message_timestamp=last_sender_message_timestamp,
@@ -197,7 +218,14 @@ def test_converts_multiple_rows_into_list_of_transfers():
         Transfer(
             conversation_id="2345",
             sla_duration=timedelta(hours=3, minutes=26, seconds=53),
-            requesting_practice=build_practice(asid="124135423412", supplier="Systm One"),
+            requesting_practice=build_practice(
+                asid="124135423412",
+                supplier="Systm One",
+                name="Practice 2",
+                ods_code="B123",
+                ccg_name="CCG 2",
+                ccg_ods_code="BB123",
+            ),
             outcome=TransferOutcome(
                 status=TransferStatus.TECHNICAL_FAILURE,
                 failure_reason=TransferFailureReason.FATAL_SENDER_ERROR,
@@ -224,6 +252,10 @@ def test_convert_table_to_transfers_handles_none_values_gracefully():
         failure_reason=["Contains fatal sender error"],
         date_requested=[date_requested],
         last_sender_message_timestamp=[None],
+        requesting_practice_ods_code=["A123"],
+        requesting_practice_name=["Practice 1"],
+        requesting_practice_ccg_ods_code=["AA123"],
+        requesting_practice_ccg_name=["CCG 1"],
     )
 
     actual_transfers = convert_table_to_transfers(table)
@@ -231,7 +263,14 @@ def test_convert_table_to_transfers_handles_none_values_gracefully():
         Transfer(
             conversation_id="123",
             sla_duration=None,
-            requesting_practice=build_practice(asid="213125436412", supplier="Vision"),
+            requesting_practice=build_practice(
+                asid="213125436412",
+                supplier="Vision",
+                ods_code="A123",
+                name="Practice 1",
+                ccg_ods_code="AA123",
+                ccg_name="CCG 1",
+            ),
             outcome=TransferOutcome(
                 status=TransferStatus.TECHNICAL_FAILURE,
                 failure_reason=TransferFailureReason.FATAL_SENDER_ERROR,
