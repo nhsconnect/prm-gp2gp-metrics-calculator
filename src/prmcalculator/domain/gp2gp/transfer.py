@@ -40,7 +40,7 @@ class TransferOutcome:
 
 
 @dataclass(frozen=True)
-class Practice:
+class PracticeDetails:
     asid: str
     supplier: str
     ods_code: str
@@ -52,7 +52,7 @@ class Practice:
 class Transfer(NamedTuple):
     conversation_id: str
     sla_duration: Optional[timedelta]
-    requesting_practice: Practice
+    requesting_practice: PracticeDetails
     outcome: TransferOutcome
     date_requested: datetime
     last_sender_message_timestamp: Optional[datetime]
@@ -103,7 +103,7 @@ def convert_table_to_transfers(table: pa.Table) -> List[Transfer]:
         Transfer(
             conversation_id=transfer["conversation_id"],
             sla_duration=_convert_to_timedelta(transfer["sla_duration"]),
-            requesting_practice=Practice(
+            requesting_practice=PracticeDetails(
                 asid=transfer["requesting_practice_asid"],
                 supplier=transfer["requesting_supplier"],
                 ods_code=transfer["requesting_practice_ods_code"],

@@ -69,6 +69,7 @@ def construct_practice_summary(
     practice_ods_code = practice_metrics.ods_code
     ccg_ods_code = organisation_lookup.ccg_ods_code_from_practice_ods_code(practice_ods_code)
     ccg_name = organisation_lookup.ccg_name_from_practice_ods_code(practice_ods_code)
+
     return PracticeSummary(
         name=practice_metrics.name,
         ods_code=practice_ods_code,

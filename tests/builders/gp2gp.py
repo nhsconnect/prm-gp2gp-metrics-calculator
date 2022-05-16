@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from prmcalculator.domain.gp2gp.sla import EIGHT_DAYS_IN_SECONDS, THREE_DAYS_IN_SECONDS
 from prmcalculator.domain.gp2gp.transfer import (
-    Practice,
+    PracticeDetails,
     Transfer,
     TransferFailureReason,
     TransferOutcome,
@@ -11,8 +11,8 @@ from prmcalculator.domain.gp2gp.transfer import (
 from tests.builders.common import a_datetime, a_duration, a_string
 
 
-def build_practice(**kwargs) -> Practice:
-    return Practice(
+def build_practice(**kwargs) -> PracticeDetails:
+    return PracticeDetails(
         asid=kwargs.get("asid", a_string(12)),
         supplier=kwargs.get("supplier", a_string(12)),
         name=kwargs.get("name", a_string(12)),
