@@ -2,9 +2,9 @@ from unittest.mock import Mock
 
 from prmcalculator.domain.ods_portal.organisation_lookup import OrganisationLookup
 from prmcalculator.domain.ods_portal.organisation_metadata import PracticeMetadata
-from prmcalculator.domain.practice.group_transfers_by_practice import (
-    PracticeTransfers,
-    group_transfers_by_practice,
+from prmcalculator.domain.practice.group_transfers_by_practice_deprecated import (
+    PracticeTransfersDeprecated,
+    group_transfers_by_practice_deprecated,
 )
 from tests.builders.common import a_string
 from tests.builders.gp2gp import build_practice, build_transfer
@@ -21,11 +21,15 @@ def test_produces_empty_metrics_given_practices_with_no_transfers():
     )
 
     expected = [
-        PracticeTransfers(name="Practice 1", ods_code="A1234", transfers=()),
-        PracticeTransfers(name="Practice 2", ods_code="B5678", transfers=()),
+        PracticeTransfersDeprecated(
+            name="Practice 1", ods_code="A1234", transfers=(), ccg_name=None, ccg_ods_code=None
+        ),
+        PracticeTransfersDeprecated(
+            name="Practice 2", ods_code="B5678", transfers=(), ccg_name=None, ccg_ods_code=None
+        ),
     ]
 
-    actual = group_transfers_by_practice(
+    actual = group_transfers_by_practice_deprecated(
         transfers=[], organisation_lookup=lookup, observability_probe=mock_probe
     )
     assert set(actual) == set(expected)
@@ -46,11 +50,15 @@ def test_produces_an_empty_metrics_object_given_practice_with_no_matching_transf
         requesting_practice=build_practice(asid="565656565656"),
     )
 
-    actual = group_transfers_by_practice(
+    actual = group_transfers_by_practice_deprecated(
         transfers=[transfer], organisation_lookup=lookup, observability_probe=mock_probe
     )
 
-    expected = [PracticeTransfers(name="Test Practice", ods_code="A1234", transfers=())]
+    expected = [
+        PracticeTransfersDeprecated(
+            name="Test Practice", ods_code="A1234", transfers=(), ccg_name=None, ccg_ods_code=None
+        )
+    ]
 
     assert actual == expected
 
@@ -73,14 +81,16 @@ def test_produces_a_group_given_single_practice_with_transfers_matching_asid():
     )
 
     expected = [
-        PracticeTransfers(
+        PracticeTransfersDeprecated(
             name="Test Practice",
             ods_code="A1234",
             transfers=(transfer_one, transfer_two),
+            ccg_name=None,
+            ccg_ods_code=None,
         )
     ]
 
-    actual = group_transfers_by_practice(
+    actual = group_transfers_by_practice_deprecated(
         transfers=[transfer_one, transfer_two],
         organisation_lookup=lookup,
         observability_probe=mock_probe,
@@ -110,14 +120,16 @@ def test_produces_a_group_given_single_practice_with_transfers_matching_asids():
     )
 
     expected = [
-        PracticeTransfers(
+        PracticeTransfersDeprecated(
             name="Test Practice",
             ods_code="A1234",
             transfers=(transfer_one, transfer_two),
+            ccg_name=None,
+            ccg_ods_code=None,
         )
     ]
 
-    actual = group_transfers_by_practice(
+    actual = group_transfers_by_practice_deprecated(
         transfers=[transfer_one, transfer_two],
         organisation_lookup=lookup,
         observability_probe=mock_probe,
@@ -151,19 +163,23 @@ def test_produces_correct_groups_given_two_practices_each_with_transfers():
     )
 
     expected = [
-        PracticeTransfers(
+        PracticeTransfersDeprecated(
             name="Practice A",
             ods_code=practice_a_ods_code,
             transfers=(practice_a_transfer,),
+            ccg_name=None,
+            ccg_ods_code=None,
         ),
-        PracticeTransfers(
+        PracticeTransfersDeprecated(
             name="Practice B",
             ods_code=practice_b_ods_code,
             transfers=(practice_b_transfer,),
+            ccg_name=None,
+            ccg_ods_code=None,
         ),
     ]
 
-    actual = group_transfers_by_practice(
+    actual = group_transfers_by_practice_deprecated(
         transfers=[practice_a_transfer, practice_b_transfer],
         organisation_lookup=lookup,
         observability_probe=mock_probe,
@@ -180,7 +196,7 @@ def test_calls_observability_probe_when_multiple_unknown_practices_for_transfers
         requesting_practice=build_practice(asid="121212121212")
     )
 
-    group_transfers_by_practice(
+    group_transfers_by_practice_deprecated(
         transfers=[unknown_practice_transfer],
         organisation_lookup=lookup,
         observability_probe=mock_probe,

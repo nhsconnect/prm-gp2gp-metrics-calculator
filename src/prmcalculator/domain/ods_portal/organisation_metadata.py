@@ -31,7 +31,9 @@ class OrganisationMetadata:
             generated_on=parser.isoparse(data["generated_on"]),
             practices=[
                 PracticeMetadata(
-                    asids=practice["asids"], ods_code=practice["ods_code"], name=practice["name"]
+                    asids=practice["asids"],
+                    ods_code=practice["ods_code"],
+                    name=practice["name"],
                 )
                 for practice in data["practices"]
             ],

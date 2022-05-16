@@ -12,7 +12,9 @@ from prmcalculator.domain.practice.construct_practice_summary import (
     PracticeSummary,
     construct_practice_summary,
 )
-from prmcalculator.domain.practice.group_transfers_by_practice import group_transfers_by_practice
+from prmcalculator.domain.practice.group_transfers_by_practice_deprecated import (
+    group_transfers_by_practice_deprecated,
+)
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
 from prmcalculator.domain.reporting_window import ReportingWindow
 
@@ -61,7 +63,7 @@ def calculate_practice_metrics(
         practices=organisation_metadata.practices, ccgs=organisation_metadata.ccgs
     )
 
-    grouped_transfers = group_transfers_by_practice(
+    grouped_transfers = group_transfers_by_practice_deprecated(
         transfers=transfers,
         organisation_lookup=organisation_lookup,
         observability_probe=observability_probe,

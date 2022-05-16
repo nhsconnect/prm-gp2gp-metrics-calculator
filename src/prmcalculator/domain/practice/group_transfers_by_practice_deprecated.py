@@ -9,34 +9,38 @@ ODSCode = Optional[str]
 
 
 @dataclass(frozen=True)
-class PracticeTransfers:
+class PracticeTransfersDeprecated:
     ods_code: ODSCode
     name: str
     transfers: Tuple[Transfer, ...]
+    ccg_ods_code: ODSCode
+    ccg_name: Optional[str]
 
 
-class TransferAccumulator:
+class TransferAccumulatorDeprecated:
     def __init__(self, practice: PracticeMetadata):
-        self._name = practice.name
         self._ods_code = practice.ods_code
+        self._name = practice.name
         self._transfers: List[Transfer] = []
 
     def add_transfer(self, transfer: Transfer):
         self._transfers.append(transfer)
 
-    def into_group(self) -> PracticeTransfers:
-        return PracticeTransfers(
+    def into_group(self) -> PracticeTransfersDeprecated:
+        return PracticeTransfersDeprecated(
             ods_code=self._ods_code,
             name=self._name,
             transfers=tuple(self._transfers),
+            ccg_ods_code=None,
+            ccg_name=None,
         )
 
 
-def group_transfers_by_practice(
+def group_transfers_by_practice_deprecated(
     transfers: List[Transfer], organisation_lookup: OrganisationLookup, observability_probe
-) -> List[PracticeTransfers]:
-    practice_transfers: Dict[ODSCode, TransferAccumulator] = {
-        practice.ods_code: TransferAccumulator(practice)
+) -> List[PracticeTransfersDeprecated]:
+    practice_transfers: Dict[ODSCode, TransferAccumulatorDeprecated] = {
+        practice.ods_code: TransferAccumulatorDeprecated(practice)
         for practice in organisation_lookup.all_practices()
     }
     for transfer in transfers:
@@ -46,5 +50,4 @@ def group_transfers_by_practice(
             practice_transfers[ods_code].add_transfer(transfer)
         else:
             observability_probe.record_unknown_practice_for_transfer(transfer)
-
     return [accumulator.into_group() for accumulator in practice_transfers.values()]
