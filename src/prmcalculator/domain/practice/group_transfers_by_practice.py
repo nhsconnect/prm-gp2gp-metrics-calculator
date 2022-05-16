@@ -25,12 +25,17 @@ def group_transfers_by_practice(transfers: List[Transfer], observability_probe) 
 
     practice_list = []
     for practice_transfers in practice_transfers_by_ods.values():
+        latest_transfer = practice_transfers[0]
+        for transfer in practice_transfers:
+            if transfer.date_requested > latest_transfer.date_requested:
+                latest_transfer = transfer
+
         practice_list.append(
             Practice(
-                ods_code=practice_transfers[0].requesting_practice.ods_code,
-                name=practice_transfers[0].requesting_practice.name,
-                ccg_ods_code=practice_transfers[0].requesting_practice.ccg_ods_code,
-                ccg_name=practice_transfers[0].requesting_practice.ccg_name,
+                ods_code=latest_transfer.requesting_practice.ods_code,
+                name=latest_transfer.requesting_practice.name,
+                ccg_ods_code=latest_transfer.requesting_practice.ccg_ods_code,
+                ccg_name=latest_transfer.requesting_practice.ccg_name,
                 transfers=practice_transfers,
             )
         )

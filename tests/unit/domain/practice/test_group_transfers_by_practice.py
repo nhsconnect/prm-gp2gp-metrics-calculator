@@ -4,6 +4,7 @@ from prmcalculator.domain.practice.group_transfers_by_practice import (
     Practice,
     group_transfers_by_practice,
 )
+from tests.builders.common import a_datetime
 from tests.builders.gp2gp import build_practice, build_transfer
 
 
@@ -75,6 +76,49 @@ def test_produces_a_group_given_single_practice_with_multiple_transfer():
     assert actual == expected
 
 
+def test_sets_practice_fields_based_on_latest_transfer_transfer():
+    mock_probe = Mock()
+
+    transfer_one_oldest = build_transfer(
+        date_requested=a_datetime(year=2020, month=1, day=1),
+        requesting_practice=build_practice(
+            ods_code="A1234", name="Practice Older", ccg_name="CCG 1", ccg_ods_code="AA1234"
+        ),
+    )
+    transfer_two_latest = build_transfer(
+        date_requested=a_datetime(year=2020, month=1, day=30),
+        requesting_practice=build_practice(
+            ods_code="A1234",
+            name="Practice Latest",
+            ccg_name="CCG Latest",
+            ccg_ods_code="LATEST1234",
+        ),
+    )
+    transfer_three_old = build_transfer(
+        date_requested=a_datetime(year=2020, month=1, day=5),
+        requesting_practice=build_practice(
+            ods_code="A1234", name="Practice Old", ccg_name="CCG 1", ccg_ods_code="AA1234"
+        ),
+    )
+
+    expected = [
+        Practice(
+            name="Practice Latest",
+            ods_code="A1234",
+            transfers=[transfer_one_oldest, transfer_two_latest, transfer_three_old],
+            ccg_name="CCG Latest",
+            ccg_ods_code="LATEST1234",
+        )
+    ]
+
+    actual = group_transfers_by_practice(
+        transfers=[transfer_one_oldest, transfer_two_latest, transfer_three_old],
+        observability_probe=mock_probe,
+    )
+
+    assert actual == expected
+
+
 def test_produces_correct_groups_given_two_practices_each_with_transfers():
     mock_probe = Mock()
 
@@ -90,7 +134,7 @@ def test_produces_correct_groups_given_two_practices_each_with_transfers():
     )
     transfer_three = build_transfer(
         requesting_practice=build_practice(
-            ods_code="B1234", name="Practice 3", ccg_name="CCG 2", ccg_ods_code="BB1234"
+            ods_code="B1234", name="Practice 2", ccg_name="CCG 2", ccg_ods_code="BB1234"
         ),
     )
 
