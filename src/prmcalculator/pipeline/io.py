@@ -9,7 +9,6 @@ from prmcalculator.domain.gp2gp.transfer import Transfer, convert_table_to_trans
 from prmcalculator.domain.national.construct_national_metrics_presentation import (
     NationalMetricsPresentation,
 )
-from prmcalculator.domain.ods_portal.organisation_metadata import OrganisationMetadata
 from prmcalculator.utils.io.dictionary import camelize_dict
 from prmcalculator.utils.io.s3 import S3DataManager
 
@@ -31,10 +30,6 @@ class PlatformMetricsIO:
     def _create_platform_json_object(platform_data) -> dict:
         content_dict = asdict(platform_data)
         return camelize_dict(content_dict)
-
-    def read_ods_metadata(self, s3_uri: str) -> OrganisationMetadata:
-        ods_metadata_dict = self._s3_manager.read_json(s3_uri)
-        return OrganisationMetadata.from_dict(ods_metadata_dict)
 
     def read_transfers_as_dataclass(self, s3_uris: List[str]) -> List[Transfer]:
         transfer_table = self.read_transfers_as_table(s3_uris)

@@ -15,7 +15,6 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
     build_tag = "61ad1e1c"
     environment = {
         "INPUT_TRANSFER_DATA_BUCKET": "input-transfer-data-bucket",
-        "ORGANISATION_METADATA_BUCKET": "metadata-bucket",
         "OUTPUT_METRICS_BUCKET": "output-metrics-bucket",
         "NUMBER_OF_MONTHS": "3",
         "DATE_ANCHOR": "2020-01-30T18:44:49Z",
@@ -27,7 +26,6 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
 
     expected_config = PipelineConfig(
         input_transfer_data_bucket="input-transfer-data-bucket",
-        organisation_metadata_bucket="metadata-bucket",
         output_metrics_bucket="output-metrics-bucket",
         number_of_months=3,
         date_anchor=datetime(
@@ -48,7 +46,6 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
     build_tag = "61ad1e1c"
     environment = {
         "INPUT_TRANSFER_DATA_BUCKET": "input-transfer-data-bucket",
-        "ORGANISATION_METADATA_BUCKET": "metadata-bucket",
         "OUTPUT_METRICS_BUCKET": "output-metrics-bucket",
         "BUILD_TAG": build_tag,
         "NATIONAL_METRICS_S3_PATH_PARAM_NAME": "a/param/name",
@@ -57,7 +54,6 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
 
     expected_config = PipelineConfig(
         input_transfer_data_bucket="input-transfer-data-bucket",
-        organisation_metadata_bucket="metadata-bucket",
         output_metrics_bucket="output-metrics-bucket",
         number_of_months=6,
         date_anchor=datetime.combine(date.today(), datetime.min.time()),
@@ -75,7 +71,6 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
 def test_error_from_environment_when_required_fields_are_not_set():
     environment = {
         "INPUT_TRANSFER_DATA_BUCKET": "input-transfer-data-bucket",
-        "ORGANISATION_METADATA_BUCKET": "organisation-metadata-bucket",
     }
 
     with pytest.raises(MissingEnvironmentVariable) as e:
@@ -86,7 +81,6 @@ def test_error_from_environment_when_required_fields_are_not_set():
 def test_error_from_environment_when_incorrect_type_field_set():
     environment = {
         "INPUT_TRANSFER_DATA_BUCKET": "input-transfer-data-bucket",
-        "ORGANISATION_METADATA_BUCKET": "metadata-bucket",
         "OUTPUT_METRICS_BUCKET": "output-metrics-bucket",
         "DATE_ANCHOR": "incorrect type",
         "BUILD_TAG": a_string(),

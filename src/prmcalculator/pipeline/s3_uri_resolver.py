@@ -8,10 +8,9 @@ from prmcalculator.utils.add_leading_zero import add_leading_zero
 class PlatformMetricsS3UriResolver:
 
     _TRANSFER_DATA_VERSION = "v10"
-    _DEFAULT_DATA_PLATFORM_METRICS_VERSION = "v10"
+    _DEFAULT_DATA_PLATFORM_METRICS_VERSION = "v11"
     _ORG_METADATA_VERSION = "v4"
 
-    _ORG_METADATA_FILE_NAME = "organisationMetadata.json"
     _PRACTICE_METRICS_FILE_NAME = "practiceMetrics.json"
     _NATIONAL_METRICS_FILE_NAME = "nationalMetrics.json"
     _SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME = "supplier_pathway_outcome_counts.csv"
@@ -20,12 +19,10 @@ class PlatformMetricsS3UriResolver:
 
     def __init__(
         self,
-        ods_bucket: str,
         transfer_data_bucket: str,
         data_platform_metrics_bucket: str,
         data_platform_metrics_version: Optional[str] = None,
     ):
-        self._ods_bucket_name = ods_bucket
         self._transfer_data_bucket = transfer_data_bucket
         _data_platform_metrics_version = (
             data_platform_metrics_version or self._DEFAULT_DATA_PLATFORM_METRICS_VERSION
@@ -33,18 +30,6 @@ class PlatformMetricsS3UriResolver:
         self._data_platform_metrics_s3_prefix = (
             f"s3://{data_platform_metrics_bucket}/{_data_platform_metrics_version}"
         )
-
-    def ods_metadata(self, year_month: YearMonth) -> str:
-        year, month = year_month
-        s3_key = "/".join(
-            [
-                self._ods_bucket_name,
-                self._ORG_METADATA_VERSION,
-                f"{year}/{month}",
-                self._ORG_METADATA_FILE_NAME,
-            ]
-        )
-        return f"s3://{s3_key}"
 
     def practice_metrics_key(self, year_month: YearMonth) -> str:
         year, month = year_month

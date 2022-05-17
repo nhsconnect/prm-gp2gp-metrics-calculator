@@ -38,7 +38,6 @@ class MetricsCalculator:
         }
 
         self._uris = PlatformMetricsS3UriResolver(
-            ods_bucket=config.organisation_metadata_bucket,
             transfer_data_bucket=config.input_transfer_data_bucket,
             data_platform_metrics_bucket=config.output_metrics_bucket,
         )

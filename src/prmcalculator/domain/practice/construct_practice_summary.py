@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from typing import List, Optional
 
-from prmcalculator.domain.ods_portal.organisation_lookup import OrganisationLookup
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
 from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
 from prmcalculator.domain.reporting_window import ReportingWindow

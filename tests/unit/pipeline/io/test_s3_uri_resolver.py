@@ -4,25 +4,6 @@ from prmcalculator.pipeline.s3_uri_resolver import PlatformMetricsS3UriResolver
 from tests.builders.common import a_datetime, a_string
 
 
-def test_resolver_returns_correct_ods_metadata_uri():
-    ods_bucket_name = a_string()
-    date_anchor = a_datetime()
-    year = date_anchor.year
-    month = date_anchor.month
-
-    uri_resolver = PlatformMetricsS3UriResolver(
-        ods_bucket=ods_bucket_name,
-        data_platform_metrics_bucket=a_string(),
-        transfer_data_bucket=a_string(),
-    )
-
-    actual = uri_resolver.ods_metadata((year, month))
-
-    expected = f"s3://{ods_bucket_name}/v4/{year}/{month}/organisationMetadata.json"
-
-    assert actual == expected
-
-
 def test_resolver_returns_correct_practice_metrics_uri_with_default_version():
     data_platform_metrics_bucket = a_string()
     date_anchor = a_datetime()
@@ -30,7 +11,6 @@ def test_resolver_returns_correct_practice_metrics_uri_with_default_version():
     month = date_anchor.month
 
     uri_resolver = PlatformMetricsS3UriResolver(
-        ods_bucket=a_string(),
         data_platform_metrics_bucket=data_platform_metrics_bucket,
         transfer_data_bucket=a_string(),
     )
@@ -38,7 +18,7 @@ def test_resolver_returns_correct_practice_metrics_uri_with_default_version():
     actual = uri_resolver.practice_metrics((year, month))
 
     expected_filename = f"{year}-{month}-practiceMetrics.json"
-    expected = f"s3://{data_platform_metrics_bucket}/v10/{year}/{month}/{expected_filename}"
+    expected = f"s3://{data_platform_metrics_bucket}/v11/{year}/{month}/{expected_filename}"
 
     assert actual == expected
 
@@ -50,7 +30,6 @@ def test_resolver_returns_correct_practice_metrics_uri_with_specified_version():
     month = date_anchor.month
 
     uri_resolver = PlatformMetricsS3UriResolver(
-        ods_bucket=a_string(),
         data_platform_metrics_bucket=data_platform_metrics_bucket,
         data_platform_metrics_version="v4",
         transfer_data_bucket=a_string(),
@@ -70,7 +49,6 @@ def test_resolver_returns_correct_practice_metrics_s3_key():
     month = date_anchor.month
 
     uri_resolver = PlatformMetricsS3UriResolver(
-        ods_bucket=a_string(),
         data_platform_metrics_bucket=a_string(),
         transfer_data_bucket=a_string(),
     )
@@ -89,14 +67,13 @@ def test_resolver_returns_correct_national_metrics_uri():
     month = date_anchor.month
 
     uri_resolver = PlatformMetricsS3UriResolver(
-        ods_bucket=a_string(),
         data_platform_metrics_bucket=data_platform_metrics_bucket,
         transfer_data_bucket=a_string(),
     )
 
     actual = uri_resolver.national_metrics((year, month))
     expected_filename = f"{year}-{month}-nationalMetrics.json"
-    expected = f"s3://{data_platform_metrics_bucket}/v10/{year}/{month}/{expected_filename}"
+    expected = f"s3://{data_platform_metrics_bucket}/v11/{year}/{month}/{expected_filename}"
 
     assert actual == expected
 
@@ -108,7 +85,6 @@ def test_resolver_returns_correct_national_metrics_uri_with_specified_version():
     month = date_anchor.month
 
     uri_resolver = PlatformMetricsS3UriResolver(
-        ods_bucket=a_string(),
         data_platform_metrics_bucket=data_platform_metrics_bucket,
         data_platform_metrics_version="v4",
         transfer_data_bucket=a_string(),
@@ -127,7 +103,6 @@ def test_resolver_returns_correct_national_metrics_s3_key():
     month = date_anchor.month
 
     uri_resolver = PlatformMetricsS3UriResolver(
-        ods_bucket=a_string(),
         data_platform_metrics_bucket=a_string(),
         transfer_data_bucket=a_string(),
     )
@@ -149,7 +124,6 @@ def test_resolver_returns_correct_transfer_data_uris():
     ]
 
     uri_resolver = PlatformMetricsS3UriResolver(
-        ods_bucket=a_string(),
         data_platform_metrics_bucket=a_string(),
         transfer_data_bucket=transfer_data_bucket,
     )

@@ -45,7 +45,6 @@ FAKE_S3_REGION = "eu-west-2"
 
 S3_OUTPUT_METRICS_BUCKET_NAME = "output-metrics-bucket"
 S3_INPUT_TRANSFER_DATA_BUCKET_NAME = "input-transfer-data-bucket"
-S3_INPUT_ORGANISATION_METADATA_BUCKET_NAME = "organisation-metadata-bucket"
 
 NATIONAL_METRICS_S3_PATH_PARAM_NAME = "registrations/national-metrics/test-param-name"
 PRACTICE_METRICS_S3_PATH_PARAM_NAME = "registrations/practice-metrics/test-param-name"
@@ -69,7 +68,6 @@ def _setup():
 
     environ["INPUT_TRANSFER_DATA_BUCKET"] = S3_INPUT_TRANSFER_DATA_BUCKET_NAME
     environ["OUTPUT_METRICS_BUCKET"] = S3_OUTPUT_METRICS_BUCKET_NAME
-    environ["ORGANISATION_METADATA_BUCKET"] = S3_INPUT_ORGANISATION_METADATA_BUCKET_NAME
 
     environ["NATIONAL_METRICS_S3_PATH_PARAM_NAME"] = NATIONAL_METRICS_S3_PATH_PARAM_NAME
     environ["PRACTICE_METRICS_S3_PATH_PARAM_NAME"] = PRACTICE_METRICS_S3_PATH_PARAM_NAME
@@ -202,14 +200,6 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
     environ["DATE_ANCHOR"] = "2020-01-30T18:44:49Z"
 
     output_metrics_bucket = _build_fake_s3_bucket(S3_OUTPUT_METRICS_BUCKET_NAME, s3_client)
-    organisation_metadata_bucket = _build_fake_s3_bucket(
-        S3_INPUT_ORGANISATION_METADATA_BUCKET_NAME, s3_client
-    )
-
-    organisation_metadata_file = str(datadir / "inputs" / "organisationMetadata.json")
-    organisation_metadata_bucket.upload_file(
-        organisation_metadata_file, "v4/2020/1/organisationMetadata.json"
-    )
 
     input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET_NAME, s3_client)
 
@@ -250,11 +240,11 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
     expected_practice_metrics_output_key = "2019-12-practiceMetrics.json"
 
     expected_practice_metrics_including_slow_transfers = _read_json(
-        datadir / "expected_outputs" / "v10" / "practiceMetrics.json"
+        datadir / "expected_outputs" / "v11" / "practiceMetrics.json"
     )
     expected_national_metrics_output_key = "2019-12-nationalMetrics.json"
     expected_national_metrics = _read_json(
-        datadir / "expected_outputs" / "v10" / "nationalMetrics.json"
+        datadir / "expected_outputs" / "v11" / "nationalMetrics.json"
     )
 
     expected_metadata = {
@@ -263,7 +253,7 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
         "number-of-months": "2",
     }
 
-    s3_metrics_output_path = "v10/2019/12/"
+    s3_metrics_output_path = "v11/2019/12/"
 
     try:
         main()
@@ -304,7 +294,6 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
         practice_metrics_s3_uri_ssm_value = _get_ssm_param(PRACTICE_METRICS_S3_PATH_PARAM_NAME)
         assert practice_metrics_s3_uri_ssm_value == "2019/12/2019-12-practiceMetrics.json"
     finally:
-        _delete_bucket_with_objects(organisation_metadata_bucket)
         _delete_bucket_with_objects(output_metrics_bucket)
         _delete_bucket_with_objects(input_transfer_bucket)
         fake_s3.stop()

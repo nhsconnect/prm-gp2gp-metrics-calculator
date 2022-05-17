@@ -66,7 +66,6 @@ class EnvConfig:
 class PipelineConfig:
     build_tag: str
     input_transfer_data_bucket: str
-    organisation_metadata_bucket: str
     output_metrics_bucket: str
     date_anchor: datetime
     number_of_months: int
@@ -83,7 +82,6 @@ class PipelineConfig:
         return cls(
             build_tag=env.read_str("BUILD_TAG"),
             input_transfer_data_bucket=env.read_str("INPUT_TRANSFER_DATA_BUCKET"),
-            organisation_metadata_bucket=env.read_str("ORGANISATION_METADATA_BUCKET"),
             output_metrics_bucket=env.read_str("OUTPUT_METRICS_BUCKET"),
             date_anchor=env.read_optional_datetime("DATE_ANCHOR"),
             number_of_months=env.read_optional_int("NUMBER_OF_MONTHS", default=6),
