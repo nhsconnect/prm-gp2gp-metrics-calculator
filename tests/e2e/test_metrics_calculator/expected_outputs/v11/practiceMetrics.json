@@ -84,6 +84,48 @@
       "odsCode": "A12347",
       "ccgOdsCode": "11D",
       "ccgName": "Another Test CCG"
+    },
+    {
+      "metrics": [
+        {
+          "month": 12,
+          "requestedTransfers": {
+            "requestedCount": 1,
+            "failuresTotalCount": 0,
+            "failuresTotalPercentOfRequested": 0,
+            "integratedWithin3DaysCount": 1,
+            "integratedWithin3DaysPercentOfReceived": 100.0,
+            "integratedWithin8DaysCount": 0,
+            "integratedWithin8DaysPercentOfReceived": 0,
+            "notIntegratedWithin8DaysPercentOfReceived": 0,
+            "notIntegratedWithin8DaysTotal": 0,
+            "receivedCount": 1,
+            "receivedPercentOfRequested": 100.0
+          },
+          "year": 2019
+        },
+        {
+          "month": 11,
+          "requestedTransfers": {
+            "failuresTotalCount": 0,
+            "failuresTotalPercentOfRequested": null,
+            "integratedWithin3DaysCount": 0,
+            "integratedWithin3DaysPercentOfReceived": null,
+            "integratedWithin8DaysCount": 0,
+            "integratedWithin8DaysPercentOfReceived": null,
+            "notIntegratedWithin8DaysPercentOfReceived": null,
+            "notIntegratedWithin8DaysTotal": 0,
+            "receivedCount": 0,
+            "receivedPercentOfRequested": null,
+            "requestedCount": 0
+          },
+          "year": 2019
+        }
+      ],
+      "name": "Test GP Practice with an Integration",
+      "odsCode": "Z12347",
+      "ccgOdsCode": "11D",
+      "ccgName": "Another Test CCG"
     }
   ],
   "ccgs": [
@@ -98,7 +140,8 @@
       "odsCode": "11D",
       "name": "Another Test CCG",
       "practices": [
-        "A12347"
+        "A12347",
+        "Z12347"
       ]
     }
   ]
