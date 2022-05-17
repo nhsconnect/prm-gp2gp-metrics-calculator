@@ -7,7 +7,7 @@ from prmcalculator.domain.practice.group_transfers_by_practice_deprecated import
     group_transfers_by_practice_deprecated,
 )
 from tests.builders.common import a_string
-from tests.builders.gp2gp import build_practice, build_transfer
+from tests.builders.gp2gp import build_practice_details, build_transfer
 
 
 def test_produces_empty_metrics_given_practices_with_no_transfers():
@@ -47,7 +47,7 @@ def test_produces_an_empty_metrics_object_given_practice_with_no_matching_transf
         ccgs=[],
     )
     transfer = build_transfer(
-        requesting_practice=build_practice(asid="565656565656"),
+        requesting_practice=build_practice_details(asid="565656565656"),
     )
 
     actual = group_transfers_by_practice_deprecated(
@@ -74,10 +74,10 @@ def test_produces_a_group_given_single_practice_with_transfers_matching_asid():
         ccgs=[],
     )
     transfer_one = build_transfer(
-        requesting_practice=build_practice(asid="121212121212"),
+        requesting_practice=build_practice_details(asid="121212121212"),
     )
     transfer_two = build_transfer(
-        requesting_practice=build_practice(asid="121212121212"),
+        requesting_practice=build_practice_details(asid="121212121212"),
     )
 
     expected = [
@@ -112,11 +112,11 @@ def test_produces_a_group_given_single_practice_with_transfers_matching_asids():
     )
 
     transfer_one = build_transfer(
-        requesting_practice=build_practice(asid="343434343434"),
+        requesting_practice=build_practice_details(asid="343434343434"),
     )
 
     transfer_two = build_transfer(
-        requesting_practice=build_practice(asid="121212121212"),
+        requesting_practice=build_practice_details(asid="121212121212"),
     )
 
     expected = [
@@ -156,10 +156,10 @@ def test_produces_correct_groups_given_two_practices_each_with_transfers():
         ccgs=[],
     )
     practice_a_transfer = build_transfer(
-        requesting_practice=build_practice(asid=practice_a_asid),
+        requesting_practice=build_practice_details(asid=practice_a_asid),
     )
     practice_b_transfer = build_transfer(
-        requesting_practice=build_practice(asid=practice_b_asid),
+        requesting_practice=build_practice_details(asid=practice_b_asid),
     )
 
     expected = [
@@ -193,7 +193,7 @@ def test_calls_observability_probe_when_multiple_unknown_practices_for_transfers
 
     lookup = OrganisationLookup(practices=[], ccgs=[])
     unknown_practice_transfer = build_transfer(
-        requesting_practice=build_practice(asid="121212121212")
+        requesting_practice=build_practice_details(asid="121212121212")
     )
 
     group_transfers_by_practice_deprecated(

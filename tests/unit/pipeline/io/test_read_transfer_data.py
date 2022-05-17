@@ -11,7 +11,7 @@ from prmcalculator.domain.gp2gp.transfer import (
 )
 from prmcalculator.pipeline.io import PlatformMetricsIO
 from tests.builders.common import a_datetime
-from tests.builders.gp2gp import build_practice
+from tests.builders.gp2gp import build_practice_details
 
 _DATE_ANCHOR_MONTH = 1
 _DATE_ANCHOR_YEAR = 2021
@@ -34,7 +34,7 @@ _integrated_late_date_completed = _integrated_late_date_requested + _integrated_
 _INTEGRATED_TRANSFER = Transfer(
     conversation_id="123",
     sla_duration=_integrated_sla_duration,
-    requesting_practice=build_practice(
+    requesting_practice=build_practice_details(
         asid="213125436412",
         supplier="SupplierA",
         name="Practice 1",
@@ -51,7 +51,7 @@ _INTEGRATED_TRANSFER = Transfer(
 _INTEGRATED_LATE_TRANSFER = Transfer(
     conversation_id="456",
     sla_duration=_integrated_late_sla_duration,
-    requesting_practice=build_practice(
+    requesting_practice=build_practice_details(
         asid="121212121212",
         supplier="SupplierB",
         name="Practice 2",

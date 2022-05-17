@@ -12,7 +12,7 @@ from prmcalculator.domain.gp2gp.transfer import (
     convert_table_to_transfers,
 )
 from tests.builders.common import a_datetime, a_string
-from tests.builders.gp2gp import build_practice
+from tests.builders.gp2gp import build_practice_details
 
 
 def _build_transfer_table(**kwargs) -> pa.Table:
@@ -203,7 +203,7 @@ def test_converts_multiple_rows_into_list_of_transfers():
         Transfer(
             conversation_id="123",
             sla_duration=integrated_sla_duration,
-            requesting_practice=build_practice(
+            requesting_practice=build_practice_details(
                 asid="213125436412",
                 supplier="Vision",
                 name="Practice 1",
@@ -218,7 +218,7 @@ def test_converts_multiple_rows_into_list_of_transfers():
         Transfer(
             conversation_id="2345",
             sla_duration=timedelta(hours=3, minutes=26, seconds=53),
-            requesting_practice=build_practice(
+            requesting_practice=build_practice_details(
                 asid="124135423412",
                 supplier="Systm One",
                 name="Practice 2",
@@ -263,7 +263,7 @@ def test_convert_table_to_transfers_handles_none_values_gracefully():
         Transfer(
             conversation_id="123",
             sla_duration=None,
-            requesting_practice=build_practice(
+            requesting_practice=build_practice_details(
                 asid="213125436412",
                 supplier="Vision",
                 ods_code="A123",

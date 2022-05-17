@@ -23,7 +23,7 @@ from tests.builders.common import a_datetime
 from tests.builders.gp2gp import (
     a_transfer_integrated_within_3_days,
     a_transfer_that_was_never_integrated,
-    build_practice,
+    build_practice_details,
 )
 
 
@@ -42,7 +42,7 @@ def test_calculates_correct_practice_metrics_given_transfers():
     requesting_ods_code = "A12345"
     ccg_ods_code = "23B"
     ccg_name = "Test CCG"
-    requesting_practice = build_practice(asid="343434343434", supplier="SystemOne")
+    requesting_practice = build_practice_details(asid="343434343434", supplier="SystemOne")
 
     transfers = [
         a_transfer_integrated_within_3_days(
@@ -223,7 +223,7 @@ def test_calculates_correct_practice_metrics_without_filtering_transfers():
     requesting_ods_code = "A12345"
     ccg_ods_code = "23B"
     ccg_name = "Test CCG"
-    requesting_practice = build_practice(asid="343434343434", supplier="SystemOne")
+    requesting_practice = build_practice_details(asid="343434343434", supplier="SystemOne")
 
     date_requested = datetime(2019, 12, 30, 18, 2, 29, tzinfo=UTC)
     transferred_within_a_day_timestamp = date_requested + timedelta(hours=1)

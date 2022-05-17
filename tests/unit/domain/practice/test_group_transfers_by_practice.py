@@ -5,10 +5,10 @@ from prmcalculator.domain.practice.group_transfers_by_practice import (
     group_transfers_by_practice,
 )
 from tests.builders.common import a_datetime
-from tests.builders.gp2gp import build_practice, build_transfer
+from tests.builders.gp2gp import build_practice_details, build_transfer
 
 
-def test_produces_empty_metrics_given_practices_with_no_transfers():
+def test_produces_empty_list_given_no_transfers():
     mock_probe = Mock()
 
     expected = []  # type: ignore
@@ -17,11 +17,11 @@ def test_produces_empty_metrics_given_practices_with_no_transfers():
     assert actual == expected
 
 
-def test_produces_a_group_given_single_practice_with_a_single_transfer():
+def test_produces_a_group_given_a_single_practice_with_a_single_transfer():
     mock_probe = Mock()
 
     transfer_one = build_transfer(
-        requesting_practice=build_practice(
+        requesting_practice=build_practice_details(
             ods_code="A1234", name="Practice 1", ccg_name="CCG 1", ccg_ods_code="AA1234"
         )
     )
@@ -44,16 +44,16 @@ def test_produces_a_group_given_single_practice_with_a_single_transfer():
     assert actual == expected
 
 
-def test_produces_a_group_given_single_practice_with_multiple_transfer():
+def test_produces_a_group_given_a_single_practice_with_multiple_transfer():
     mock_probe = Mock()
 
     transfer_one = build_transfer(
-        requesting_practice=build_practice(
+        requesting_practice=build_practice_details(
             ods_code="A1234", name="Practice 1", ccg_name="CCG 1", ccg_ods_code="AA1234"
         ),
     )
     transfer_two = build_transfer(
-        requesting_practice=build_practice(
+        requesting_practice=build_practice_details(
             ods_code="A1234", name="Practice 1", ccg_name="CCG 1", ccg_ods_code="AA1234"
         ),
     )
@@ -81,13 +81,13 @@ def test_sets_practice_fields_based_on_latest_transfer_transfer():
 
     transfer_one_oldest = build_transfer(
         date_requested=a_datetime(year=2020, month=1, day=1),
-        requesting_practice=build_practice(
+        requesting_practice=build_practice_details(
             ods_code="A1234", name="Practice Older", ccg_name="CCG 1", ccg_ods_code="AA1234"
         ),
     )
     transfer_two_latest = build_transfer(
         date_requested=a_datetime(year=2020, month=1, day=30),
-        requesting_practice=build_practice(
+        requesting_practice=build_practice_details(
             ods_code="A1234",
             name="Practice Latest",
             ccg_name="CCG Latest",
@@ -96,7 +96,7 @@ def test_sets_practice_fields_based_on_latest_transfer_transfer():
     )
     transfer_three_old = build_transfer(
         date_requested=a_datetime(year=2020, month=1, day=5),
-        requesting_practice=build_practice(
+        requesting_practice=build_practice_details(
             ods_code="A1234", name="Practice Old", ccg_name="CCG 1", ccg_ods_code="AA1234"
         ),
     )
@@ -123,17 +123,17 @@ def test_produces_correct_groups_given_two_practices_each_with_transfers():
     mock_probe = Mock()
 
     transfer_one = build_transfer(
-        requesting_practice=build_practice(
+        requesting_practice=build_practice_details(
             ods_code="A1234", name="Practice 1", ccg_name="CCG 1", ccg_ods_code="AA1234"
         ),
     )
     transfer_two = build_transfer(
-        requesting_practice=build_practice(
+        requesting_practice=build_practice_details(
             ods_code="B1234", name="Practice 2", ccg_name="CCG 2", ccg_ods_code="BB1234"
         ),
     )
     transfer_three = build_transfer(
-        requesting_practice=build_practice(
+        requesting_practice=build_practice_details(
             ods_code="B1234", name="Practice 2", ccg_name="CCG 2", ccg_ods_code="BB1234"
         ),
     )

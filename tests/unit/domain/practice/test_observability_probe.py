@@ -5,7 +5,7 @@ from prmcalculator.domain.practice.calculate_practice_metrics import (
 )
 from prmcalculator.domain.reporting_window import ReportingWindow
 from tests.builders.common import a_datetime, a_string
-from tests.builders.gp2gp import build_practice, build_transfer
+from tests.builders.gp2gp import build_practice_details, build_transfer
 
 
 def test_probe_should_log_event_when_calculating_practice_metrics():
@@ -34,7 +34,7 @@ def test_probe_should_warn_given_a_transfer_with_unknown_practice():
     conversation_id = a_string()
     transfer = build_transfer(
         conversation_id=conversation_id,
-        requesting_practice=build_practice(asid=unknown_asid),
+        requesting_practice=build_practice_details(asid=unknown_asid),
     )
 
     probe.record_unknown_practice_for_transfer(transfer=transfer)
