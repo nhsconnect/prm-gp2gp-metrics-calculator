@@ -4,6 +4,7 @@ from typing import Dict, List
 from prmcalculator.domain.gp2gp.transfer import Transfer
 
 ODSCode = str
+PracticeTransfersDictByOds = Dict[ODSCode, List[Transfer]]
 
 
 @dataclass(frozen=True)
@@ -21,7 +22,9 @@ class PracticeTransfers:
 
 def group_transfers_by_practice(transfers: List[Transfer], observability_probe) -> List[Practice]:
 
-    practice_transfers_by_ods = _group_practice_transfers_by_ods_code(transfers)
+    practice_transfers_by_ods = _group_practice_transfers_by_ods_code(
+        transfers, observability_probe
+    )
 
     practice_list = []
     for practice_transfers in practice_transfers_by_ods.values():
@@ -41,17 +44,19 @@ def group_transfers_by_practice(transfers: List[Transfer], observability_probe) 
         )
 
     return practice_list
-    # log errors:
-    # observability_probe.record_unknown_practice_for_transfer(transfer)
 
 
-PracticeTransfersDictByOds = Dict[ODSCode, List[Transfer]]
-
-
-def _group_practice_transfers_by_ods_code(transfers: List[Transfer]) -> PracticeTransfersDictByOds:
+def _group_practice_transfers_by_ods_code(
+    transfers: List[Transfer], observability_probe
+) -> PracticeTransfersDictByOds:
     practice_transfers: PracticeTransfersDictByOds = {}
     for transfer in transfers:
+        if transfer.requesting_practice.ods_code is None:
+            observability_probe.record_unknown_practice_for_transfer(transfer)
+            continue
+
         if transfer.requesting_practice.ods_code not in practice_transfers:
             practice_transfers[transfer.requesting_practice.ods_code] = []
+
         practice_transfers[transfer.requesting_practice.ods_code].append(transfer)
     return practice_transfers

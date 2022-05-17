@@ -163,21 +163,24 @@ def test_produces_correct_groups_given_two_practices_each_with_transfers():
     assert actual == expected
 
 
-#
-# def test_calls_observability_probe_when_multiple_unknown_practices_for_transfers():
-#     mock_probe = Mock()
-#
-#     lookup = OrganisationLookup(practices=[], ccgs=[])
-#     unknown_practice_transfer = build_transfer(
-#         requesting_practice=build_practice(asid="121212121212")
-#     )
-#
-#     group_transfers_by_practice_deprecated(
-#         transfers=[unknown_practice_transfer],
-#         organisation_lookup=lookup,
-#         observability_probe=mock_probe,
-#     )
-#
-#     mock_probe.record_unknown_practice_for_transfer.assert_called_once_with(
-#         unknown_practice_transfer
-#     )
+def test_ignore_transfer_and_logs_when_missing_practice_ods_code():
+    mock_probe = Mock()
+
+    transfer_missing_ods_code = build_transfer(
+        requesting_practice=build_practice_details(
+            ods_code=None, name="Practice 1", ccg_name="CCG 1", ccg_ods_code="AA1234"
+        ),
+    )
+
+    expected = []  # type: ignore
+
+    actual = group_transfers_by_practice(
+        transfers=[transfer_missing_ods_code],
+        observability_probe=mock_probe,
+    )
+
+    mock_probe.record_unknown_practice_for_transfer.assert_called_once_with(
+        transfer_missing_ods_code
+    )
+
+    assert actual == expected
