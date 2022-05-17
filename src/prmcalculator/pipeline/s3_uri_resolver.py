@@ -9,7 +9,6 @@ class PlatformMetricsS3UriResolver:
 
     _TRANSFER_DATA_VERSION = "v10"
     _DEFAULT_DATA_PLATFORM_METRICS_VERSION = "v11"
-    _ORG_METADATA_VERSION = "v4"
 
     _PRACTICE_METRICS_FILE_NAME = "practiceMetrics.json"
     _NATIONAL_METRICS_FILE_NAME = "nationalMetrics.json"
