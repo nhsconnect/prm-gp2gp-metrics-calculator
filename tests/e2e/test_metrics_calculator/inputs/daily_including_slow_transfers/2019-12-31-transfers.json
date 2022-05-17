@@ -49,7 +49,7 @@
   ],
   "requesting_practice_ods_code": ["A12347","A12347"],
   "requesting_practice_name": ["Test GP Practice with some Integrations","Test GP Practice with some Integrations"],
-  "requesting_practice_ccg_ods_code": ["AA12347","AA12347"],
-  "requesting_practice_ccg_name": ["Test CCG with Practice with some Integrations","Test CCG with Practice with some Integrations"]
+  "requesting_practice_ccg_ods_code": ["11D","11D"],
+  "requesting_practice_ccg_name": ["Another Test CCG","Another Test CCG"]
 }
 

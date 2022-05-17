@@ -2,17 +2,15 @@ from collections import defaultdict
 from typing import Dict, Iterable, List, Optional
 
 from prmcalculator.domain.gp2gp.transfer import Transfer
-from prmcalculator.domain.practice.group_transfers_by_practice_deprecated import (
-    ODSCode,
-    PracticeTransfersDeprecated,
-)
+from prmcalculator.domain.practice.group_transfers_by_practice import Practice
+from prmcalculator.domain.practice.group_transfers_by_practice_deprecated import ODSCode
 from prmcalculator.domain.practice.transfer_metrics import TransferMetrics
 from prmcalculator.domain.reporting_window import MonthNumber, YearMonth, YearNumber
 
 
 class PracticeTransferMetrics:
     @classmethod
-    def from_group(cls, group: PracticeTransfersDeprecated):
+    def from_group(cls, group: Practice):
         return cls(
             ods_code=group.ods_code,
             name=group.name,

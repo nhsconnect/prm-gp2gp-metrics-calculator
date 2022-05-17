@@ -7,7 +7,6 @@ from prmcalculator.domain.national.calculate_national_metrics_data import (
     NationalMetricsObservabilityProbe,
     calculate_national_metrics_data,
 )
-from prmcalculator.domain.ods_portal.organisation_metadata import OrganisationMetadata
 from prmcalculator.domain.practice.calculate_practice_metrics import (
     PracticeMetricsObservabilityProbe,
     PracticeMetricsPresentation,
@@ -50,10 +49,6 @@ class MetricsCalculator:
             output_metadata=output_metadata,
         )
 
-    def _read_ods_metadata(self, month):
-        org_metadata_uri = self._uris.ods_metadata(month)
-        return self._io.read_ods_metadata(org_metadata_uri)
-
     def _read_transfer_data(self, dates):
         transfers_data_s3_uris = self._uris.transfer_data(dates)
         return self._io.read_transfers_as_dataclass(transfers_data_s3_uris)
@@ -68,11 +63,9 @@ class MetricsCalculator:
     def _calculate_practice_metrics(
         self,
         transfers: List[Transfer],
-        ods_metadata: OrganisationMetadata,
     ):
         return calculate_practice_metrics(
             transfers=transfers,
-            organisation_metadata=ods_metadata,
             reporting_window=self._reporting_window,
             observability_probe=PracticeMetricsObservabilityProbe(),
         )
@@ -110,15 +103,11 @@ class MetricsCalculator:
         )
 
     def run(self):
-        date_anchor_month = self._reporting_window.date_anchor_month
         dates = self._reporting_window.dates
         last_month = self._reporting_window.last_metric_month
-        ods_metadata = self._read_ods_metadata(date_anchor_month)
         transfers = self._read_transfer_data(dates)
         national_metrics = self._calculate_national_metrics(transfers)
-        practice_metrics_including_slow_transfers = self._calculate_practice_metrics(
-            transfers, ods_metadata
-        )
+        practice_metrics_including_slow_transfers = self._calculate_practice_metrics(transfers)
 
         self._write_national_metrics(national_metrics, last_month)
         self._write_practice_metrics(practice_metrics_including_slow_transfers, last_month)

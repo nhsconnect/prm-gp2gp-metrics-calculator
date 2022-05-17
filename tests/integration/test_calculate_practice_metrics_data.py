@@ -4,12 +4,8 @@ from unittest.mock import Mock
 from dateutil.tz import UTC
 from freezegun import freeze_time
 
-from prmcalculator.domain.ods_portal.organisation_metadata import (
-    CcgMetadata,
-    OrganisationMetadata,
-    PracticeMetadata,
-)
 from prmcalculator.domain.practice.calculate_practice_metrics import (
+    CCGPresentation,
     PracticeMetricsPresentation,
     calculate_practice_metrics,
 )
@@ -23,7 +19,7 @@ from tests.builders.common import a_datetime
 from tests.builders.gp2gp import (
     a_transfer_integrated_within_3_days,
     a_transfer_that_was_never_integrated,
-    build_practice_details,
+    build_practice,
 )
 
 
@@ -42,7 +38,14 @@ def test_calculates_correct_practice_metrics_given_transfers():
     requesting_ods_code = "A12345"
     ccg_ods_code = "23B"
     ccg_name = "Test CCG"
-    requesting_practice = build_practice_details(asid="343434343434", supplier="SystemOne")
+    requesting_practice = build_practice(
+        asid="343434343434",
+        supplier="SystemOne",
+        ccg_name=ccg_name,
+        ccg_ods_code=ccg_ods_code,
+        ods_code=requesting_ods_code,
+        name=requesting_practice_name,
+    )
 
     transfers = [
         a_transfer_integrated_within_3_days(
@@ -54,22 +57,6 @@ def test_calculates_correct_practice_metrics_given_transfers():
             date_requested=datetime(2019, 12, 30, 18, 2, 29, tzinfo=UTC),
         ),
     ]
-
-    practice_list = [
-        PracticeMetadata(
-            asids=[requesting_practice.asid],
-            ods_code=requesting_ods_code,
-            name=requesting_practice_name,
-        )
-    ]
-
-    ccg_list = [CcgMetadata(name=ccg_name, ods_code=ccg_ods_code, practices=[requesting_ods_code])]
-
-    organisation_metadata = OrganisationMetadata(
-        generated_on=datetime(year=2020, month=1, day=15, hour=23, second=42, tzinfo=UTC),
-        practices=practice_list,
-        ccgs=ccg_list,
-    )
 
     expected = PracticeMetricsPresentation(
         generated_on=datetime(year=2020, month=1, day=15, hour=23, second=42, tzinfo=UTC),
@@ -100,12 +87,17 @@ def test_calculates_correct_practice_metrics_given_transfers():
                 ],
             )
         ],
-        ccgs=ccg_list,
+        ccgs=[
+            CCGPresentation(
+                name=ccg_name,
+                ods_code=ccg_ods_code,
+                practices=[requesting_ods_code],
+            )
+        ],
     )
 
     actual = calculate_practice_metrics(
         transfers=transfers,
-        organisation_metadata=organisation_metadata,
         reporting_window=reporting_window,
         observability_probe=mock_probe,
     )
@@ -114,7 +106,7 @@ def test_calculates_correct_practice_metrics_given_transfers():
 
 
 @freeze_time(datetime(year=2020, month=1, day=15, hour=23, second=42), tz_offset=0)
-def test_returns_default_metric_values_for_practice_without_transfers():
+def test_returns_empty_practices_and_ccgs_when_there_are_no_transfers():
     mock_probe = Mock()
     metric_month_start = a_datetime(year=2019, month=12, day=1)
 
@@ -124,58 +116,14 @@ def test_returns_default_metric_values_for_practice_without_transfers():
         metric_months_datetimes=[metric_month_start],
     )
 
-    requesting_practice_name = "Test GP practice with no transfers"
-    requesting_ods_code = "A4656"
-
-    practice_list = [
-        PracticeMetadata(
-            asids=["12431"],
-            ods_code=requesting_ods_code,
-            name=requesting_practice_name,
-        )
-    ]
-
-    organisation_metadata = OrganisationMetadata(
-        generated_on=datetime(year=2020, month=1, day=15, hour=23, second=42, tzinfo=UTC),
-        practices=practice_list,
-        ccgs=[],
-    )
-
     expected = PracticeMetricsPresentation(
         generated_on=datetime(year=2020, month=1, day=15, hour=23, second=42, tzinfo=UTC),
-        practices=[
-            PracticeSummary(
-                name=requesting_practice_name,
-                ods_code=requesting_ods_code,
-                ccg_ods_code=None,
-                ccg_name=None,
-                metrics=[
-                    MonthlyMetricsPresentation(
-                        year=2019,
-                        month=12,
-                        requested_transfers=RequestedTransferMetrics(
-                            requested_count=0,
-                            received_count=0,
-                            integrated_within_3_days_count=0,
-                            integrated_within_8_days_count=0,
-                            received_percent_of_requested=None,
-                            integrated_within_3_days_percent_of_received=None,
-                            integrated_within_8_days_percent_of_received=None,
-                            not_integrated_within_8_days_total=0,
-                            not_integrated_within_8_days_percent_of_received=None,
-                            failures_total_count=0,
-                            failures_total_percent_of_requested=None,
-                        ),
-                    )
-                ],
-            )
-        ],
+        practices=[],
         ccgs=[],
     )
 
     actual = calculate_practice_metrics(
         transfers=[],
-        organisation_metadata=organisation_metadata,
         reporting_window=reporting_window,
         observability_probe=mock_probe,
     )
@@ -192,15 +140,8 @@ def test_calls_observability_probe_calculating_practice_metrics():
         metric_months_datetimes=[a_datetime()],
     )
 
-    organisation_metadata = OrganisationMetadata(
-        generated_on=a_datetime(),
-        practices=[],
-        ccgs=[],
-    )
-
     calculate_practice_metrics(
         transfers=[],
-        organisation_metadata=organisation_metadata,
         reporting_window=reporting_window,
         observability_probe=mock_probe,
     )
@@ -223,7 +164,15 @@ def test_calculates_correct_practice_metrics_without_filtering_transfers():
     requesting_ods_code = "A12345"
     ccg_ods_code = "23B"
     ccg_name = "Test CCG"
-    requesting_practice = build_practice_details(asid="343434343434", supplier="SystemOne")
+
+    requesting_practice = build_practice(
+        asid="343434343434",
+        supplier="SystemOne",
+        ccg_name=ccg_name,
+        ccg_ods_code=ccg_ods_code,
+        ods_code=requesting_ods_code,
+        name=requesting_practice_name,
+    )
 
     date_requested = datetime(2019, 12, 30, 18, 2, 29, tzinfo=UTC)
     transferred_within_a_day_timestamp = date_requested + timedelta(hours=1)
@@ -257,22 +206,6 @@ def test_calculates_correct_practice_metrics_without_filtering_transfers():
         ),
     ]
 
-    practice_list = [
-        PracticeMetadata(
-            asids=[requesting_practice.asid],
-            ods_code=requesting_ods_code,
-            name=requesting_practice_name,
-        )
-    ]
-
-    ccg_list = [CcgMetadata(name=ccg_name, ods_code=ccg_ods_code, practices=[requesting_ods_code])]
-
-    organisation_metadata = OrganisationMetadata(
-        generated_on=datetime(year=2020, month=1, day=15, hour=23, second=42, tzinfo=UTC),
-        practices=practice_list,
-        ccgs=ccg_list,
-    )
-
     expected = PracticeMetricsPresentation(
         generated_on=datetime(year=2020, month=1, day=15, hour=23, second=42, tzinfo=UTC),
         practices=[
@@ -302,12 +235,17 @@ def test_calculates_correct_practice_metrics_without_filtering_transfers():
                 ],
             )
         ],
-        ccgs=ccg_list,
+        ccgs=[
+            CCGPresentation(
+                name=ccg_name,
+                ods_code=ccg_ods_code,
+                practices=[requesting_ods_code],
+            )
+        ],
     )
 
     actual = calculate_practice_metrics(
         transfers=transfers,
-        organisation_metadata=organisation_metadata,
         reporting_window=reporting_window,
         observability_probe=mock_probe,
     )

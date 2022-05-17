@@ -6,15 +6,12 @@ from typing import List
 from dateutil.tz import tzutc
 
 from prmcalculator.domain.gp2gp.transfer import Transfer
-from prmcalculator.domain.ods_portal.organisation_lookup import OrganisationLookup
-from prmcalculator.domain.ods_portal.organisation_metadata import CcgMetadata, OrganisationMetadata
 from prmcalculator.domain.practice.construct_practice_summary import (
     PracticeSummary,
     construct_practice_summary,
 )
-from prmcalculator.domain.practice.group_transfers_by_practice_deprecated import (
-    group_transfers_by_practice_deprecated,
-)
+from prmcalculator.domain.practice.group_transfers_by_ccg import ODSCode, group_transfers_by_ccg
+from prmcalculator.domain.practice.group_transfers_by_practice import group_transfers_by_practice
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
 from prmcalculator.domain.reporting_window import ReportingWindow
 
@@ -46,26 +43,33 @@ class PracticeMetricsObservabilityProbe:
 
 
 @dataclass
+class CCGPresentation:
+    ods_code: ODSCode
+    name: str
+    practices: List[str]
+
+
+@dataclass
 class PracticeMetricsPresentation:
     generated_on: datetime
     practices: List[PracticeSummary]
-    ccgs: List[CcgMetadata]
+    ccgs: List[CCGPresentation]
 
 
 def calculate_practice_metrics(
     transfers: List[Transfer],
-    organisation_metadata: OrganisationMetadata,
     reporting_window: ReportingWindow,
     observability_probe: PracticeMetricsObservabilityProbe,
 ) -> PracticeMetricsPresentation:
     observability_probe.record_calculating_practice_metrics(reporting_window)
-    organisation_lookup = OrganisationLookup(
-        practices=organisation_metadata.practices, ccgs=organisation_metadata.ccgs
+
+    grouped_transfers_by_practice = group_transfers_by_practice(
+        transfers=transfers,
+        observability_probe=observability_probe,
     )
 
-    grouped_transfers = group_transfers_by_practice_deprecated(
-        transfers=transfers,
-        organisation_lookup=organisation_lookup,
+    grouped_transfers_by_ccg = group_transfers_by_ccg(
+        practices=grouped_transfers_by_practice,
         observability_probe=observability_probe,
     )
 
@@ -74,10 +78,16 @@ def calculate_practice_metrics(
         practices=[
             construct_practice_summary(
                 practice_metrics=PracticeTransferMetrics.from_group(practice_transfers),
-                organisation_lookup=organisation_lookup,
                 reporting_window=reporting_window,
             )
-            for practice_transfers in grouped_transfers
+            for practice_transfers in grouped_transfers_by_practice
         ],
-        ccgs=organisation_metadata.ccgs,
+        ccgs=[
+            CCGPresentation(
+                practices=transfer_by_ccg.practices_ods_codes,
+                name=transfer_by_ccg.ccg_name,
+                ods_code=transfer_by_ccg.ccg_ods_code,
+            )
+            for transfer_by_ccg in grouped_transfers_by_ccg
+        ],
     )

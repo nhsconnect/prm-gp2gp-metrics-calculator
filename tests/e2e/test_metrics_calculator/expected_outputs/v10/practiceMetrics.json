@@ -48,48 +48,6 @@
         {
           "month": 12,
           "requestedTransfers": {
-            "receivedCount": 0,
-            "requestedCount": 0,
-            "receivedPercentOfRequested": null,
-            "integratedWithin3DaysCount": 0,
-            "integratedWithin3DaysPercentOfReceived": null,
-            "integratedWithin8DaysCount": 0,
-            "integratedWithin8DaysPercentOfReceived": null,
-            "notIntegratedWithin8DaysPercentOfReceived": null,
-            "notIntegratedWithin8DaysTotal": 0,
-            "failuresTotalCount": 0,
-            "failuresTotalPercentOfRequested": null
-          },
-          "year": 2019
-        },
-        {
-          "month": 11,
-          "requestedTransfers": {
-            "failuresTotalCount": 0,
-            "failuresTotalPercentOfRequested": null,
-            "integratedWithin3DaysCount": 0,
-            "integratedWithin3DaysPercentOfReceived": null,
-            "integratedWithin8DaysCount": 0,
-            "integratedWithin8DaysPercentOfReceived": null,
-            "notIntegratedWithin8DaysPercentOfReceived": null,
-            "notIntegratedWithin8DaysTotal": 0,
-            "receivedCount": 0,
-            "receivedPercentOfRequested": null,
-            "requestedCount": 0
-          },
-          "year": 2019
-        }
-      ],
-      "name": "Test GP Practice with no Integrations",
-      "odsCode": "A12346",
-      "ccgOdsCode": "11D",
-      "ccgName": "Another Test CCG"
-    },
-    {
-      "metrics": [
-        {
-          "month": 12,
-          "requestedTransfers": {
             "requestedCount": 3,
             "failuresTotalCount": 1,
             "failuresTotalPercentOfRequested": 33.3,
@@ -140,7 +98,6 @@
       "odsCode": "11D",
       "name": "Another Test CCG",
       "practices": [
-        "A12346",
         "A12347"
       ]
     }
