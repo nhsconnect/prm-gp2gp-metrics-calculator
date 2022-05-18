@@ -11,8 +11,8 @@ from prmcalculator.domain.practice.construct_practice_summary import (
     construct_practice_summary,
 )
 from prmcalculator.domain.practice.group_transfers_by_ccg import ODSCode, group_transfers_by_ccg
-from prmcalculator.domain.practice.group_transfers_by_practice import group_transfers_by_practice
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
+from prmcalculator.domain.practice.transfer_service import TransfersService
 from prmcalculator.domain.reporting_window import ReportingWindow
 
 module_logger = getLogger(__name__)
@@ -74,10 +74,11 @@ def calculate_practice_metrics(
 ) -> PracticeMetricsPresentation:
     observability_probe.record_calculating_practice_metrics(reporting_window)
 
-    grouped_transfers_by_practice = group_transfers_by_practice(
-        transfers=transfers,
-        observability_probe=observability_probe,
+    transfers_service = TransfersService(
+        transfers=transfers, observability_probe=observability_probe
     )
+
+    grouped_transfers_by_practice = transfers_service.group_transfers_by_practice()
 
     grouped_transfers_by_ccg = group_transfers_by_ccg(
         practices=grouped_transfers_by_practice,

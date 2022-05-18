@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict, List
 
-from prmcalculator.domain.practice.group_transfers_by_practice import Practice
+from prmcalculator.domain.practice.transfer_service import Practice
 
 ODSCode = str
 

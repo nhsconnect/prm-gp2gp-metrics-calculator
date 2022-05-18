@@ -8,7 +8,7 @@ from prmcalculator.domain.gp2gp.transfer import (
     TransferOutcome,
     TransferStatus,
 )
-from prmcalculator.domain.practice.group_transfers_by_practice import Practice
+from prmcalculator.domain.practice.transfer_service import Practice
 from tests.builders.common import a_datetime, a_duration, a_string
 
 
