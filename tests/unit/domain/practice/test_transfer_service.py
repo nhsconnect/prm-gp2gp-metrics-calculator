@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from prmcalculator.domain.practice.transfer_service import Practice, TransfersService
+from prmcalculator.domain.practice.transfer_service import CCG, Practice, TransfersService
 from tests.builders.common import a_datetime, a_string
 from tests.builders.gp2gp import build_practice_details, build_transfer
 
@@ -10,9 +10,7 @@ def test_produces_empty_list_given_no_transfers():
 
     expected = []  # type: ignore
 
-    actual = TransfersService(
-        transfers=[], observability_probe=mock_probe
-    ).group_transfers_by_practice()
+    actual = TransfersService(transfers=[], observability_probe=mock_probe).grouped_practices_by_ods
     assert actual == expected
 
 
@@ -37,7 +35,7 @@ def test_produces_a_group_given_a_single_practice_with_a_single_transfer():
 
     actual = TransfersService(
         transfers=[transfer_one], observability_probe=mock_probe
-    ).group_transfers_by_practice()
+    ).grouped_practices_by_ods
 
     assert actual == expected
 
@@ -68,7 +66,7 @@ def test_produces_a_group_given_a_single_practice_with_multiple_transfer():
 
     actual = TransfersService(
         transfers=[transfer_one, transfer_two], observability_probe=mock_probe
-    ).group_transfers_by_practice()
+    ).grouped_practices_by_ods
 
     assert actual == expected
 
@@ -111,7 +109,7 @@ def test_sets_practice_fields_based_on_latest_transfer_transfer():
     actual = TransfersService(
         transfers=[transfer_one_oldest, transfer_two_latest, transfer_three_old],
         observability_probe=mock_probe,
-    ).group_transfers_by_practice()
+    ).grouped_practices_by_ods
 
     assert actual == expected
 
@@ -154,7 +152,7 @@ def test_produces_correct_groups_given_two_practices_each_with_transfers():
 
     actual = TransfersService(
         transfers=[transfer_one, transfer_two, transfer_three], observability_probe=mock_probe
-    ).group_transfers_by_practice()
+    ).grouped_practices_by_ods
 
     assert actual == expected
 
@@ -172,7 +170,7 @@ def test_ignore_transfer_and_log_when_missing_practice_ods_code():
 
     actual = TransfersService(
         transfers=[transfer_missing_ods_code], observability_probe=mock_probe
-    ).group_transfers_by_practice()
+    ).grouped_practices_by_ods
 
     mock_probe.record_unknown_practice_ods_code_for_transfer.assert_called_once_with(
         transfer_missing_ods_code
@@ -194,10 +192,97 @@ def test_ignore_transfer_and_log_when_missing_ccg_ods_code():
 
     actual = TransfersService(
         transfers=[transfer_missing_ccg_ods_code], observability_probe=mock_probe
-    ).group_transfers_by_practice()
+    ).grouped_practices_by_ods
 
     mock_probe.record_unknown_practice_ccg_ods_code_for_transfer.assert_called_once_with(
         transfer_missing_ccg_ods_code
     )
+
+    assert actual == expected
+
+
+# CCG
+def test_produces_empty_ccg_list_given_no_practices():
+    mock_probe = Mock()
+
+    expected = []  # type: ignore
+
+    actual = TransfersService(transfers=[], observability_probe=mock_probe).grouped_practices_by_ccg
+
+    assert actual == expected
+
+
+def test_produces_a_ccg_group_given_single_practice():
+    mock_probe = Mock()
+    practice_ods_code = "A1234"
+    transfer_one = build_transfer(
+        requesting_practice=build_practice_details(
+            ods_code=practice_ods_code, ccg_name="CCG 1", ccg_ods_code="AA1234"
+        ),
+    )
+
+    expected = [
+        CCG(
+            ccg_name="CCG 1",
+            ccg_ods_code="AA1234",
+            practices_ods_codes=[practice_ods_code],
+        )
+    ]
+
+    actual = TransfersService(
+        transfers=[transfer_one], observability_probe=mock_probe
+    ).grouped_practices_by_ccg
+
+    assert actual == expected
+
+
+def test_produces_multiple_ccg_groups_given_a_multiple_practices():
+    mock_probe = Mock()
+    practice_one_ods_code = "A1234"
+    practice_two_ods_code = "A2345"
+    practice_three_ods_code = "B1234"
+    transfer_one = build_transfer(
+        requesting_practice=build_practice_details(
+            name="Practice 1",
+            ods_code=practice_one_ods_code,
+            ccg_name="CCG 1",
+            ccg_ods_code="AA1234",
+        ),
+    )
+
+    transfer_two = build_transfer(
+        requesting_practice=build_practice_details(
+            name="Practice 2",
+            ods_code=practice_two_ods_code,
+            ccg_name="CCG 1",
+            ccg_ods_code="AA1234",
+        ),
+    )
+
+    transfer_three = build_transfer(
+        requesting_practice=build_practice_details(
+            name="Practice 3",
+            ods_code=practice_three_ods_code,
+            ccg_name="CCG 2",
+            ccg_ods_code="BB1234",
+        ),
+    )
+
+    expected = [
+        CCG(
+            ccg_name="CCG 1",
+            ccg_ods_code="AA1234",
+            practices_ods_codes=[practice_one_ods_code, practice_two_ods_code],
+        ),
+        CCG(
+            ccg_name="CCG 2",
+            ccg_ods_code="BB1234",
+            practices_ods_codes=[practice_three_ods_code],
+        ),
+    ]
+
+    actual = TransfersService(
+        transfers=[transfer_one, transfer_two, transfer_three], observability_probe=mock_probe
+    ).grouped_practices_by_ccg
 
     assert actual == expected

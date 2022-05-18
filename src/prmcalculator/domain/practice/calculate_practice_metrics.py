@@ -10,9 +10,8 @@ from prmcalculator.domain.practice.construct_practice_summary import (
     PracticeSummary,
     construct_practice_summary,
 )
-from prmcalculator.domain.practice.group_transfers_by_ccg import ODSCode, group_transfers_by_ccg
 from prmcalculator.domain.practice.practice_transfer_metrics import PracticeTransferMetrics
-from prmcalculator.domain.practice.transfer_service import TransfersService
+from prmcalculator.domain.practice.transfer_service import ODSCode, TransfersService
 from prmcalculator.domain.reporting_window import ReportingWindow
 
 module_logger = getLogger(__name__)
@@ -78,13 +77,6 @@ def calculate_practice_metrics(
         transfers=transfers, observability_probe=observability_probe
     )
 
-    grouped_transfers_by_practice = transfers_service.group_transfers_by_practice()
-
-    grouped_transfers_by_ccg = group_transfers_by_ccg(
-        practices=grouped_transfers_by_practice,
-        observability_probe=observability_probe,
-    )
-
     return PracticeMetricsPresentation(
         generated_on=datetime.now(tzutc()),
         practices=[
@@ -92,7 +84,7 @@ def calculate_practice_metrics(
                 practice_metrics=PracticeTransferMetrics.from_group(practice_transfers),
                 reporting_window=reporting_window,
             )
-            for practice_transfers in grouped_transfers_by_practice
+            for practice_transfers in transfers_service.grouped_practices_by_ods
         ],
         ccgs=[
             CCGPresentation(
@@ -100,6 +92,6 @@ def calculate_practice_metrics(
                 name=transfer_by_ccg.ccg_name,
                 ods_code=transfer_by_ccg.ccg_ods_code,
             )
-            for transfer_by_ccg in grouped_transfers_by_ccg
+            for transfer_by_ccg in transfers_service.grouped_practices_by_ccg
         ],
     )

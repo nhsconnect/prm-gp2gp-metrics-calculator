@@ -8,6 +8,16 @@ PracticeTransfersDictByOds = Dict[ODSCode, List[Transfer]]
 
 
 @dataclass(frozen=True)
+class CCG:
+    ccg_ods_code: ODSCode
+    ccg_name: str
+    practices_ods_codes: List[str]
+
+
+CCGTransfersDictByOds = Dict[ODSCode, CCG]
+
+
+@dataclass(frozen=True)
 class Practice:
     ods_code: ODSCode
     name: str
@@ -24,6 +34,8 @@ class TransfersService:
     def __init__(self, transfers: List[Transfer], observability_probe):
         self._transfers = transfers
         self._observability_probe = observability_probe
+        self._grouped_transfers_by_practice = self.group_transfers_by_practice()
+        self._grouped_practices_by_ccg = self.group_practices_by_ccg()
 
     def group_transfers_by_practice(self) -> List[Practice]:
         practice_list = []
@@ -70,3 +82,28 @@ class TransfersService:
         if transfer.requesting_practice.ods_code not in practice_transfers:
             practice_transfers[transfer.requesting_practice.ods_code] = []
         practice_transfers[transfer.requesting_practice.ods_code].append(transfer)
+
+    def group_practices_by_ccg(self) -> List[CCG]:
+        ccgs_dict: CCGTransfersDictByOds = {}
+        for practice in self._grouped_transfers_by_practice:
+            self._add_practice_to_ccg_ods_dictionary(ccgs_dict, practice)
+
+        return list(ccgs_dict.values())
+
+    @staticmethod
+    def _add_practice_to_ccg_ods_dictionary(ccgs_dict, practice):
+        if practice.ccg_ods_code not in ccgs_dict:
+            ccgs_dict[practice.ccg_ods_code] = CCG(
+                ccg_name=practice.ccg_name,
+                ccg_ods_code=practice.ccg_ods_code,
+                practices_ods_codes=[],
+            )
+        ccgs_dict[practice.ccg_ods_code].practices_ods_codes.append(practice.ods_code)
+
+    @property
+    def grouped_practices_by_ods(self) -> List[Practice]:
+        return self._grouped_transfers_by_practice
+
+    @property
+    def grouped_practices_by_ccg(self) -> List[CCG]:
+        return self._grouped_practices_by_ccg
