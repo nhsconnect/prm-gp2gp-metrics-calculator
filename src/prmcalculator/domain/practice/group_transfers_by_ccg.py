@@ -25,8 +25,6 @@ def group_transfers_by_ccg(practices: List[Practice], observability_probe) -> Li
         ccgs_dict[practice.ccg_ods_code].practices_ods_codes.append(practice.ods_code)
 
     return list(ccgs_dict.values())
-    # log errors:
-    # observability_probe.record_unknown_practice_for_transfer(transfer)
 
 
 CCGTransfersDictByOds = Dict[ODSCode, CCG]

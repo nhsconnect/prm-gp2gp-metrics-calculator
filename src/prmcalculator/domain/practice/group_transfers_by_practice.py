@@ -21,7 +21,6 @@ class PracticeTransfers:
 
 
 def group_transfers_by_practice(transfers: List[Transfer], observability_probe) -> List[Practice]:
-
     practice_transfers_by_ods = _group_practice_transfers_by_ods_code(
         transfers, observability_probe
     )
@@ -32,6 +31,10 @@ def group_transfers_by_practice(transfers: List[Transfer], observability_probe) 
         for transfer in practice_transfers:
             if transfer.date_requested > latest_transfer.date_requested:
                 latest_transfer = transfer
+
+        if latest_transfer.requesting_practice.ccg_ods_code is None:
+            observability_probe.record_unknown_practice_ccg_ods_code_for_transfer(latest_transfer)
+            continue
 
         practice_list.append(
             Practice(
@@ -52,7 +55,7 @@ def _group_practice_transfers_by_ods_code(
     practice_transfers: PracticeTransfersDictByOds = {}
     for transfer in transfers:
         if transfer.requesting_practice.ods_code is None:
-            observability_probe.record_unknown_practice_for_transfer(transfer)
+            observability_probe.record_unknown_practice_ods_code_for_transfer(transfer)
             continue
 
         if transfer.requesting_practice.ods_code not in practice_transfers:

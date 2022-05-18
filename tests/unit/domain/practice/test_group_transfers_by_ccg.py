@@ -72,23 +72,3 @@ def test_produces_multiple_ccg_groups_given_a_multiple_practices():
     )
 
     assert actual == expected
-
-
-#
-# def test_calls_observability_probe_when_multiple_unknown_practices_for_transfers():
-#     mock_probe = Mock()
-#
-#     lookup = OrganisationLookup(practices=[], ccgs=[])
-#     unknown_practice_transfer = build_transfer(
-#         requesting_practice=build_practice(asid="121212121212")
-#     )
-#
-#     group_transfers_by_practice_deprecated(
-#         transfers=[unknown_practice_transfer],
-#         organisation_lookup=lookup,
-#         observability_probe=mock_probe,
-#     )
-#
-#     mock_probe.record_unknown_practice_for_transfer.assert_called_once_with(
-#         unknown_practice_transfer
-#     )

@@ -26,24 +26,49 @@ def test_probe_should_log_event_when_calculating_practice_metrics():
     )
 
 
-def test_probe_should_warn_given_a_transfer_with_unknown_practice():
+def test_probe_should_warn_given_a_transfer_with_unknown_practice_ods_code():
     mock_logger = Mock()
     probe = PracticeMetricsObservabilityProbe(mock_logger)
 
-    unknown_asid = a_string(12)
+    asid = a_string(12)
     conversation_id = a_string()
     transfer = build_transfer(
         conversation_id=conversation_id,
-        requesting_practice=build_practice_details(asid=unknown_asid),
+        requesting_practice=build_practice_details(asid=asid, ods_code=None),
     )
 
-    probe.record_unknown_practice_for_transfer(transfer=transfer)
+    probe.record_unknown_practice_ods_code_for_transfer(transfer=transfer)
 
     mock_logger.warning.assert_called_once_with(
-        "Unknown practice for transfer",
+        "Unknown practice ods_code for transfer, ignoring transfer from metrics",
         extra={
-            "event": "UNKNOWN_PRACTICE_FOR_TRANSFER",
-            "unknown_asid": unknown_asid,
+            "event": "UNKNOWN_PRACTICE_ODS_CODE_FOR_TRANSFER",
+            "asid": asid,
             "conversation_id": conversation_id,
+        },
+    )
+
+
+def test_probe_should_warn_given_a_transfer_with_unknown_ccg_ods_code():
+    mock_logger = Mock()
+    probe = PracticeMetricsObservabilityProbe(mock_logger)
+
+    asid = a_string(12)
+    ods_code = a_string(12)
+    conversation_id = a_string()
+    transfer = build_transfer(
+        conversation_id=conversation_id,
+        requesting_practice=build_practice_details(asid=asid, ods_code=ods_code),
+    )
+
+    probe.record_unknown_practice_ccg_ods_code_for_transfer(transfer=transfer)
+
+    mock_logger.warning.assert_called_once_with(
+        "Unknown ccg_ods_code for transfer, ignoring transfer from metrics",
+        extra={
+            "event": "UNKNOWN_CCG_ODS_CODE_FOR_TRANSFER",
+            "conversation_id": conversation_id,
+            "asid": asid,
+            "practice_ods_code": ods_code,
         },
     )

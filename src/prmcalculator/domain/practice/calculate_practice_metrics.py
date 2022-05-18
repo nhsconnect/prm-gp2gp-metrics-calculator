@@ -31,13 +31,24 @@ class PracticeMetricsObservabilityProbe:
             },
         )
 
-    def record_unknown_practice_for_transfer(self, transfer: Transfer):
+    def record_unknown_practice_ods_code_for_transfer(self, transfer: Transfer):
         self._logger.warning(
-            "Unknown practice for transfer",
+            "Unknown practice ods_code for transfer, ignoring transfer from metrics",
             extra={
-                "event": "UNKNOWN_PRACTICE_FOR_TRANSFER",
+                "event": "UNKNOWN_PRACTICE_ODS_CODE_FOR_TRANSFER",
                 "conversation_id": transfer.conversation_id,
-                "unknown_asid": transfer.requesting_practice.asid,
+                "asid": transfer.requesting_practice.asid,
+            },
+        )
+
+    def record_unknown_practice_ccg_ods_code_for_transfer(self, transfer: Transfer):
+        self._logger.warning(
+            "Unknown ccg_ods_code for transfer, ignoring transfer from metrics",
+            extra={
+                "event": "UNKNOWN_CCG_ODS_CODE_FOR_TRANSFER",
+                "conversation_id": transfer.conversation_id,
+                "asid": transfer.requesting_practice.asid,
+                "practice_ods_code": transfer.requesting_practice.ods_code,
             },
         )
 
