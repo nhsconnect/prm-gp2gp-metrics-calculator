@@ -5,7 +5,7 @@ from dateutil.tz import UTC
 from freezegun import freeze_time
 
 from prmcalculator.domain.practice.calculate_practice_metrics import (
-    CCGPresentation,
+    ICBPresentation,
     PracticeMetricsPresentation,
     calculate_practice_metrics,
 )
@@ -36,13 +36,13 @@ def test_calculates_correct_practice_metrics_given_transfers():
 
     requesting_practice_name = "Test GP"
     requesting_ods_code = "A12345"
-    ccg_ods_code = "23B"
-    ccg_name = "Test CCG"
+    icb_ods_code = "23B"
+    icb_name = "Test ICB"
     requesting_practice = build_practice(
         asid="343434343434",
         supplier="SystemOne",
-        ccg_name=ccg_name,
-        ccg_ods_code=ccg_ods_code,
+        icb_name=icb_name,
+        icb_ods_code=icb_ods_code,
         ods_code=requesting_ods_code,
         name=requesting_practice_name,
     )
@@ -64,8 +64,8 @@ def test_calculates_correct_practice_metrics_given_transfers():
             PracticeSummary(
                 name=requesting_practice_name,
                 ods_code=requesting_ods_code,
-                ccg_ods_code=ccg_ods_code,
-                ccg_name=ccg_name,
+                icb_ods_code=icb_ods_code,
+                icb_name=icb_name,
                 metrics=[
                     MonthlyMetricsPresentation(
                         year=2019,
@@ -87,10 +87,10 @@ def test_calculates_correct_practice_metrics_given_transfers():
                 ],
             )
         ],
-        ccgs=[
-            CCGPresentation(
-                name=ccg_name,
-                ods_code=ccg_ods_code,
+        icbs=[
+            ICBPresentation(
+                name=icb_name,
+                ods_code=icb_ods_code,
                 practices=[requesting_ods_code],
             )
         ],
@@ -106,7 +106,7 @@ def test_calculates_correct_practice_metrics_given_transfers():
 
 
 @freeze_time(datetime(year=2020, month=1, day=15, hour=23, second=42), tz_offset=0)
-def test_returns_empty_practices_and_ccgs_when_there_are_no_transfers():
+def test_returns_empty_practices_and_icbs_when_there_are_no_transfers():
     mock_probe = Mock()
     metric_month_start = a_datetime(year=2019, month=12, day=1)
 
@@ -119,7 +119,7 @@ def test_returns_empty_practices_and_ccgs_when_there_are_no_transfers():
     expected = PracticeMetricsPresentation(
         generated_on=datetime(year=2020, month=1, day=15, hour=23, second=42, tzinfo=UTC),
         practices=[],
-        ccgs=[],
+        icbs=[],
     )
 
     actual = calculate_practice_metrics(
@@ -162,14 +162,14 @@ def test_calculates_correct_practice_metrics_without_filtering_transfers():
 
     requesting_practice_name = "Test GP"
     requesting_ods_code = "A12345"
-    ccg_ods_code = "23B"
-    ccg_name = "Test CCG"
+    icb_ods_code = "23B"
+    icb_name = "Test ICB"
 
     requesting_practice = build_practice(
         asid="343434343434",
         supplier="SystemOne",
-        ccg_name=ccg_name,
-        ccg_ods_code=ccg_ods_code,
+        icb_name=icb_name,
+        icb_ods_code=icb_ods_code,
         ods_code=requesting_ods_code,
         name=requesting_practice_name,
     )
@@ -212,8 +212,8 @@ def test_calculates_correct_practice_metrics_without_filtering_transfers():
             PracticeSummary(
                 name=requesting_practice_name,
                 ods_code=requesting_ods_code,
-                ccg_ods_code=ccg_ods_code,
-                ccg_name=ccg_name,
+                icb_ods_code=icb_ods_code,
+                icb_name=icb_name,
                 metrics=[
                     MonthlyMetricsPresentation(
                         year=2019,
@@ -235,10 +235,10 @@ def test_calculates_correct_practice_metrics_without_filtering_transfers():
                 ],
             )
         ],
-        ccgs=[
-            CCGPresentation(
-                name=ccg_name,
-                ods_code=ccg_ods_code,
+        icbs=[
+            ICBPresentation(
+                name=icb_name,
+                ods_code=icb_ods_code,
                 practices=[requesting_ods_code],
             )
         ],

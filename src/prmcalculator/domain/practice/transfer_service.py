@@ -8,13 +8,13 @@ PracticeTransfersDictByOds = Dict[ODSCode, List[Transfer]]
 
 
 @dataclass(frozen=True)
-class CCG:
-    ccg_ods_code: ODSCode
-    ccg_name: str
+class ICB:
+    icb_ods_code: ODSCode
+    icb_name: str
     practices_ods_codes: List[str]
 
 
-CCGTransfersDictByOds = Dict[ODSCode, CCG]
+ICBTransfersDictByOds = Dict[ODSCode, ICB]
 
 
 @dataclass(frozen=True)
@@ -22,8 +22,8 @@ class Practice:
     ods_code: ODSCode
     name: str
     transfers: List[Transfer]
-    ccg_ods_code: ODSCode
-    ccg_name: str
+    icb_ods_code: ODSCode
+    icb_name: str
 
 
 class PracticeTransfers:
@@ -35,15 +35,15 @@ class TransfersService:
         self._transfers = transfers
         self._observability_probe = observability_probe
         self._grouped_transfers_by_practice = self.group_transfers_by_practice()
-        self._grouped_practices_by_ccg = self.group_practices_by_ccg()
+        self._grouped_practices_by_icb = self.group_practices_by_icb()
 
     def group_transfers_by_practice(self) -> List[Practice]:
         practice_list = []
         for practice_transfers in self._group_practice_transfers_by_ods_code().values():
             latest_transfer = self._get_latest_transfer(practice_transfers)
 
-            if latest_transfer.requesting_practice.ccg_ods_code is None:
-                self._observability_probe.record_unknown_practice_ccg_ods_code_for_transfer(
+            if latest_transfer.requesting_practice.icb_ods_code is None:
+                self._observability_probe.record_unknown_practice_icb_ods_code_for_transfer(
                     latest_transfer
                 )
                 continue
@@ -52,8 +52,8 @@ class TransfersService:
                 Practice(
                     ods_code=latest_transfer.requesting_practice.ods_code,
                     name=latest_transfer.requesting_practice.name,
-                    ccg_ods_code=latest_transfer.requesting_practice.ccg_ods_code,
-                    ccg_name=latest_transfer.requesting_practice.ccg_name,
+                    icb_ods_code=latest_transfer.requesting_practice.icb_ods_code,
+                    icb_name=latest_transfer.requesting_practice.icb_name,
                     transfers=practice_transfers,
                 )
             )
@@ -83,27 +83,27 @@ class TransfersService:
             practice_transfers[transfer.requesting_practice.ods_code] = []
         practice_transfers[transfer.requesting_practice.ods_code].append(transfer)
 
-    def group_practices_by_ccg(self) -> List[CCG]:
-        ccgs_dict: CCGTransfersDictByOds = {}
+    def group_practices_by_icb(self) -> List[ICB]:
+        icbs_dict: ICBTransfersDictByOds = {}
         for practice in self._grouped_transfers_by_practice:
-            self._add_practice_to_ccg_ods_dictionary(ccgs_dict, practice)
+            self._add_practice_to_icb_ods_dictionary(icbs_dict, practice)
 
-        return list(ccgs_dict.values())
+        return list(icbs_dict.values())
 
     @staticmethod
-    def _add_practice_to_ccg_ods_dictionary(ccgs_dict, practice):
-        if practice.ccg_ods_code not in ccgs_dict:
-            ccgs_dict[practice.ccg_ods_code] = CCG(
-                ccg_name=practice.ccg_name,
-                ccg_ods_code=practice.ccg_ods_code,
+    def _add_practice_to_icb_ods_dictionary(icbs_dict, practice):
+        if practice.icb_ods_code not in icbs_dict:
+            icbs_dict[practice.icb_ods_code] = ICB(
+                icb_name=practice.icb_name,
+                icb_ods_code=practice.icb_ods_code,
                 practices_ods_codes=[],
             )
-        ccgs_dict[practice.ccg_ods_code].practices_ods_codes.append(practice.ods_code)
+        icbs_dict[practice.icb_ods_code].practices_ods_codes.append(practice.ods_code)
 
     @property
     def grouped_practices_by_ods(self) -> List[Practice]:
         return self._grouped_transfers_by_practice
 
     @property
-    def grouped_practices_by_ccg(self) -> List[CCG]:
-        return self._grouped_practices_by_ccg
+    def grouped_practices_by_icb(self) -> List[ICB]:
+        return self._grouped_practices_by_icb

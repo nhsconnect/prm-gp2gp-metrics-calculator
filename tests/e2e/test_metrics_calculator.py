@@ -136,8 +136,8 @@ def _write_transfer_parquet(input_transfer_parquet_columns_json, s3_path: str):
             ("last_sender_message_timestamp", pa.timestamp("us", tz="utc")),
             ("requesting_practice_name", pa.string()),
             ("requesting_practice_ods_code", pa.string()),
-            ("requesting_practice_ccg_name", pa.string()),
-            ("requesting_practice_ccg_ods_code", pa.string()),
+            ("requesting_practice_icb_name", pa.string()),
+            ("requesting_practice_icb_ods_code", pa.string()),
         ]
     )
 
@@ -153,7 +153,7 @@ def _write_transfer_parquet(input_transfer_parquet_columns_json, s3_path: str):
 
 def _get_s3_path(bucket_name, year, month, day):
     return (
-        f"{bucket_name}/v10/cutoff-14/{year}/{month}/{day}/{year}-{month}-{day}-transfers.parquet"
+        f"{bucket_name}/v11/cutoff-14/{year}/{month}/{day}/{year}-{month}-{day}-transfers.parquet"
     )
 
 
@@ -240,11 +240,11 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
     expected_practice_metrics_output_key = "2019-12-practiceMetrics.json"
 
     expected_practice_metrics_including_slow_transfers = _read_json(
-        datadir / "expected_outputs" / "v11" / "practiceMetrics.json"
+        datadir / "expected_outputs" / "v12" / "practiceMetrics.json"
     )
     expected_national_metrics_output_key = "2019-12-nationalMetrics.json"
     expected_national_metrics = _read_json(
-        datadir / "expected_outputs" / "v11" / "nationalMetrics.json"
+        datadir / "expected_outputs" / "v12" / "nationalMetrics.json"
     )
 
     expected_metadata = {
@@ -253,7 +253,7 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
         "number-of-months": "2",
     }
 
-    s3_metrics_output_path = "v11/2019/12/"
+    s3_metrics_output_path = "v12/2019/12/"
 
     try:
         main()
@@ -281,8 +281,8 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
             == expected_practice_metrics_including_slow_transfers["practices"]
         )
         assert (
-            actual_practice_metrics_including_slow_transfers["ccgs"]
-            == expected_practice_metrics_including_slow_transfers["ccgs"]
+            actual_practice_metrics_including_slow_transfers["icbs"]
+            == expected_practice_metrics_including_slow_transfers["icbs"]
         )
         assert actual_national_metrics["metrics"] == expected_national_metrics["metrics"]
 

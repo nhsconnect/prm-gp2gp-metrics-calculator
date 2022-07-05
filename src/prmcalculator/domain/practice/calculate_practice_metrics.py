@@ -40,11 +40,11 @@ class PracticeMetricsObservabilityProbe:
             },
         )
 
-    def record_unknown_practice_ccg_ods_code_for_transfer(self, transfer: Transfer):
+    def record_unknown_practice_icb_ods_code_for_transfer(self, transfer: Transfer):
         self._logger.warning(
-            "Unknown ccg_ods_code for transfer, ignoring transfer from metrics",
+            "Unknown icb_ods_code for transfer, ignoring transfer from metrics",
             extra={
-                "event": "UNKNOWN_CCG_ODS_CODE_FOR_TRANSFER",
+                "event": "UNKNOWN_ICB_ODS_CODE_FOR_TRANSFER",
                 "conversation_id": transfer.conversation_id,
                 "asid": transfer.requesting_practice.asid,
                 "practice_ods_code": transfer.requesting_practice.ods_code,
@@ -53,7 +53,7 @@ class PracticeMetricsObservabilityProbe:
 
 
 @dataclass
-class CCGPresentation:
+class ICBPresentation:
     ods_code: ODSCode
     name: str
     practices: List[str]
@@ -63,7 +63,7 @@ class CCGPresentation:
 class PracticeMetricsPresentation:
     generated_on: datetime
     practices: List[PracticeSummary]
-    ccgs: List[CCGPresentation]
+    icbs: List[ICBPresentation]
 
 
 def calculate_practice_metrics(
@@ -86,12 +86,12 @@ def calculate_practice_metrics(
             )
             for practice_transfers in transfers_service.grouped_practices_by_ods
         ],
-        ccgs=[
-            CCGPresentation(
-                practices=transfer_by_ccg.practices_ods_codes,
-                name=transfer_by_ccg.ccg_name,
-                ods_code=transfer_by_ccg.ccg_ods_code,
+        icbs=[
+            ICBPresentation(
+                practices=transfer_by_icb.practices_ods_codes,
+                name=transfer_by_icb.icb_name,
+                ods_code=transfer_by_icb.icb_ods_code,
             )
-            for transfer_by_ccg in transfers_service.grouped_practices_by_ccg
+            for transfer_by_icb in transfers_service.grouped_practices_by_icb
         ],
     )

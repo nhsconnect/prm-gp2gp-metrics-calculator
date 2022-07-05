@@ -16,8 +16,8 @@ def build_practice(**kwargs) -> Practice:
     return Practice(
         name=kwargs.get("name", a_string(12)),
         ods_code=kwargs.get("ods_code", a_string(6)),
-        ccg_name=kwargs.get("ccg_name", a_string(12)),
-        ccg_ods_code=kwargs.get("ccg_ods_code", a_string(6)),
+        icb_name=kwargs.get("icb_name", a_string(12)),
+        icb_ods_code=kwargs.get("icb_ods_code", a_string(6)),
         transfers=kwargs.get("transfers", [build_transfer()]),
     )
 
@@ -28,8 +28,8 @@ def build_practice_details(**kwargs) -> PracticeDetails:
         supplier=kwargs.get("supplier", a_string(12)),
         name=kwargs.get("name", a_string(12)),
         ods_code=kwargs.get("ods_code", a_string(6)),
-        ccg_name=kwargs.get("ccg_name", a_string(12)),
-        ccg_ods_code=kwargs.get("ccg_ods_code", a_string(6)),
+        icb_name=kwargs.get("icb_name", a_string(12)),
+        icb_ods_code=kwargs.get("icb_ods_code", a_string(6)),
     )
 
 

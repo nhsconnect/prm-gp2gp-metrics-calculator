@@ -2,7 +2,7 @@ from datetime import datetime
 from unittest.mock import Mock
 
 from prmcalculator.domain.practice.calculate_practice_metrics import (
-    CCGPresentation,
+    ICBPresentation,
     PracticeMetricsPresentation,
 )
 from prmcalculator.domain.practice.construct_practice_summary import (
@@ -24,8 +24,8 @@ _PRACTICE_METRICS_OBJECT = PracticeMetricsPresentation(
         PracticeSummary(
             ods_code="A12345",
             name="A test GP practice",
-            ccg_ods_code="12A",
-            ccg_name="A test CCG",
+            icb_ods_code="12A",
+            icb_name="A test ICB",
             metrics=[
                 MonthlyMetricsPresentation(
                     year=2021,
@@ -47,7 +47,7 @@ _PRACTICE_METRICS_OBJECT = PracticeMetricsPresentation(
             ],
         )
     ],
-    ccgs=[CCGPresentation(name="A test CCG", ods_code="12A", practices=["A12345"])],
+    icbs=[ICBPresentation(name="A test ICB", ods_code="12A", practices=["A12345"])],
 )
 
 _PRACTICE_METRICS_DICT = {
@@ -56,8 +56,8 @@ _PRACTICE_METRICS_DICT = {
         {
             "odsCode": "A12345",
             "name": "A test GP practice",
-            "ccgOdsCode": "12A",
-            "ccgName": "A test CCG",
+            "icbOdsCode": "12A",
+            "icbName": "A test ICB",
             "metrics": [
                 {
                     "year": 2021,
@@ -79,7 +79,7 @@ _PRACTICE_METRICS_DICT = {
             ],
         },
     ],
-    "ccgs": [{"name": "A test CCG", "odsCode": "12A", "practices": ["A12345"]}],
+    "icbs": [{"name": "A test ICB", "odsCode": "12A", "practices": ["A12345"]}],
 }
 
 
@@ -113,7 +113,7 @@ def test_given_data_platform_metrics_version_will_override_default():
     s3_manager = Mock()
 
     data_platform_metrics_bucket = a_string()
-    data_platform_metrics_version = "v102"
+    data_platform_metrics_version = "99"
     s3_uri = (
         f"s3://{data_platform_metrics_bucket}"
         f"/{data_platform_metrics_version}"

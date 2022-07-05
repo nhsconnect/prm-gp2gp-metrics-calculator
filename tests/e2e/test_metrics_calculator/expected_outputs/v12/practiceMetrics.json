@@ -40,8 +40,8 @@
       ],
       "name": "Test GP Practice with Integrations",
       "odsCode": "A12345",
-      "ccgOdsCode": "10D",
-      "ccgName": "Test CCG"
+      "icbOdsCode": "10D",
+      "icbName": "Test ICB"
     },
     {
       "metrics": [
@@ -82,8 +82,8 @@
       ],
       "name": "Test GP Practice with some Integrations",
       "odsCode": "A12347",
-      "ccgOdsCode": "11D",
-      "ccgName": "Another Test CCG"
+      "icbOdsCode": "11D",
+      "icbName": "Another Test ICB"
     },
     {
       "metrics": [
@@ -124,21 +124,21 @@
       ],
       "name": "Test GP Practice with an Integration",
       "odsCode": "Z12347",
-      "ccgOdsCode": "11D",
-      "ccgName": "Another Test CCG"
+      "icbOdsCode": "11D",
+      "icbName": "Another Test ICB"
     }
   ],
-  "ccgs": [
+  "icbs": [
     {
       "odsCode": "10D",
-      "name": "Test CCG",
+      "name": "Test ICB",
       "practices": [
         "A12345"
       ]
     },
     {
       "odsCode": "11D",
-      "name": "Another Test CCG",
+      "name": "Another Test ICB",
       "practices": [
         "A12347",
         "Z12347"

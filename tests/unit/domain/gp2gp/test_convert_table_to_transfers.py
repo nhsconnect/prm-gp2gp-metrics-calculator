@@ -32,11 +32,11 @@ def _build_transfer_table(**kwargs) -> pa.Table:
                 "requesting_practice_ods_code", [a_string(6)]
             ),
             "requesting_practice_name": kwargs.get("requesting_practice_name", [a_string(12)]),
-            "requesting_practice_ccg_ods_code": kwargs.get(
-                "requesting_practice_ccg_ods_code", [a_string(6)]
+            "requesting_practice_icb_ods_code": kwargs.get(
+                "requesting_practice_icb_ods_code", [a_string(6)]
             ),
-            "requesting_practice_ccg_name": kwargs.get(
-                "requesting_practice_ccg_name", [a_string(12)]
+            "requesting_practice_icb_name": kwargs.get(
+                "requesting_practice_icb_name", [a_string(12)]
             ),
         }
     )
@@ -195,8 +195,8 @@ def test_converts_multiple_rows_into_list_of_transfers():
         ],
         requesting_practice_ods_code=["A123", "B123"],
         requesting_practice_name=["Practice 1", "Practice 2"],
-        requesting_practice_ccg_ods_code=["AA123", "BB123"],
-        requesting_practice_ccg_name=["CCG 1", "CCG 2"],
+        requesting_practice_icb_ods_code=["AA123", "BB123"],
+        requesting_practice_icb_name=["ICB 1", "ICB 2"],
     )
 
     expected_transfers = [
@@ -208,8 +208,8 @@ def test_converts_multiple_rows_into_list_of_transfers():
                 supplier="Vision",
                 name="Practice 1",
                 ods_code="A123",
-                ccg_name="CCG 1",
-                ccg_ods_code="AA123",
+                icb_name="ICB 1",
+                icb_ods_code="AA123",
             ),
             outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
             date_requested=integrated_date_requested,
@@ -223,8 +223,8 @@ def test_converts_multiple_rows_into_list_of_transfers():
                 supplier="Systm One",
                 name="Practice 2",
                 ods_code="B123",
-                ccg_name="CCG 2",
-                ccg_ods_code="BB123",
+                icb_name="ICB 2",
+                icb_ods_code="BB123",
             ),
             outcome=TransferOutcome(
                 status=TransferStatus.TECHNICAL_FAILURE,
@@ -254,8 +254,8 @@ def test_convert_table_to_transfers_handles_none_values_gracefully():
         last_sender_message_timestamp=[None],
         requesting_practice_ods_code=["A123"],
         requesting_practice_name=["Practice 1"],
-        requesting_practice_ccg_ods_code=["AA123"],
-        requesting_practice_ccg_name=["CCG 1"],
+        requesting_practice_icb_ods_code=["AA123"],
+        requesting_practice_icb_name=["ICB 1"],
     )
 
     actual_transfers = convert_table_to_transfers(table)
@@ -268,8 +268,8 @@ def test_convert_table_to_transfers_handles_none_values_gracefully():
                 supplier="Vision",
                 ods_code="A123",
                 name="Practice 1",
-                ccg_ods_code="AA123",
-                ccg_name="CCG 1",
+                icb_ods_code="AA123",
+                icb_name="ICB 1",
             ),
             outcome=TransferOutcome(
                 status=TransferStatus.TECHNICAL_FAILURE,
