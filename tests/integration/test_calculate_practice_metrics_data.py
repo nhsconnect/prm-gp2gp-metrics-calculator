@@ -37,7 +37,7 @@ def test_calculates_correct_practice_metrics_given_transfers():
     requesting_practice_name = "Test GP"
     requesting_ods_code = "A12345"
     icb_ods_code = "23B"
-    icb_name = "Test ICB"
+    icb_name = "Test ICB - 23B"
     requesting_practice = build_practice(
         asid="343434343434",
         supplier="SystemOne",
@@ -163,7 +163,7 @@ def test_calculates_correct_practice_metrics_without_filtering_transfers():
     requesting_practice_name = "Test GP"
     requesting_ods_code = "A12345"
     icb_ods_code = "23B"
-    icb_name = "Test ICB"
+    icb_name = "Test ICB - 23B"
 
     requesting_practice = build_practice(
         asid="343434343434",

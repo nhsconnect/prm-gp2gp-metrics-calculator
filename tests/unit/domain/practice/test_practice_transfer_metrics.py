@@ -98,9 +98,9 @@ def test_returns_icb_name_name():
         ods_code=a_string(5),
         name=a_string(5),
         icb_ods_code=a_string(5),
-        icb_name="Test ICB",
+        icb_name="Test ICB - 10D",
         transfers=[],
     )
     actual_icb_name = practice_transfers.icb_name
 
-    assert actual_icb_name == "Test ICB"
+    assert actual_icb_name == "Test ICB - 10D"
