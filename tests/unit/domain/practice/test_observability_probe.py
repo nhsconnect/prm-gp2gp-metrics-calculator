@@ -49,7 +49,7 @@ def test_probe_should_warn_given_a_transfer_with_unknown_practice_ods_code():
     )
 
 
-def test_probe_should_warn_given_a_transfer_with_unknown_icb_ods_code():
+def test_probe_should_warn_given_a_transfer_with_unknown_sicbl_ods_code():
     mock_logger = Mock()
     probe = PracticeMetricsObservabilityProbe(mock_logger)
 
@@ -61,12 +61,12 @@ def test_probe_should_warn_given_a_transfer_with_unknown_icb_ods_code():
         requesting_practice=build_practice_details(asid=asid, ods_code=ods_code),
     )
 
-    probe.record_unknown_practice_icb_ods_code_for_transfer(transfer=transfer)
+    probe.record_unknown_practice_sicbl_ods_code_for_transfer(transfer=transfer)
 
     mock_logger.warning.assert_called_once_with(
-        "Unknown icb_ods_code for transfer, ignoring transfer from metrics",
+        "Unknown sicbl_ods_code for transfer, ignoring transfer from metrics",
         extra={
-            "event": "UNKNOWN_ICB_ODS_CODE_FOR_TRANSFER",
+            "event": "UNKNOWN_SICBL_ODS_CODE_FOR_TRANSFER",
             "conversation_id": conversation_id,
             "asid": asid,
             "practice_ods_code": ods_code,

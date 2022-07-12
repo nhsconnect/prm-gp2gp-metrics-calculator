@@ -40,11 +40,11 @@ class PracticeMetricsObservabilityProbe:
             },
         )
 
-    def record_unknown_practice_icb_ods_code_for_transfer(self, transfer: Transfer):
+    def record_unknown_practice_sicbl_ods_code_for_transfer(self, transfer: Transfer):
         self._logger.warning(
-            "Unknown icb_ods_code for transfer, ignoring transfer from metrics",
+            "Unknown sicbl_ods_code for transfer, ignoring transfer from metrics",
             extra={
-                "event": "UNKNOWN_ICB_ODS_CODE_FOR_TRANSFER",
+                "event": "UNKNOWN_SICBL_ODS_CODE_FOR_TRANSFER",
                 "conversation_id": transfer.conversation_id,
                 "asid": transfer.requesting_practice.asid,
                 "practice_ods_code": transfer.requesting_practice.ods_code,
@@ -53,7 +53,7 @@ class PracticeMetricsObservabilityProbe:
 
 
 @dataclass
-class ICBPresentation:
+class SICBLPresentation:
     ods_code: ODSCode
     name: str
     practices: List[str]
@@ -63,7 +63,7 @@ class ICBPresentation:
 class PracticeMetricsPresentation:
     generated_on: datetime
     practices: List[PracticeSummary]
-    icbs: List[ICBPresentation]
+    sicbls: List[SICBLPresentation]
 
 
 def calculate_practice_metrics(
@@ -86,12 +86,12 @@ def calculate_practice_metrics(
             )
             for practice_transfers in transfers_service.grouped_practices_by_ods
         ],
-        icbs=[
-            ICBPresentation(
-                practices=transfer_by_icb.practices_ods_codes,
-                name=transfer_by_icb.icb_name,
-                ods_code=transfer_by_icb.icb_ods_code,
+        sicbls=[
+            SICBLPresentation(
+                practices=transfer_by_sicbl.practices_ods_codes,
+                name=transfer_by_sicbl.sicbl_name,
+                ods_code=transfer_by_sicbl.sicbl_ods_code,
             )
-            for transfer_by_icb in transfers_service.grouped_practices_by_icb
+            for transfer_by_sicbl in transfers_service.grouped_practices_by_sicbl
         ],
     )

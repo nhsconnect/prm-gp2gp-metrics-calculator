@@ -13,8 +13,8 @@ class PracticeTransferMetrics:
         return cls(
             ods_code=group.ods_code,
             name=group.name,
-            icb_ods_code=group.icb_ods_code,
-            icb_name=group.icb_name,
+            sicbl_ods_code=group.sicbl_ods_code,
+            sicbl_name=group.sicbl_name,
             transfers=group.transfers,
         )
 
@@ -22,14 +22,14 @@ class PracticeTransferMetrics:
         self,
         ods_code: ODSCode,
         name: str,
-        icb_ods_code: ODSCode,
-        icb_name: Optional[str],
+        sicbl_ods_code: ODSCode,
+        sicbl_name: Optional[str],
         transfers=Iterable[Transfer],
     ):
         self._ods_code = ods_code
         self._name = name
-        self._icb_ods_code = icb_ods_code
-        self._icb_name = icb_name
+        self._sicbl_ods_code = sicbl_ods_code
+        self._sicbl_name = sicbl_name
         self._transfers_by_month: Dict[YearMonth, List[Transfer]] = defaultdict(list)
 
         for transfer in transfers:
@@ -49,9 +49,9 @@ class PracticeTransferMetrics:
         return self._name
 
     @property
-    def icb_ods_code(self) -> ODSCode:
-        return self._icb_ods_code
+    def sicbl_ods_code(self) -> ODSCode:
+        return self._sicbl_ods_code
 
     @property
-    def icb_name(self) -> Optional[str]:
-        return self._icb_name
+    def sicbl_name(self) -> Optional[str]:
+        return self._sicbl_name

@@ -136,8 +136,8 @@ def _write_transfer_parquet(input_transfer_parquet_columns_json, s3_path: str):
             ("last_sender_message_timestamp", pa.timestamp("us", tz="utc")),
             ("requesting_practice_name", pa.string()),
             ("requesting_practice_ods_code", pa.string()),
-            ("requesting_practice_icb_name", pa.string()),
-            ("requesting_practice_icb_ods_code", pa.string()),
+            ("requesting_practice_sicbl_name", pa.string()),
+            ("requesting_practice_sicbl_ods_code", pa.string()),
         ]
     )
 
@@ -281,8 +281,8 @@ def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transf
             == expected_practice_metrics_including_slow_transfers["practices"]
         )
         assert (
-            actual_practice_metrics_including_slow_transfers["icbs"]
-            == expected_practice_metrics_including_slow_transfers["icbs"]
+            actual_practice_metrics_including_slow_transfers["sicbls"]
+            == expected_practice_metrics_including_slow_transfers["sicbls"]
         )
         assert actual_national_metrics["metrics"] == expected_national_metrics["metrics"]
 

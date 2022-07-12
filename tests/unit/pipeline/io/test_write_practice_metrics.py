@@ -2,8 +2,8 @@ from datetime import datetime
 from unittest.mock import Mock
 
 from prmcalculator.domain.practice.calculate_practice_metrics import (
-    ICBPresentation,
     PracticeMetricsPresentation,
+    SICBLPresentation,
 )
 from prmcalculator.domain.practice.construct_practice_summary import (
     MonthlyMetricsPresentation,
@@ -24,8 +24,8 @@ _PRACTICE_METRICS_OBJECT = PracticeMetricsPresentation(
         PracticeSummary(
             ods_code="A12345",
             name="A test GP practice",
-            icb_ods_code="12A",
-            icb_name="A test ICB",
+            sicbl_ods_code="12A",
+            sicbl_name="A test SICBL",
             metrics=[
                 MonthlyMetricsPresentation(
                     year=2021,
@@ -47,7 +47,7 @@ _PRACTICE_METRICS_OBJECT = PracticeMetricsPresentation(
             ],
         )
     ],
-    icbs=[ICBPresentation(name="A test ICB", ods_code="12A", practices=["A12345"])],
+    sicbls=[SICBLPresentation(name="A test SICBL", ods_code="12A", practices=["A12345"])],
 )
 
 _PRACTICE_METRICS_DICT = {
@@ -56,8 +56,8 @@ _PRACTICE_METRICS_DICT = {
         {
             "odsCode": "A12345",
             "name": "A test GP practice",
-            "icbOdsCode": "12A",
-            "icbName": "A test ICB",
+            "sicblOdsCode": "12A",
+            "sicblName": "A test SICBL",
             "metrics": [
                 {
                     "year": 2021,
@@ -79,7 +79,7 @@ _PRACTICE_METRICS_DICT = {
             ],
         },
     ],
-    "icbs": [{"name": "A test ICB", "odsCode": "12A", "practices": ["A12345"]}],
+    "sicbls": [{"name": "A test SICBL", "odsCode": "12A", "practices": ["A12345"]}],
 }
 
 

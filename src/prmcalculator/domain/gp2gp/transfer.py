@@ -45,8 +45,8 @@ class PracticeDetails:
     supplier: str
     ods_code: str
     name: str
-    icb_ods_code: str
-    icb_name: str
+    sicbl_ods_code: str
+    sicbl_name: str
 
 
 class Transfer(NamedTuple):
@@ -108,8 +108,8 @@ def convert_table_to_transfers(table: pa.Table) -> List[Transfer]:
                 supplier=transfer["requesting_supplier"],
                 ods_code=transfer["requesting_practice_ods_code"],
                 name=transfer["requesting_practice_name"],
-                icb_ods_code=transfer["requesting_practice_icb_ods_code"],
-                icb_name=transfer["requesting_practice_icb_name"],
+                sicbl_ods_code=transfer["requesting_practice_sicbl_ods_code"],
+                sicbl_name=transfer["requesting_practice_sicbl_name"],
             ),
             outcome=TransferOutcome(
                 status=_map_transfer_status(transfer["status"]),

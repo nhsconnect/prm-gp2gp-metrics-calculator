@@ -32,8 +32,8 @@ class MonthlyMetricsPresentation:
 class PracticeSummary:
     name: str
     ods_code: Optional[str]
-    icb_ods_code: Optional[str]
-    icb_name: Optional[str]
+    sicbl_ods_code: Optional[str]
+    sicbl_name: Optional[str]
     metrics: List[MonthlyMetricsPresentation]
 
 
@@ -67,8 +67,8 @@ def construct_practice_summary(
     return PracticeSummary(
         name=practice_metrics.name,
         ods_code=practice_metrics.ods_code,
-        icb_ods_code=practice_metrics.icb_ods_code,
-        icb_name=practice_metrics.icb_name,
+        sicbl_ods_code=practice_metrics.sicbl_ods_code,
+        sicbl_name=practice_metrics.sicbl_name,
         metrics=[
             _construct_monthly_metrics_presentation(
                 transfer_month_metrics=practice_metrics.monthly_metrics(year=year, month=month),

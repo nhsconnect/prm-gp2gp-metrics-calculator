@@ -14,8 +14,8 @@ def test_returns_a_practice_summary_for_one_month_of_metrics():
     mock_transfer_metrics = Mock()
     mock_transfer_metrics.ods_code = "ABC123"
     mock_transfer_metrics.name = "Test Practice"
-    mock_transfer_metrics.icb_ods_code = "11S"
-    mock_transfer_metrics.icb_name = "Test ICB 11S"
+    mock_transfer_metrics.sicbl_ods_code = "11S"
+    mock_transfer_metrics.sicbl_name = "Test SICBL 11S"
 
     mock_monthly_metrics = Mock()
     mock_transfer_metrics.monthly_metrics.return_value = mock_monthly_metrics
@@ -36,8 +36,8 @@ def test_returns_a_practice_summary_for_one_month_of_metrics():
     expected = PracticeSummary(
         ods_code="ABC123",
         name="Test Practice",
-        icb_ods_code="11S",
-        icb_name="Test ICB 11S",
+        sicbl_ods_code="11S",
+        sicbl_name="Test SICBL 11S",
         metrics=[
             MonthlyMetricsPresentation(
                 year=2021,

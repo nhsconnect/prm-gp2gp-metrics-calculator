@@ -39,8 +39,8 @@ _INTEGRATED_TRANSFER = Transfer(
         supplier="SupplierA",
         name="Practice 1",
         ods_code="A12345",
-        icb_ods_code="AA12345",
-        icb_name="ICB 1",
+        sicbl_ods_code="AA12345",
+        sicbl_name="SICBL 1",
     ),
     outcome=TransferOutcome(status=TransferStatus.INTEGRATED_ON_TIME, failure_reason=None),
     date_requested=_integrated_date_requested,
@@ -56,8 +56,8 @@ _INTEGRATED_LATE_TRANSFER = Transfer(
         supplier="SupplierB",
         name="Practice 2",
         ods_code="B12345",
-        icb_name="ICB 2",
-        icb_ods_code="BB12345",
+        sicbl_name="SICBL 2",
+        sicbl_ods_code="BB12345",
     ),
     outcome=TransferOutcome(
         status=TransferStatus.PROCESS_FAILURE, failure_reason=TransferFailureReason.INTEGRATED_LATE
@@ -78,8 +78,8 @@ _INTEGRATED_TRANSFER_DATA_DICT = {
     "last_sender_message_timestamp": [_integrated_last_sender_message_timestamp],
     "requesting_practice_name": ["Practice 1"],
     "requesting_practice_ods_code": ["A12345"],
-    "requesting_practice_icb_name": ["ICB 1"],
-    "requesting_practice_icb_ods_code": ["AA12345"],
+    "requesting_practice_sicbl_name": ["SICBL 1"],
+    "requesting_practice_sicbl_ods_code": ["AA12345"],
 }
 
 
@@ -94,8 +94,8 @@ _INTEGRATED_LATE_TRANSFER_DATA_DICT = {
     "last_sender_message_timestamp": [_integrated_late_last_sender_message_timestamp],
     "requesting_practice_name": ["Practice 2"],
     "requesting_practice_ods_code": ["B12345"],
-    "requesting_practice_icb_name": ["ICB 2"],
-    "requesting_practice_icb_ods_code": ["BB12345"],
+    "requesting_practice_sicbl_name": ["SICBL 2"],
+    "requesting_practice_sicbl_ods_code": ["BB12345"],
 }
 
 _SCHEMA = pa.schema(
@@ -110,8 +110,8 @@ _SCHEMA = pa.schema(
         ("last_sender_message_timestamp", pa.timestamp("us", tz="utc")),
         ("requesting_practice_ods_code", pa.string()),
         ("requesting_practice_name", pa.string()),
-        ("requesting_practice_icb_ods_code", pa.string()),
-        ("requesting_practice_icb_name", pa.string()),
+        ("requesting_practice_sicbl_ods_code", pa.string()),
+        ("requesting_practice_sicbl_name", pa.string()),
     ]
 )
 

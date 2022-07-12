@@ -61,7 +61,7 @@
   ],
   "requesting_practice_ods_code": ["A12347","Z12347","A12347"],
   "requesting_practice_name": ["Test GP Practice with some Integrations","Test GP Practice with an Integration","Test GP Practice with some Integrations"],
-  "requesting_practice_icb_ods_code": ["11D","11D","11D"],
-  "requesting_practice_icb_name": ["Another Test ICB - 11D","Another Test ICB - 11D","Another Test ICB - 11D"]
+  "requesting_practice_sicbl_ods_code": ["11D","11D","11D"],
+  "requesting_practice_sicbl_name": ["Another Test SICBL - 11D","Another Test SICBL - 11D","Another Test SICBL - 11D"]
 }
 
