@@ -98,9 +98,9 @@ def test_returns_sicbl_name_name():
         ods_code=a_string(5),
         name=a_string(5),
         sicbl_ods_code=a_string(5),
-        sicbl_name="Test SICBL - 10D",
+        sicbl_name="Test ICB - 10D",
         transfers=[],
     )
     actual_sicbl_name = practice_transfers.sicbl_name
 
-    assert actual_sicbl_name == "Test SICBL - 10D"
+    assert actual_sicbl_name == "Test ICB - 10D"

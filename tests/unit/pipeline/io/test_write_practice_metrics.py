@@ -25,7 +25,7 @@ _PRACTICE_METRICS_OBJECT = PracticeMetricsPresentation(
             ods_code="A12345",
             name="A test GP practice",
             sicbl_ods_code="12A",
-            sicbl_name="A test SICBL",
+            sicbl_name="A Test ICB",
             metrics=[
                 MonthlyMetricsPresentation(
                     year=2021,
@@ -47,7 +47,7 @@ _PRACTICE_METRICS_OBJECT = PracticeMetricsPresentation(
             ],
         )
     ],
-    sicbls=[SICBLPresentation(name="A test SICBL", ods_code="12A", practices=["A12345"])],
+    sicbls=[SICBLPresentation(name="A Test ICB", ods_code="12A", practices=["A12345"])],
 )
 
 _PRACTICE_METRICS_DICT = {
@@ -57,7 +57,7 @@ _PRACTICE_METRICS_DICT = {
             "odsCode": "A12345",
             "name": "A test GP practice",
             "sicblOdsCode": "12A",
-            "sicblName": "A test SICBL",
+            "sicblName": "A Test ICB",
             "metrics": [
                 {
                     "year": 2021,
@@ -79,7 +79,7 @@ _PRACTICE_METRICS_DICT = {
             ],
         },
     ],
-    "sicbls": [{"name": "A test SICBL", "odsCode": "12A", "practices": ["A12345"]}],
+    "sicbls": [{"name": "A Test ICB", "odsCode": "12A", "practices": ["A12345"]}],
 }
 
 
