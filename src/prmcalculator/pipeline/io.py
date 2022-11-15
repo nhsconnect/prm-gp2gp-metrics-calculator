@@ -35,7 +35,6 @@ class PlatformMetricsIO:
         transfer_table = self.read_transfers_as_table(s3_uris)
         return convert_table_to_transfers(transfer_table)
 
-    # TODO: would this be a private method?
     def read_transfers_as_table(self, s3_uris: List[str]) -> pa.Table:
         return pa.concat_tables(
             [self._s3_manager.read_parquet(s3_path) for s3_path in s3_uris],
