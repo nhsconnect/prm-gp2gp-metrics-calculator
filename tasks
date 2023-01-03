@@ -26,7 +26,6 @@ do
     output-versions)
       pip --version
       python --version
-      pyenv --version
       pipenv --version
       ;;
     check-deps)
