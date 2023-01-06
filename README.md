@@ -45,16 +45,16 @@ echo 'eval "$(pyenv init -)"' >> ~/.zshrc
 #### Install new python and set as default
 
 ```
-pyenv install 3.9.16
-pyenv global 3.9.16
+pyenv install 3.9.6
+pyenv global 3.9.6
 ```
 
 #### Installing pipenv and updating pip
 
 In a new shell, run the following:
 ```
-python -m pip install -U pipenv
-python -m pip install -U "pip>=22.3.1"
+python -m pip install pipenv
+python -m pip install -U "pip>=21.1”
 ```
 
 #### Build a dev env
