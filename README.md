@@ -78,7 +78,7 @@ pipenv --venv
 Now you can configure the IDE. The steps for IntelliJ are following:
 1. Go to `File -> Project Structure -> SDK -> Add SDK -> Python SDK -> Existing environments`
 2. Click on three dots, paste the virtual environment path from before, and point to the python binary.
-   The path should look like this: `/Users/janeDoe/.local/share/virtualenvs/prm-spine-exporter-NTBCQ41T/bin/python3.9`
+   The path should look like this: `/Users/janeDoe/.local/share/virtualenvs/prm-gp2gp-metrics-calculator-NXBCQ41T/bin/python3.9`
 
 
 ### Running the unit and integration tests

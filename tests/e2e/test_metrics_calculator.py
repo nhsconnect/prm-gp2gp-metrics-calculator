@@ -1,6 +1,5 @@
 import json
-
-# import os
+import os
 import sys
 from datetime import datetime
 from io import BytesIO
@@ -11,11 +10,9 @@ from unittest.mock import ANY
 
 import boto3
 import pyarrow as pa
-
-# import pytest
+import pytest
 from botocore.config import Config
-
-# from moto import mock_ssm
+from moto import mock_ssm
 from moto.server import DomainDispatcherApplication, create_backend_app
 from pyarrow._s3fs import S3FileSystem
 from pyarrow.parquet import write_table
@@ -190,6 +187,117 @@ def _get_ssm_param(ssm_parameter_name):
     ssm_client = session.client("ssm")
     param = ssm_client.get_parameter(Name=ssm_parameter_name, WithDecryption=True)
     return param["Parameter"]["Value"]
+
+
+@pytest.mark.filterwarnings("ignore:Conversion of")
+@mock_ssm
+@mock.patch.dict(os.environ, {"AWS_ACCESS_KEY_ID": FAKE_S3_ACCESS_KEY})
+def test_reads_daily_input_files_and_outputs_metrics_to_s3_including_slow_transfers(datadir):
+    fake_s3, s3_client = _setup()
+    fake_s3.start()
+
+    environ["NUMBER_OF_MONTHS"] = "2"
+    environ["DATE_ANCHOR"] = "2020-01-30T18:44:49Z"
+
+    output_metrics_bucket = _build_fake_s3_bucket(S3_OUTPUT_METRICS_BUCKET_NAME, s3_client)
+
+    input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET_NAME, s3_client)
+
+    _upload_template_transfer_data(
+        datadir,
+        S3_INPUT_TRANSFER_DATA_BUCKET_NAME,
+        year=2019,
+        data_month=11,
+        time_range=range(1, 31),
+    )
+    _override_transfer_data(
+        datadir,
+        S3_INPUT_TRANSFER_DATA_BUCKET_NAME,
+        year=2019,
+        data_month=11,
+        data_day=1,
+        input_folder="inputs/daily_including_slow_transfers",
+    )
+
+    _upload_template_transfer_data(
+        datadir,
+        S3_INPUT_TRANSFER_DATA_BUCKET_NAME,
+        year=2019,
+        data_month=12,
+        time_range=range(1, 32),
+    )
+
+    for day in [1, 3, 5, 19, 20, 23, 24, 25, 30, 31]:
+        _override_transfer_data(
+            datadir,
+            S3_INPUT_TRANSFER_DATA_BUCKET_NAME,
+            year=2019,
+            data_month=12,
+            data_day=day,
+            input_folder="inputs/daily_including_slow_transfers",
+        )
+
+    expected_practice_metrics_output_key = "2019-12-practiceMetrics.json"
+
+    expected_practice_metrics_including_slow_transfers = _read_json(
+        datadir / "expected_outputs" / "v12" / "practiceMetrics.json"
+    )
+    expected_national_metrics_output_key = "2019-12-nationalMetrics.json"
+    expected_national_metrics = _read_json(
+        datadir / "expected_outputs" / "v12" / "nationalMetrics.json"
+    )
+
+    expected_metadata = {
+        "metrics-calculator-version": BUILD_TAG,
+        "date-anchor": "2020-01-30T18:44:49+00:00",
+        "number-of-months": "2",
+    }
+
+    s3_metrics_output_path = "v12/2019/12/"
+
+    try:
+        main()
+
+        practice_metrics_s3_path = f"{s3_metrics_output_path}{expected_practice_metrics_output_key}"
+
+        actual_practice_metrics_including_slow_transfers = _read_s3_json(
+            output_metrics_bucket, practice_metrics_s3_path
+        )
+
+        national_metrics_s3_path = (
+            f"{s3_metrics_output_path}" f"{expected_national_metrics_output_key}"
+        )
+        actual_national_metrics = _read_s3_json(output_metrics_bucket, national_metrics_s3_path)
+
+        actual_practice_metrics_s3_metadata_including_slow_transfers = _read_s3_metadata(
+            output_metrics_bucket, practice_metrics_s3_path
+        )
+        actual_national_metrics_s3_metadata = _read_s3_metadata(
+            output_metrics_bucket, national_metrics_s3_path
+        )
+
+        assert (
+            actual_practice_metrics_including_slow_transfers["practices"]
+            == expected_practice_metrics_including_slow_transfers["practices"]
+        )
+        assert (
+            actual_practice_metrics_including_slow_transfers["sicbls"]
+            == expected_practice_metrics_including_slow_transfers["sicbls"]
+        )
+        assert actual_national_metrics["metrics"] == expected_national_metrics["metrics"]
+
+        assert actual_practice_metrics_s3_metadata_including_slow_transfers == expected_metadata
+        assert actual_national_metrics_s3_metadata == expected_metadata
+
+        national_metrics_s3_uri_ssm_value = _get_ssm_param(NATIONAL_METRICS_S3_PATH_PARAM_NAME)
+        assert national_metrics_s3_uri_ssm_value == "2019/12/2019-12-nationalMetrics.json"
+        practice_metrics_s3_uri_ssm_value = _get_ssm_param(PRACTICE_METRICS_S3_PATH_PARAM_NAME)
+        assert practice_metrics_s3_uri_ssm_value == "2019/12/2019-12-practiceMetrics.json"
+    finally:
+        _delete_bucket_with_objects(output_metrics_bucket)
+        _delete_bucket_with_objects(input_transfer_bucket)
+        fake_s3.stop()
+        environ.clear()
 
 
 def test_exception_in_main():
