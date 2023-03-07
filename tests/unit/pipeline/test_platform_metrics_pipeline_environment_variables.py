@@ -1,7 +1,7 @@
 from datetime import date, datetime
 
 import pytest
-from dateutil.tz import tzutc
+from dateutil.tz import UTC
 
 from prmcalculator.pipeline.config import (
     InvalidEnvironmentVariableValue,
@@ -28,9 +28,7 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
         input_transfer_data_bucket="input-transfer-data-bucket",
         output_metrics_bucket="output-metrics-bucket",
         number_of_months=3,
-        date_anchor=datetime(
-            year=2020, month=1, day=30, hour=18, minute=44, second=49, tzinfo=tzutc()
-        ),
+        date_anchor=datetime(year=2020, month=1, day=30, hour=18, minute=44, second=49, tzinfo=UTC),
         s3_endpoint_url="a_url",
         build_tag=build_tag,
         national_metrics_s3_path_param_name="a/param/name",

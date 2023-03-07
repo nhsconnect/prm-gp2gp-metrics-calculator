@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import pytest
-from dateutil.tz import UTC, gettz, tzutc
+from dateutil.tz import UTC, gettz
 
 from prmcalculator.domain.reporting_window import ReportingWindow
 from tests.builders.common import a_datetime
@@ -60,8 +60,8 @@ def test_prior_to_correctly_determines_datetimes_for_two_metric_months():
 
     reporting_window = ReportingWindow.prior_to(date_anchor=moment, number_of_months=2)
 
-    dec_datetimes = [datetime(year=2020, month=12, day=day, tzinfo=tzutc()) for day in range(1, 32)]
-    jan_datetimes = [datetime(year=2021, month=1, day=day, tzinfo=tzutc()) for day in range(1, 32)]
+    dec_datetimes = [datetime(year=2020, month=12, day=day, tzinfo=UTC) for day in range(1, 32)]
+    jan_datetimes = [datetime(year=2021, month=1, day=day, tzinfo=UTC) for day in range(1, 32)]
 
     expected = [*dec_datetimes, *jan_datetimes]
 
@@ -98,6 +98,6 @@ def test_returns_dates_list_when_date_anchor_is_bst():
 
     actual_dates = reporting_window.dates
 
-    expected_dates = [datetime(year=2021, month=4, day=day, tzinfo=tzutc()) for day in range(1, 31)]
+    expected_dates = [datetime(year=2021, month=4, day=day, tzinfo=UTC) for day in range(1, 31)]
 
     assert actual_dates == expected_dates

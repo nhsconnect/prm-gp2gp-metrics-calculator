@@ -1,7 +1,7 @@
 from datetime import datetime
 from unittest.mock import Mock
 
-from dateutil.tz import tzutc
+from dateutil.tz import UTC
 from freezegun import freeze_time
 
 from prmcalculator.domain.national.calculate_national_metrics_data import (
@@ -72,13 +72,13 @@ def test_calculates_correct_national_metrics_given_series_of_transfers():
         + transfers_unclassified_error
     )
 
-    metric_month_start = datetime(year=2019, month=12, day=1, tzinfo=tzutc())
+    metric_month_start = datetime(year=2019, month=12, day=1, tzinfo=UTC)
     reporting_window = ReportingWindow(
         date_anchor_month_start=a_datetime(year=2020, month=1, day=1),
         dates=[],
         metric_months_datetimes=[metric_month_start],
     )
-    current_datetime = datetime.now(tzutc())
+    current_datetime = datetime.now(UTC)
 
     expected_national_metrics_month_presentation = NationalMetricMonthPresentation(
         year=2019,
@@ -149,7 +149,7 @@ def test_calculates_correct_national_metrics_for_transfers_within_reporting_wind
         dates=[],
         metric_months_datetimes=[metric_month_start],
     )
-    current_datetime = datetime.now(tzutc())
+    current_datetime = datetime.now(UTC)
 
     expected_national_metrics_month_presentation = NationalMetricMonthPresentation(
         year=2019,

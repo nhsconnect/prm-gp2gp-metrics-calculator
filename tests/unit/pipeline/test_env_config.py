@@ -1,7 +1,7 @@
 from datetime import date, datetime
 
 import pytest
-from dateutil.tz import tzutc
+from dateutil.tz import UTC
 
 from prmcalculator.pipeline.config import EnvConfig, InvalidEnvironmentVariableValue
 
@@ -52,7 +52,7 @@ def test_read_optional_int_throws_exception_given_invalid_string():
 def test_read_optional_datetime_returns_specific_datetime_given_a_datetime():
     env = EnvConfig({"OPTIONAL_DATETIME_CONFIG": "2020-01-30T18:44:49Z"})
     actual = env.read_optional_datetime(name="OPTIONAL_DATETIME_CONFIG")
-    expected = datetime(2020, 1, 30, 18, 44, 49, tzinfo=tzutc())
+    expected = datetime(2020, 1, 30, 18, 44, 49, tzinfo=UTC)
 
     assert actual == expected
 

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from dateutil.tz import tzutc
+from dateutil.tz import UTC
 from freezegun import freeze_time
 
 from prmcalculator.domain.national.calculate_national_metrics_month import NationalMetricsMonth
@@ -26,7 +26,7 @@ def test_has_correct_generated_on_given_time():
     national_metrics_month = NationalMetricsMonth(transfers=[], year=a_year, month=a_month)
 
     actual = construct_national_metrics_presentation([national_metrics_month])
-    expected_generated_on = datetime(year=2019, month=6, day=2, hour=23, second=42, tzinfo=tzutc())
+    expected_generated_on = datetime(year=2019, month=6, day=2, hour=23, second=42, tzinfo=UTC)
 
     assert actual.generated_on == expected_generated_on
 

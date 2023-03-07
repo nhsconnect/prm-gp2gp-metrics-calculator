@@ -3,7 +3,7 @@ from datetime import datetime
 from logging import Logger, getLogger
 from typing import List
 
-from dateutil.tz import tzutc
+from dateutil.tz import UTC
 
 from prmcalculator.domain.gp2gp.transfer import Transfer
 from prmcalculator.domain.practice.construct_practice_summary import (
@@ -78,7 +78,7 @@ def calculate_practice_metrics(
     )
 
     return PracticeMetricsPresentation(
-        generated_on=datetime.now(tzutc()),
+        generated_on=datetime.now(UTC),
         practices=[
             construct_practice_summary(
                 practice_metrics=PracticeTransferMetrics.from_group(practice_transfers),

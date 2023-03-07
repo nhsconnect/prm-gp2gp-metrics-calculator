@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import List
 
-from dateutil.tz import tzutc
+from dateutil.tz import UTC
 
 from prmcalculator.domain.national.calculate_national_metrics_month import NationalMetricsMonth
 from prmcalculator.utils.calculate_percentage import calculate_percentage
@@ -50,7 +50,7 @@ def construct_national_metrics_presentation(
     total_number_of_transfers_month = national_metric_month.total
 
     return NationalMetricsPresentation(
-        generated_on=datetime.now(tzutc()),
+        generated_on=datetime.now(UTC),
         metrics=[
             NationalMetricMonthPresentation(
                 year=national_metric_month.year,
