@@ -25,6 +25,7 @@ freezegun = "~=1.1"
 pytest-cov = "~=3.0"
 pytest = "~=6.2"
 boto3-stubs = {extras = ["s3"], version = "1.18"}
+pytz = "*"
 
 [requires]
 python_version = "3.9"
